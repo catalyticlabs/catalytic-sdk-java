@@ -1,4 +1,4 @@
-lazy val root = (project in file(".")).
+lazy val root = (project in fileMetadata(".")).
   settings(
     organization := "org.catalytic",
     name := "openapi-java-client",

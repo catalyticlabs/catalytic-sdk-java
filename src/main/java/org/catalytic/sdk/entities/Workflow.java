@@ -1,28 +1,35 @@
 package org.catalytic.sdk.entities;
 
-/**
- * A Pushbot object
- */
-public class Pushbot {
+import org.catalytic.sdk.model.FieldVisibility;
+import org.catalytic.sdk.model.InstanceVisibilty;
 
-    private String id;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * A Workflow object
+ */
+public class Workflow {
+
+    private UUID id;
     private String name;
     private String teamName;
     private String description;
     private String category;
     private String owner;
     private String createdBy;
-    private Field[] inputFields;
+    private List<Field> inputFields;
     private boolean isPublished;
     private boolean isArchived;
-    private String fieldVisibility;
-    private String instanceVisibility;
-    private User[] adminUsers;
-    private User[] standardUsers;
+    private FieldVisibility fieldVisibility;
+    private InstanceVisibilty instanceVisibility;
+    private List<String> adminUsers;
+    private List<String> standardUsers;
 
-    public Pushbot() {}
+    public Workflow() {}
 
-    public Pushbot(String id, String name, String teamName, String description, String category, String owner, String createdBy, Field[] inputFields, boolean isPublished, boolean isArchived, String fieldVisibility, String instanceVisibility, User[] adminUsers, User[] standardUsers) {
+    public Workflow(UUID id, String name, String teamName, String description, String category, String owner, String createdBy, List<org.catalytic.sdk.model.Field> inputFields, boolean isPublished, boolean isArchived, FieldVisibility fieldVisibility, InstanceVisibilty instanceVisibility, List<String> adminUsers, List<String> standardUsers) {
         this.id = id;
         this.name = name;
         this.teamName = teamName;
@@ -30,7 +37,24 @@ public class Pushbot {
         this.category = category;
         this.owner = owner;
         this.createdBy = createdBy;
-        this.inputFields = inputFields;
+
+        List<Field> newInputFields = new ArrayList<Field>();
+        for (org.catalytic.sdk.model.Field internalField : inputFields) {
+            Field field = new Field(
+                    internalField.getId(),
+                    internalField.getName(),
+                    internalField.getReferenceName(),
+                    internalField.getDescription(),
+                    internalField.getPosition(),
+                    internalField.getRestrictions(),
+                    internalField.getFieldType().getValue(),
+                    internalField.getValue(),
+                    internalField.getDefaultValue()
+            );
+            newInputFields.add(field);
+        }
+
+        this.inputFields = newInputFields;
         this.isPublished = isPublished;
         this.isArchived = isArchived;
         this.fieldVisibility = fieldVisibility;
@@ -39,11 +63,11 @@ public class Pushbot {
         this.standardUsers = standardUsers;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -95,15 +119,15 @@ public class Pushbot {
         this.createdBy = createdBy;
     }
 
-    public Field[] getInputFields() {
+    public List<Field> getInputFields() {
         return inputFields;
     }
 
-    public void setInputFields(Field[] inputFields) {
+    public void setInputFields(List<Field> inputFields) {
         this.inputFields = inputFields;
     }
 
-    public boolean isPublished() {
+    public boolean getIsPublished() {
         return isPublished;
     }
 
@@ -111,7 +135,7 @@ public class Pushbot {
         isPublished = published;
     }
 
-    public boolean isArchived() {
+    public boolean getIsArchived() {
         return isArchived;
     }
 
@@ -119,35 +143,35 @@ public class Pushbot {
         isArchived = archived;
     }
 
-    public String getFieldVisibility() {
+    public FieldVisibility getFieldVisibility() {
         return fieldVisibility;
     }
 
-    public void setFieldVisibility(String fieldVisibility) {
+    public void setFieldVisibility(FieldVisibility fieldVisibility) {
         this.fieldVisibility = fieldVisibility;
     }
 
-    public String getInstanceVisibility() {
+    public InstanceVisibilty getInstanceVisibility() {
         return instanceVisibility;
     }
 
-    public void setInstanceVisibility(String instanceVisibility) {
+    public void setInstanceVisibility(InstanceVisibilty instanceVisibility) {
         this.instanceVisibility = instanceVisibility;
     }
 
-    public User[] getAdminUsers() {
+    public List<String> getAdminUsers() {
         return adminUsers;
     }
 
-    public void setAdminUsers(User[] adminUsers) {
+    public void setAdminUsers(List<String> adminUsers) {
         this.adminUsers = adminUsers;
     }
 
-    public User[] getStandardUsers() {
+    public List<String> getStandardUsers() {
         return standardUsers;
     }
 
-    public void setStandardUsers(User[] standardUsers) {
+    public void setStandardUsers(List<String> standardUsers) {
         this.standardUsers = standardUsers;
     }
 }

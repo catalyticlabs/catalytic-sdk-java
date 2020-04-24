@@ -1,25 +1,28 @@
 package org.catalytic.sdk.entities;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
  * A DataTable object
  */
 public class DataTable {
 
-    private String id;
+    private UUID id;
     private String referenceName;
     private String name;
     private String teamName;
     private String description;
-    private DataTableColumn[] columns;
+    private List<DataTableColumn> columns;
     private boolean isArchived;
     private String type;
     private String visibility;
-    private String[] visibleToUsers;
+    private List<String> visibleToUsers;
     private int rowLimit;
     private int columnLimit;
     private int cellLimit;
 
-    public DataTable(String id, String referenceName, String name, String teamName, String description, DataTableColumn[] columns, boolean isArchived, String type, String visibility, String[] visibleToUsers, int rowLimit, int columnLimit, int cellLimit) {
+    public DataTable(UUID id, String referenceName, String name, String teamName, String description, List<DataTableColumn> columns, boolean isArchived, String type, String visibility, List<String> visibleToUsers, int rowLimit, int columnLimit, int cellLimit) {
         this.id = id;
         this.referenceName = referenceName;
         this.name = name;
@@ -35,11 +38,11 @@ public class DataTable {
         this.cellLimit = cellLimit;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -75,11 +78,11 @@ public class DataTable {
         this.description = description;
     }
 
-    public DataTableColumn[] getColumns() {
+    public List<DataTableColumn> getColumns() {
         return columns;
     }
 
-    public void setColumns(DataTableColumn[] columns) {
+    public void setColumns(List<DataTableColumn> columns) {
         columns = columns;
     }
 
@@ -107,11 +110,11 @@ public class DataTable {
         this.visibility = visibility;
     }
 
-    public String[] getVisibleToUsers() {
+    public List<String> getVisibleToUsers() {
         return visibleToUsers;
     }
 
-    public void setVisibleToUsers(String[] visibleToUsers) {
+    public void setVisibleToUsers(List<String> visibleToUsers) {
         this.visibleToUsers = visibleToUsers;
     }
 

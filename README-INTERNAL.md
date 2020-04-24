@@ -14,7 +14,7 @@ The command to regenerate the code is
 $ openapi-generator generate -i https://catalyticsdkapi.azurewebsites.net/swagger/v1/swagger.json -g java -o new --additional-properties=apiPackage=org.catalytic.sdk.api,modelPackage=org.catalytic.sdk.model,dateLibrary=java8,groupId=org.catalytic,invokerPackage=org.catalytic.sdk,java8=true,hideGenerationTimestamp=true --skip-validate-spec
 ```
 
-**Note**: this generates code in the dir `new/` and you'll need to manually move things to the appropriate dirs. Not everything that gets generated is code that we want. For example we don't want to update our `composer.json` file or this `README.md` file.
+**Note**: this generates code in the dir `new/` and you'll need to manually move things to the appropriate dirs. Not everything that gets generated is code that we want. For example we don't want to update our `composer.json` fileMetadata or this `README.md` fileMetadata.
 
 ## Requirements
 
@@ -53,7 +53,7 @@ Add this dependency to your project's POM:
 
 ### Gradle users
 
-Add this dependency to your project's build file:
+Add this dependency to your project's build fileMetadata:
 
 ```groovy
 compile "org.catalytic:openapi-java-client:v1.0.0"

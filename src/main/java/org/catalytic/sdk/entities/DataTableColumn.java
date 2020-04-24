@@ -8,9 +8,9 @@ public class DataTableColumn {
     private String name;
     private String type;
     private String referenceName;
-    private String restrictions;
+    private FieldRestrictions restrictions;
 
-    public DataTableColumn(String name, String type, String referenceName, String restrictions) {
+    public DataTableColumn(String name, String type, String referenceName, FieldRestrictions restrictions) {
         this.name = name;
         this.type = type;
         this.referenceName = referenceName;
@@ -41,11 +41,11 @@ public class DataTableColumn {
         this.referenceName = referenceName;
     }
 
-    public String getRestrictions() {
+    public FieldRestrictions getRestrictions() {
         return restrictions;
     }
 
-    public void setRestrictions(String restrictions) {
+    public void setRestrictions(FieldRestrictions restrictions) {
         this.restrictions = restrictions;
     }
 }

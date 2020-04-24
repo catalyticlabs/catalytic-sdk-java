@@ -1,21 +1,25 @@
 package org.catalytic.sdk.entities;
 
+import java.util.UUID;
+
 /**
  * A Credentials object
  */
 public class Credentials {
 
-    private String id;
+    private UUID id;
     private String domain;
+    private String name;
     private String type;
     private String token;
     private String secret;
     private String environment;
     private String owner;
 
-    public Credentials(String id, String domain, String type, String token, String secret, String environment, String owner) {
+    public Credentials(UUID id, String domain, String type, String name, String token, String secret, String environment, String owner) {
         this.id = id;
         this.domain = domain;
+        this.name = name;
         this.type = type;
         this.token = token;
         this.secret = secret;
@@ -23,11 +27,11 @@ public class Credentials {
         this.owner = owner;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -37,6 +41,14 @@ public class Credentials {
 
     public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getType() {

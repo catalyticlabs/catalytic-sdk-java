@@ -20,6 +20,10 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
 import okio.BufferedSink;
 import okio.Okio;
+import org.catalytic.sdk.auth.ApiKeyAuth;
+import org.catalytic.sdk.auth.Authentication;
+import org.catalytic.sdk.auth.HttpBasicAuth;
+import org.catalytic.sdk.auth.HttpBearerAuth;
 
 import javax.net.ssl.*;
 import java.io.File;
@@ -27,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.net.URI;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
@@ -36,7 +39,6 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -46,11 +48,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.catalytic.sdk.auth.Authentication;
-import org.catalytic.sdk.auth.HttpBasicAuth;
-import org.catalytic.sdk.auth.HttpBearerAuth;
-import org.catalytic.sdk.auth.ApiKeyAuth;
 
 public class ApiClient {
 
@@ -283,6 +280,20 @@ public class ApiClient {
      */
     public Authentication getAuthentication(String authName) {
         return authentications.get(authName);
+    }
+
+    /**
+     * Helper method to set token for HTTP bearer authentication.
+     * @param bearerToken the token
+     */
+    public void setBearerToken(String bearerToken) {
+        for (Authentication auth : authentications.values()) {
+            if (auth instanceof HttpBearerAuth) {
+                ((HttpBearerAuth) auth).setBearerToken(bearerToken);
+                return;
+            }
+        }
+        throw new RuntimeException("No Bearer authentication configured!");
     }
 
     /**

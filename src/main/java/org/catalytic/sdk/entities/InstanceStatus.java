@@ -3,9 +3,19 @@ package org.catalytic.sdk.entities;
 /**
  * Contains all the possible values for the status of an instance
  */
-public class InstanceStatus {
+public enum InstanceStatus {
 
-    public static final String RUNNING = "running";
-    public static final String COMPLETED = "completed";
-    public static final String CANCELLED = "aborted";
+    RUNNING("running"),
+    COMPLETED("completed"),
+    CANCELLED("cancelled");
+
+    private String value;
+
+    InstanceStatus(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

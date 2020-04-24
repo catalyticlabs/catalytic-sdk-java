@@ -1,25 +1,30 @@
 package org.catalytic.sdk.entities;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
- * A object which represents a step on a particular instance of a pushbot
+ * A object which represents a step on a particular instance of a workflow
  */
 public class InstanceStep {
 
-    private String id;
-    private String instanceId;
-    private String pushbotId;
+    private UUID id;
+    private UUID instanceId;
+    private UUID workflowId;
     private String name;
     private String teamName;
-    private String position;
+    private int position;
     private String description;
     private String status;
     private String assignedTo;
-    private Field[] outputFields;
+    private List<Field> outputFields;
 
-    public InstanceStep(String id, String instanceId, String pushbotId, String name, String teamName, String position, String description, String status, String assignedTo, Field[] outputFields) {
+    public InstanceStep() {}
+
+    public InstanceStep(UUID id, UUID instanceId, UUID workflowId, String name, String teamName, int position, String description, String status, String assignedTo, List<Field> outputFields) {
         this.id = id;
         this.instanceId = instanceId;
-        this.pushbotId = pushbotId;
+        this.workflowId = workflowId;
         this.name = name;
         this.teamName = teamName;
         this.position = position;
@@ -29,28 +34,28 @@ public class InstanceStep {
         this.outputFields = outputFields;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getInstanceId() {
+    public UUID getInstanceId() {
         return instanceId;
     }
 
-    public void setInstanceId(String instanceId) {
+    public void setInstanceId(UUID instanceId) {
         this.instanceId = instanceId;
     }
 
-    public String getPushbotId() {
-        return pushbotId;
+    public UUID getWorkflowId() {
+        return workflowId;
     }
 
-    public void setPushbotId(String pushbotId) {
-        this.pushbotId = pushbotId;
+    public void setWorkflowId(UUID workflowId) {
+        this.workflowId = workflowId;
     }
 
     public String getName() {
@@ -69,11 +74,11 @@ public class InstanceStep {
         this.teamName = teamName;
     }
 
-    public String getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(int position) {
         this.position = position;
     }
 
@@ -101,11 +106,11 @@ public class InstanceStep {
         this.assignedTo = assignedTo;
     }
 
-    public Field[] getOutputFields() {
+    public List<Field> getOutputFields() {
         return outputFields;
     }
 
-    public void setOutputFields(Field[] outputFields) {
+    public void setOutputFields(List<Field> outputFields) {
         this.outputFields = outputFields;
     }
 }

@@ -1,27 +1,29 @@
 package org.catalytic.sdk.entities;
 
+import java.util.UUID;
+
 /**
  * A User object
  */
 public class User {
 
-    private String id;
+    private UUID id;
     private String username;
     private String email;
     private String fullName;
 
-    public User(String id, String username, String email, String fullName) {
+    public User(UUID id, String username, String email, String fullName) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.fullName = fullName;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -47,5 +49,15 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", fullName='" + fullName + '\'' +
+                '}';
     }
 }

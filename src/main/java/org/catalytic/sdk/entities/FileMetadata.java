@@ -3,7 +3,7 @@ package org.catalytic.sdk.entities;
 /**
  * A File object
  */
-public class File {
+public class FileMetadata {
 
     private String id;
     private String name;
@@ -15,7 +15,7 @@ public class File {
     private String md5Hash;
     private String referenceName;
 
-    public File(String id, String name, String teamName, String contentType, int sizeInBytes, String displaySize, boolean isPublic, String md5Hash, String referenceName) {
+    public FileMetadata(String id, String name, String teamName, String contentType, int sizeInBytes, String displaySize, boolean isPublic, String md5Hash, String referenceName) {
         this.id = id;
         this.name = name;
         this.teamName = teamName;
@@ -75,12 +75,12 @@ public class File {
         this.displaySize = displaySize;
     }
 
-    public boolean isPublic() {
+    public boolean getIsPublic() {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
     public String getMd5Hash() {

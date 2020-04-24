@@ -1,28 +1,30 @@
 package org.catalytic.sdk.entities;
 
+import java.util.List;
+
 /**
  * An object which represents a page of instances
  */
 public class InstancesPage extends Page {
 
-    private Instance[] instances;
+    private List<Instance> instances;
 
-    public InstancesPage(Instance[] instances, int count) {
+    public InstancesPage(List<Instance> instances, int count) {
         this.instances = instances;
         this.count = count;
     }
 
-    public InstancesPage(Instance[] instances, int count, String nextPageToken) {
+    public InstancesPage(List<Instance> instances, int count, String nextPageToken) {
         this.instances = instances;
         this.count = count;
         this.nextPageToken = nextPageToken;
     }
 
-    public Instance[] getInstances() {
+    public List<Instance> getInstances() {
         return instances;
     }
 
-    public void setInstances(Instance[] instances) {
+    public void setInstances(List<Instance> instances) {
         this.instances = instances;
     }
 }

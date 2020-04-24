@@ -1,27 +1,29 @@
 package org.catalytic.sdk.entities;
 
-/**
- * A PushbotExport object
- */
-public class PushbotExport {
+import java.util.UUID;
 
-    private String id;
+/**
+ * A WorkflowExport object
+ */
+public class WorkflowExport {
+
+    private UUID id;
     private String name;
-    private String fileId;
+    private UUID fileId;
     private String errorMessage;
 
-    public PushbotExport(String id, String name, String fileId, String errorMessage) {
+    public WorkflowExport(UUID id, String name, UUID fileId, String errorMessage) {
         this.id = id;
         this.name = name;
         this.fileId = fileId;
         this.errorMessage = errorMessage;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -33,11 +35,11 @@ public class PushbotExport {
         this.name = name;
     }
 
-    public String getFileId() {
+    public UUID getFileId() {
         return fileId;
     }
 
-    public void setFileId(String fileId) {
+    public void setFileId(UUID fileId) {
         this.fileId = fileId;
     }
 

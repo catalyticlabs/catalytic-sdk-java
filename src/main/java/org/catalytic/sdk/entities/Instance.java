@@ -1,28 +1,36 @@
 package org.catalytic.sdk.entities;
 
+import org.catalytic.sdk.model.FieldVisibility;
+import org.catalytic.sdk.model.InstanceVisibilty;
+
+import java.util.List;
+import java.util.UUID;
+
 /**
  * An Instance object
  */
 public class Instance {
 
-    private String id;
-    private String pushbotId;
+    private UUID id;
+    private UUID workflowId;
     private String name;
     private String teamName;
     private String description;
     private String category;
     private String owner;
     private String createdBy;
-    private Step[] steps;
-    private Field[] fields;
+    private List<InstanceStep> steps;
+    private List<Field> fields;
     private String status;
-    private String fieldVisibility;
-    private String visibility;
-    private String visibleToUsers;
+    private FieldVisibility fieldVisibility;
+    private InstanceVisibilty visibility;
+    private List<String> visibleToUsers;
 
-    public Instance(String id, String pushbotId, String name, String teamName, String description, String category, String owner, String createdBy, Step[] steps, Field[] fields, String status, String fieldVisibility, String visibility, String visibleToUsers) {
+    public Instance() {}
+
+    public Instance(UUID id, UUID workflowId, String name, String teamName, String description, String category, String owner, String createdBy, List<InstanceStep> steps, List<Field> fields, String status, FieldVisibility fieldVisibility, InstanceVisibilty visibility, List<String> visibleToUsers) {
         this.id = id;
-        this.pushbotId = pushbotId;
+        this.workflowId = workflowId;
         this.name = name;
         this.teamName = teamName;
         this.description = description;
@@ -37,20 +45,20 @@ public class Instance {
         this.visibleToUsers = visibleToUsers;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getPushbotId() {
-        return pushbotId;
+    public UUID getWorkflowId() {
+        return workflowId;
     }
 
-    public void setPushbotId(String pushbotId) {
-        this.pushbotId = pushbotId;
+    public void setWorkflowId(UUID workflowId) {
+        this.workflowId = workflowId;
     }
 
     public String getName() {
@@ -101,19 +109,19 @@ public class Instance {
         this.createdBy = createdBy;
     }
 
-    public Step[] getSteps() {
+    public List<InstanceStep> getSteps() {
         return steps;
     }
 
-    public void setSteps(Step[] steps) {
+    public void setSteps(List<InstanceStep> steps) {
         this.steps = steps;
     }
 
-    public Field[] getFields() {
+    public List<Field> getFields() {
         return fields;
     }
 
-    public void setFields(Field[] fields) {
+    public void setFields(List<Field> fields) {
         this.fields = fields;
     }
 
@@ -125,27 +133,27 @@ public class Instance {
         this.status = status;
     }
 
-    public String getFieldVisibility() {
+    public FieldVisibility getFieldVisibility() {
         return fieldVisibility;
     }
 
-    public void setFieldVisibility(String fieldVisibility) {
+    public void setFieldVisibility(FieldVisibility fieldVisibility) {
         this.fieldVisibility = fieldVisibility;
     }
 
-    public String getVisibility() {
+    public InstanceVisibilty getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(String visibility) {
+    public void setVisibility(InstanceVisibilty visibility) {
         this.visibility = visibility;
     }
 
-    public String getVisibleToUsers() {
+    public List<String> getVisibleToUsers() {
         return visibleToUsers;
     }
 
-    public void setVisibleToUsers(String visibleToUsers) {
+    public void setVisibleToUsers(List<String> visibleToUsers) {
         this.visibleToUsers = visibleToUsers;
     }
 }
