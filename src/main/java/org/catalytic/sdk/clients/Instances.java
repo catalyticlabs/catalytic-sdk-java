@@ -109,21 +109,19 @@ public class Instances {
     public InstancesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException {
         String text = null;
         String owner = null;
-        String category = null;
         String status = null;
         String workflowId = null;
 
         if (filter != null) {
             text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
             owner = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "owner");
-            category = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "category");
             status = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "status");
             workflowId = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "workflowId");
         }
 
         org.catalytic.sdk.model.InstancesPage internalInstances = null;
         try {
-            internalInstances = this.instancesApi.findInstances(text, status, workflowId, null, owner, category, null, pageToken, pageSize);
+            internalInstances = this.instancesApi.findInstances(text, status, workflowId, null, owner, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             throw new InternalErrorException("Unable to find instances", e);
         }
@@ -356,24 +354,22 @@ public class Instances {
         // https://cloud.google.com/apis/design/design_patterns#list_sub-collections
         String wildcardInstanceId = "-";
         String text = null;
-        String owner = null;
         String workflowId = null;
         String assignee = null;
 
         if (filter != null) {
             text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
-            owner = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "owner");
             workflowId = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "workflowId");
             assignee = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "assignee");
         }
 
         org.catalytic.sdk.model.InstanceStepsPage internalInstanceStepsPage = null;
         try {
-            internalInstanceStepsPage = this.instanceStepsApi.findInstanceSteps(wildcardInstanceId, text, null, workflowId, null, owner, null, assignee, pageToken, pageSize);
+            internalInstanceStepsPage = this.instanceStepsApi.findInstanceSteps(wildcardInstanceId, text, null, workflowId, null, null, null, assignee, pageToken, pageSize);
         } catch (ApiException e) {
             throw new InternalErrorException("Unable to find steps", e);
         }
-        List<InstanceStep> steps = new ArrayList<InstanceStep>();
+        List<InstanceStep> steps = new ArrayList<>();
 
         for (org.catalytic.sdk.model.InstanceStep internalStep : internalInstanceStepsPage.getSteps()) {
             InstanceStep step = createInstanceStep(internalStep);

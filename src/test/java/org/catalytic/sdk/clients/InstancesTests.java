@@ -55,20 +55,6 @@ public class InstancesTests {
         assertThat(results.getCount()).isEqualTo(25);
     }
 
-    // https://github.com/catalyticlabs/CatalyticSDKAPI/issues/120
-    @Ignore
-    @Test
-    public void itShouldFindInstancesByCategory() throws Exception {
-        Client catalytic = new Client();
-        Where where = new Where();
-        InstancesPage results = catalytic.instances().find(
-                where.category().is("general")
-        );
-        assertThat(results.getInstances()).isNotEmpty();
-        assertThat(results.getNextPageToken()).isNotNull();
-        assertThat(results.getCount()).isGreaterThan(0);
-    }
-
     @Test
     public void itShouldFindInstancesByStatus() throws Exception {
         Client catalytic = new Client();
@@ -168,20 +154,6 @@ public class InstancesTests {
         );
         assertThat(results.getInstanceSteps()).hasSize(25);
         assertThat(results.getNextPageToken()).isNotNull();
-        assertThat(results.getCount()).isEqualTo(25);
-    }
-
-    // https://github.com/catalyticlabs/CatalyticSDKAPI/issues/123
-    @Ignore
-    @Test
-    public void itShouldFindInstanceStepsByOwner() throws Exception {
-        Client catalytic = new Client();
-        Where where = new Where();
-        InstanceStepsPage results = catalytic.instances().findSteps(
-                where.owner().is("tcaflisch@catalytic.com")
-        );
-        assertThat(results.getInstanceSteps()).hasSize(25);
-        assertThat(results.getNextPageToken()).isEqualTo("25");
         assertThat(results.getCount()).isEqualTo(25);
     }
 
