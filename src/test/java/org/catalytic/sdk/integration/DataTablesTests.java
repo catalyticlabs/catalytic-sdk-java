@@ -1,9 +1,8 @@
-package org.catalytic.sdk.clients;
+package org.catalytic.sdk.integration;
 
 import org.catalytic.sdk.Client;
 import org.catalytic.sdk.entities.DataTable;
 import org.catalytic.sdk.entities.DataTablesPage;
-import org.catalytic.sdk.search.Where;
 import org.junit.Test;
 
 import java.io.File;
@@ -27,16 +26,16 @@ public class DataTablesTests {
         assertThat(results.getCount()).isGreaterThan(0);
     }
 
-    @Test
-    public void itShouldFindDataTablesByText() throws Exception {
-        Client catalytic = new Client();
-        DataTablesPage results = catalytic.dataTables().find(
-                new Where().text().is("Testing PHP SDK")
-        );
-        assertThat(results.getDataTables()).isNotEmpty();
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getCount()).isEqualTo(5);
-    }
+//    @Test
+//    public void itShouldFindDataTablesByText() throws Exception {
+//        Client catalytic = new Client();
+//        DataTablesPage results = catalytic.dataTables().find(
+//                new Where().text().is("Testing PHP SDK")
+//        );
+//        assertThat(results.getDataTables()).isNotEmpty();
+//        assertThat(results.getNextPageToken()).isNull();
+//        assertThat(results.getCount()).isEqualTo(5);
+//    }
 
     @Test
     public void itShouldDownloadDataTableToTempDir() throws Exception {

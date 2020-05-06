@@ -1,4 +1,4 @@
-package org.catalytic.sdk.clients;
+package org.catalytic.sdk.integration;
 
 import org.catalytic.sdk.Client;
 import org.catalytic.sdk.entities.*;

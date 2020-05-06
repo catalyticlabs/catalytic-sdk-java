@@ -50,6 +50,20 @@ public class CredentialsPage {
   private Integer count;
 
 
+  public CredentialsPage credentials(List<Credentials> credentials) {
+    
+    this.credentials = credentials;
+    return this;
+  }
+
+  public CredentialsPage addCredentialsItem(Credentials credentialsItem) {
+    if (this.credentials == null) {
+      this.credentials = new ArrayList<>();
+    }
+    this.credentials.add(credentialsItem);
+    return this;
+  }
+
    /**
    * Get credentials
    * @return credentials
@@ -62,6 +76,9 @@ public class CredentialsPage {
   }
 
 
+  public void setCredentials(List<Credentials> credentials) {
+    this.credentials = credentials;
+  }
 
 
   public CredentialsPage nextPageOptions(PagingOptions nextPageOptions) {
@@ -110,6 +127,12 @@ public class CredentialsPage {
   }
 
 
+  public CredentialsPage count(Integer count) {
+    
+    this.count = count;
+    return this;
+  }
+
    /**
    * Get count
    * @return count
@@ -122,6 +145,9 @@ public class CredentialsPage {
   }
 
 
+  public void setCount(Integer count) {
+    this.count = count;
+  }
 
 
   @Override

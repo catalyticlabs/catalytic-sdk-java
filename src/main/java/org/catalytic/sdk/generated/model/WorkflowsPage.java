@@ -13,20 +13,12 @@
 
 package org.catalytic.sdk.generated.model;
 
-import java.util.Objects;
-import java.util.Arrays;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.catalytic.sdk.generated.model.PagingOptions;
-import org.catalytic.sdk.generated.model.Workflow;
+import java.util.Objects;
 
 /**
  * WorkflowsPage
@@ -50,6 +42,20 @@ public class WorkflowsPage {
   private Integer count;
 
 
+  public WorkflowsPage workflows(List<Workflow> workflows) {
+    
+    this.workflows = workflows;
+    return this;
+  }
+
+  public WorkflowsPage addWorkflowsItem(Workflow workflowsItem) {
+    if (this.workflows == null) {
+      this.workflows = new ArrayList<>();
+    }
+    this.workflows.add(workflowsItem);
+    return this;
+  }
+
    /**
    * Get workflows
    * @return workflows
@@ -62,6 +68,9 @@ public class WorkflowsPage {
   }
 
 
+  public void setWorkflows(List<Workflow> workflows) {
+    this.workflows = workflows;
+  }
 
 
   public WorkflowsPage nextPageOptions(PagingOptions nextPageOptions) {
@@ -110,6 +119,12 @@ public class WorkflowsPage {
   }
 
 
+  public WorkflowsPage count(Integer count) {
+    
+    this.count = count;
+    return this;
+  }
+
    /**
    * Get count
    * @return count
@@ -122,6 +137,9 @@ public class WorkflowsPage {
   }
 
 
+  public void setCount(Integer count) {
+    this.count = count;
+  }
 
 
   @Override

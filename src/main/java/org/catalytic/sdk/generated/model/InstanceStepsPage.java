@@ -50,6 +50,20 @@ public class InstanceStepsPage {
   private Integer count;
 
 
+  public InstanceStepsPage steps(List<InstanceStep> steps) {
+    
+    this.steps = steps;
+    return this;
+  }
+
+  public InstanceStepsPage addStepsItem(InstanceStep stepsItem) {
+    if (this.steps == null) {
+      this.steps = new ArrayList<>();
+    }
+    this.steps.add(stepsItem);
+    return this;
+  }
+
    /**
    * Get steps
    * @return steps
@@ -62,6 +76,9 @@ public class InstanceStepsPage {
   }
 
 
+  public void setSteps(List<InstanceStep> steps) {
+    this.steps = steps;
+  }
 
 
   public InstanceStepsPage nextPageOptions(PagingOptions nextPageOptions) {
@@ -110,6 +127,12 @@ public class InstanceStepsPage {
   }
 
 
+  public InstanceStepsPage count(Integer count) {
+    
+    this.count = count;
+    return this;
+  }
+
    /**
    * Get count
    * @return count
@@ -122,6 +145,9 @@ public class InstanceStepsPage {
   }
 
 
+  public void setCount(Integer count) {
+    this.count = count;
+  }
 
 
   @Override

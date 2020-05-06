@@ -70,6 +70,12 @@ public class WorkflowImport {
   }
 
 
+  public WorkflowImport name(String name) {
+    
+    this.name = name;
+    return this;
+  }
+
    /**
    * Get name
    * @return name
@@ -82,6 +88,9 @@ public class WorkflowImport {
   }
 
 
+  public void setName(String name) {
+    this.name = name;
+  }
 
 
   public WorkflowImport workflowId(UUID workflowId) {

@@ -172,6 +172,20 @@ public class ProblemDetails {
   }
 
 
+  public ProblemDetails extensions(Map<String, Object> extensions) {
+    
+    this.extensions = extensions;
+    return this;
+  }
+
+  public ProblemDetails putExtensionsItem(String key, Object extensionsItem) {
+    if (this.extensions == null) {
+      this.extensions = new HashMap<>();
+    }
+    this.extensions.put(key, extensionsItem);
+    return this;
+  }
+
    /**
    * Get extensions
    * @return extensions
@@ -184,6 +198,9 @@ public class ProblemDetails {
   }
 
 
+  public void setExtensions(Map<String, Object> extensions) {
+    this.extensions = extensions;
+  }
 
 
   @Override

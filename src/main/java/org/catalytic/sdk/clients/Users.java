@@ -28,6 +28,17 @@ public class Users {
     }
 
     /**
+     * Constructor used for unit testing.
+     *
+     * Allows you to pass in a mock UsersApi
+     *
+     * @param usersApi The mocked UsersApi
+     */
+    public Users(UsersApi usersApi) {
+        this.usersApi = usersApi;
+    }
+
+    /**
      * Get a user by either id, email, or username
      *
      * @param identifier                The id, email, or username of the user to get

@@ -50,6 +50,20 @@ public class FileMetadataPage {
   private Integer count;
 
 
+  public FileMetadataPage files(List<FileMetadata> files) {
+    
+    this.files = files;
+    return this;
+  }
+
+  public FileMetadataPage addFilesItem(FileMetadata filesItem) {
+    if (this.files == null) {
+      this.files = new ArrayList<>();
+    }
+    this.files.add(filesItem);
+    return this;
+  }
+
    /**
    * Get files
    * @return files
@@ -62,6 +76,9 @@ public class FileMetadataPage {
   }
 
 
+  public void setFiles(List<FileMetadata> files) {
+    this.files = files;
+  }
 
 
   public FileMetadataPage nextPageOptions(PagingOptions nextPageOptions) {
@@ -110,6 +127,12 @@ public class FileMetadataPage {
   }
 
 
+  public FileMetadataPage count(Integer count) {
+    
+    this.count = count;
+    return this;
+  }
+
    /**
    * Get count
    * @return count
@@ -122,6 +145,9 @@ public class FileMetadataPage {
   }
 
 
+  public void setCount(Integer count) {
+    this.count = count;
+  }
 
 
   @Override

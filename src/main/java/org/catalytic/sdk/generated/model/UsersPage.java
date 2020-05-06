@@ -13,20 +13,12 @@
 
 package org.catalytic.sdk.generated.model;
 
-import java.util.Objects;
-import java.util.Arrays;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.catalytic.sdk.generated.model.PagingOptions;
-import org.catalytic.sdk.generated.model.User;
+import java.util.Objects;
 
 /**
  * UsersPage
@@ -50,6 +42,20 @@ public class UsersPage {
   private Integer count;
 
 
+  public UsersPage users(List<User> users) {
+    
+    this.users = users;
+    return this;
+  }
+
+  public UsersPage addUsersItem(User usersItem) {
+    if (this.users == null) {
+      this.users = new ArrayList<>();
+    }
+    this.users.add(usersItem);
+    return this;
+  }
+
    /**
    * Get users
    * @return users
@@ -62,6 +68,9 @@ public class UsersPage {
   }
 
 
+  public void setUsers(List<User> users) {
+    this.users = users;
+  }
 
 
   public UsersPage nextPageOptions(PagingOptions nextPageOptions) {
@@ -110,6 +119,12 @@ public class UsersPage {
   }
 
 
+  public UsersPage count(Integer count) {
+    
+    this.count = count;
+    return this;
+  }
+
    /**
    * Get count
    * @return count
@@ -122,6 +137,9 @@ public class UsersPage {
   }
 
 
+  public void setCount(Integer count) {
+    this.count = count;
+  }
 
 
   @Override

@@ -70,6 +70,12 @@ public class WorkflowExport {
   }
 
 
+  public WorkflowExport name(String name) {
+    
+    this.name = name;
+    return this;
+  }
+
    /**
    * Get name
    * @return name
@@ -82,6 +88,9 @@ public class WorkflowExport {
   }
 
 
+  public void setName(String name) {
+    this.name = name;
+  }
 
 
   public WorkflowExport fileId(UUID fileId) {

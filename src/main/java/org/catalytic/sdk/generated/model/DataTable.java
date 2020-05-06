@@ -114,6 +114,12 @@ public class DataTable {
   }
 
 
+  public DataTable dataTableId(UUID dataTableId) {
+    
+    this.dataTableId = dataTableId;
+    return this;
+  }
+
    /**
    * Get dataTableId
    * @return dataTableId
@@ -126,7 +132,16 @@ public class DataTable {
   }
 
 
+  public void setDataTableId(UUID dataTableId) {
+    this.dataTableId = dataTableId;
+  }
 
+
+  public DataTable referenceName(String referenceName) {
+    
+    this.referenceName = referenceName;
+    return this;
+  }
 
    /**
    * Get referenceName
@@ -140,6 +155,9 @@ public class DataTable {
   }
 
 
+  public void setReferenceName(String referenceName) {
+    this.referenceName = referenceName;
+  }
 
 
   public DataTable name(String name) {

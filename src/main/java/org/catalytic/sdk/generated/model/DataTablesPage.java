@@ -50,6 +50,20 @@ public class DataTablesPage {
   private Integer count;
 
 
+  public DataTablesPage dataTables(List<DataTable> dataTables) {
+    
+    this.dataTables = dataTables;
+    return this;
+  }
+
+  public DataTablesPage addDataTablesItem(DataTable dataTablesItem) {
+    if (this.dataTables == null) {
+      this.dataTables = new ArrayList<>();
+    }
+    this.dataTables.add(dataTablesItem);
+    return this;
+  }
+
    /**
    * Get dataTables
    * @return dataTables
@@ -62,6 +76,9 @@ public class DataTablesPage {
   }
 
 
+  public void setDataTables(List<DataTable> dataTables) {
+    this.dataTables = dataTables;
+  }
 
 
   public DataTablesPage nextPageOptions(PagingOptions nextPageOptions) {
@@ -110,6 +127,12 @@ public class DataTablesPage {
   }
 
 
+  public DataTablesPage count(Integer count) {
+    
+    this.count = count;
+    return this;
+  }
+
    /**
    * Get count
    * @return count
@@ -122,6 +145,9 @@ public class DataTablesPage {
   }
 
 
+  public void setCount(Integer count) {
+    this.count = count;
+  }
 
 
   @Override

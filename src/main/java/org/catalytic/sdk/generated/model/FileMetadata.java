@@ -251,6 +251,12 @@ public class FileMetadata {
   }
 
 
+  public FileMetadata referenceName(String referenceName) {
+    
+    this.referenceName = referenceName;
+    return this;
+  }
+
    /**
    * The stringified ID of the File, used for reference in a !:FilesPage
    * @return referenceName
@@ -263,6 +269,9 @@ public class FileMetadata {
   }
 
 
+  public void setReferenceName(String referenceName) {
+    this.referenceName = referenceName;
+  }
 
 
   @Override

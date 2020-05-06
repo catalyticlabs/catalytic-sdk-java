@@ -50,6 +50,20 @@ public class InstancesPage {
   private Integer count;
 
 
+  public InstancesPage instances(List<Instance> instances) {
+    
+    this.instances = instances;
+    return this;
+  }
+
+  public InstancesPage addInstancesItem(Instance instancesItem) {
+    if (this.instances == null) {
+      this.instances = new ArrayList<>();
+    }
+    this.instances.add(instancesItem);
+    return this;
+  }
+
    /**
    * Get instances
    * @return instances
@@ -62,6 +76,9 @@ public class InstancesPage {
   }
 
 
+  public void setInstances(List<Instance> instances) {
+    this.instances = instances;
+  }
 
 
   public InstancesPage nextPageOptions(PagingOptions nextPageOptions) {
@@ -110,6 +127,12 @@ public class InstancesPage {
   }
 
 
+  public InstancesPage count(Integer count) {
+    
+    this.count = count;
+    return this;
+  }
+
    /**
    * Get count
    * @return count
@@ -122,6 +145,9 @@ public class InstancesPage {
   }
 
 
+  public void setCount(Integer count) {
+    this.count = count;
+  }
 
 
   @Override
