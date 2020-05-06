@@ -1,7 +1,7 @@
 package org.catalytic.sdk.exceptions;
 
 /**
- * An exception to be used when something unexpected happens within
+ * An exception to be thrown when something unexpected happens
  */
 public class InternalErrorException extends Exception {
     public InternalErrorException() {

@@ -1,7 +1,7 @@
 package org.catalytic.sdk.exceptions;
 
 /**
- * An exception to be thrown when an instance is not found
+ * An exception to be thrown when an Instance is not found
  */
 public class InstanceNotFoundException extends NotFoundException {
     public InstanceNotFoundException() {

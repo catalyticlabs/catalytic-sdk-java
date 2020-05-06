@@ -1,7 +1,7 @@
 package org.catalytic.sdk.entities;
 
-import org.catalytic.sdk.model.FieldVisibility;
-import org.catalytic.sdk.model.InstanceVisibilty;
+import org.catalytic.sdk.generated.model.FieldVisibility;
+import org.catalytic.sdk.generated.model.InstanceVisibilty;
 
 import java.util.List;
 import java.util.UUID;

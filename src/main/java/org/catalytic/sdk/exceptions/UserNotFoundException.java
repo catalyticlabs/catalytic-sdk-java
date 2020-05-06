@@ -1,7 +1,7 @@
 package org.catalytic.sdk.exceptions;
 
 /**
- * An exception to be thrown when a user is not found
+ * An exception to be thrown when a User is not found
  */
 public class UserNotFoundException extends NotFoundException {
     public UserNotFoundException() {

@@ -1,7 +1,7 @@
 package org.catalytic.sdk.exceptions;
 
 /**
- * An exception to be thrown when a dataTable is not found
+ * An exception to be thrown when a DataTable is not found
  */
 public class DataTableNotFoundException extends NotFoundException {
     public DataTableNotFoundException() {

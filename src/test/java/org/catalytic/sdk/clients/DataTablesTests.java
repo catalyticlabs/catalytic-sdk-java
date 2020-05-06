@@ -35,7 +35,7 @@ public class DataTablesTests {
         );
         assertThat(results.getDataTables()).isNotEmpty();
         assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getCount()).isEqualTo(5);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class DataTablesTests {
     @Test
     public void itShouldDownloadDataTableAsXlsxToTempDir() throws Exception {
         Client catalytic = new Client();
-        File dataTable = catalytic.dataTables().download("7e77254c-d2d6-4271-965a-98390aefa50a", "excel");
+        File dataTable = catalytic.dataTables().download("7e77254c-d2d6-4271-965a-98390aefa50a", "xlsx");
         assertThat(dataTable).isNotNull();
     }
 

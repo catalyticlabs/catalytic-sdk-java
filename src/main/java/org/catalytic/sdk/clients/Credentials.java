@@ -1,11 +1,12 @@
 package org.catalytic.sdk.clients;
 
-import org.catalytic.sdk.ApiClient;
-import org.catalytic.sdk.ApiException;
 import org.catalytic.sdk.ConfigurationUtils;
-import org.catalytic.sdk.api.UserCredentialsApi;
 import org.catalytic.sdk.exceptions.CredentialsNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
+import org.catalytic.sdk.exceptions.UnauthorizedException;
+import org.catalytic.sdk.generated.ApiClient;
+import org.catalytic.sdk.generated.ApiException;
+import org.catalytic.sdk.generated.api.UserCredentialsApi;
 
 /**
  * Credentials client
@@ -26,13 +27,16 @@ public class Credentials {
      * @return Credentials                  The Credentials object
      * @throws InternalErrorException       If error fetching credentials
      * @throws CredentialsNotFoundException If credentials with id do not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public org.catalytic.sdk.entities.Credentials get(String id) throws InternalErrorException, CredentialsNotFoundException {
-        org.catalytic.sdk.model.Credentials internalCredentials = null;
+    public org.catalytic.sdk.entities.Credentials get(String id) throws InternalErrorException, CredentialsNotFoundException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.Credentials internalCredentials = null;
         try {
             internalCredentials = this.userCredentialsApi.getCredentials(id);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new CredentialsNotFoundException("Credentials with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to get credentials", e);
@@ -74,7 +78,7 @@ public class Credentials {
      * @param internalCredentials   The internal credentials to create a Credentials object from
      * @return                      The created Credentials object
      */
-    private org.catalytic.sdk.entities.Credentials createCredentials(org.catalytic.sdk.model.Credentials internalCredentials) {
+    private org.catalytic.sdk.entities.Credentials createCredentials(org.catalytic.sdk.generated.model.Credentials internalCredentials) {
         org.catalytic.sdk.entities.Credentials credentials = new org.catalytic.sdk.entities.Credentials(
                 internalCredentials.getId(),
                 internalCredentials.getDomain(),

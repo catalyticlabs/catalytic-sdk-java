@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Regenerate from the openapi spec and dump to dir /new
+openapi-generator generate -i https://catalyticsdkapi-31.azurewebsites.net/swagger/v1/swagger.json \
+    -g java \
+    -o new \
+    --additional-properties=apiPackage=org.catalytic.sdk.generated.api,modelPackage=org.catalytic.sdk.generated.model,dateLibrary=java8,groupId=org.catalytic,invokerPackage=org.catalytic.sdk.generated,java8=true,hideGenerationTimestamp=true;
+
+# Remove existing generated code
+rm -fr ./src/main/java/org/catalytic/sdk/generated;
+
+# Move the files we need from /new to /lib/generated
+mv ./new/src/main/java/org/catalytic/sdk/generated/ ./src/main/java/org/catalytic/sdk/generated;
+
+# Delete /new dir
+rm -fr ./new;

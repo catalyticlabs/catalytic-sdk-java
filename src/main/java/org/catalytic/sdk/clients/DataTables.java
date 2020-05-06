@@ -1,16 +1,17 @@
 package org.catalytic.sdk.clients;
 
-import org.catalytic.sdk.ApiClient;
-import org.catalytic.sdk.ApiException;
 import org.catalytic.sdk.ConfigurationUtils;
-import org.catalytic.sdk.api.DataTablesApi;
 import org.catalytic.sdk.entities.DataTable;
 import org.catalytic.sdk.entities.DataTableColumn;
 import org.catalytic.sdk.entities.DataTablesPage;
 import org.catalytic.sdk.entities.FieldRestrictions;
 import org.catalytic.sdk.exceptions.DataTableNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
-import org.catalytic.sdk.model.DataTableExportFormat;
+import org.catalytic.sdk.exceptions.UnauthorizedException;
+import org.catalytic.sdk.generated.ApiClient;
+import org.catalytic.sdk.generated.ApiException;
+import org.catalytic.sdk.generated.api.DataTablesApi;
+import org.catalytic.sdk.generated.model.DataTableExportFormat;
 import org.catalytic.sdk.search.Filter;
 import org.catalytic.sdk.search.SearchUtils;
 
@@ -44,8 +45,9 @@ public class DataTables {
      * @return                              The DataTable object
      * @throws InternalErrorException       If any errors fetching the dataTable
      * @throws DataTableNotFoundException   If user with id doesn't exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable get(UUID id) throws InternalErrorException, DataTableNotFoundException {
+    public DataTable get(UUID id) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
         return this.get(id.toString());
     }
 
@@ -56,13 +58,16 @@ public class DataTables {
      * @return                              The DataTable object
      * @throws InternalErrorException       If any errors fetching the dataTable
      * @throws DataTableNotFoundException   If user with id doesn't exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable get(String id) throws InternalErrorException, DataTableNotFoundException {
-        org.catalytic.sdk.model.DataTable internalDataTable;
+    public DataTable get(String id) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.DataTable internalDataTable;
         try {
             internalDataTable = this.dataTablesApi.getDataTable(id);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new DataTableNotFoundException("DataTable with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to get dataTable", e);
@@ -77,8 +82,9 @@ public class DataTables {
      *
      * @return                          A DataTablesPage object which contains the results
      * @throws InternalErrorException   If any errors finding tables
+     * @throws UnauthorizedException    If unauthorized
      */
-    public DataTablesPage find() throws InternalErrorException {
+    public DataTablesPage find() throws InternalErrorException, UnauthorizedException {
         return this.find(null, null, null);
     }
 
@@ -88,8 +94,9 @@ public class DataTables {
      * @param filter                    The filter to search dataTables by
      * @return                          A DataTablesPage object which contains the results
      * @throws InternalErrorException   If any errors finding tables
+     * @throws UnauthorizedException    If unauthorized
      */
-    public DataTablesPage find(Filter filter) throws InternalErrorException {
+    public DataTablesPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
         return this.find(filter, null, null);
     }
 
@@ -99,8 +106,9 @@ public class DataTables {
      * @param pageToken                 The token of the page to fetch
      * @return                          A DataTablesPage object which contains the results
      * @throws InternalErrorException   If any errors finding tables
+     * @throws UnauthorizedException    If unauthorized
      */
-    public DataTablesPage find(String pageToken) throws InternalErrorException {
+    public DataTablesPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
         return this.find(null, pageToken, null);
     }
 
@@ -111,8 +119,9 @@ public class DataTables {
      * @param pageToken                 The token of the page to fetch
      * @return                          A DataTablesPage object which contains the results
      * @throws InternalErrorException   If any errors finding tables
+     * @throws UnauthorizedException    If unauthorized
      */
-    public DataTablesPage find(Filter filter, String pageToken) throws InternalErrorException {
+    public DataTablesPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
         return this.find(filter, pageToken, null);
     }
 
@@ -124,23 +133,27 @@ public class DataTables {
      * @param pageSize                  The number of dataTables per page to fetch
      * @return                          A DataTablesPage object which contains the results
      * @throws InternalErrorException   If any errors finding tables
+     * @throws UnauthorizedException    If unauthorized
      */
-    public DataTablesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException {
+    public DataTablesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
         String text = null;
 
         if (filter != null) {
             text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
         }
 
-        org.catalytic.sdk.model.DataTablesPage internalDataTables = null;
+        org.catalytic.sdk.generated.model.DataTablesPage internalDataTables = null;
         try {
             internalDataTables = this.dataTablesApi.findDataTables(text, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            }
             throw new InternalErrorException("Unable to find dataTables", e);
         }
         List<DataTable> dataTables = new ArrayList<>();
 
-        for (org.catalytic.sdk.model.DataTable internalInstance : internalDataTables.getDataTables()) {
+        for (org.catalytic.sdk.generated.model.DataTable internalInstance : internalDataTables.getDataTables()) {
             DataTable dataTable = createDataTable(internalInstance);
             dataTables.add(dataTable);
         }
@@ -157,8 +170,9 @@ public class DataTables {
      * @throws InternalErrorException       If any errors downloading and saving the file
      * @throws IOException                  If any errors saving the file to the temp dir
      * @throws DataTableNotFoundException   If dataTable with id does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public File download(String id) throws InternalErrorException, IOException, DataTableNotFoundException {
+    public File download(String id) throws InternalErrorException, IOException, DataTableNotFoundException, UnauthorizedException {
         return this.download(id, null, null);
     }
 
@@ -171,8 +185,9 @@ public class DataTables {
      * @throws InternalErrorException       If any errors downloading
      * @throws IOException                  If any errors saving the file to the temp dir
      * @throws DataTableNotFoundException   If dataTable with id does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public File download(String id, String format) throws InternalErrorException, IOException, DataTableNotFoundException {
+    public File download(String id, String format) throws InternalErrorException, IOException, DataTableNotFoundException, UnauthorizedException {
         return this.download(id, format, null);
     }
 
@@ -186,8 +201,9 @@ public class DataTables {
      * @throws InternalErrorException       If any errors downloading
      * @throws IOException                  If any errors saving the file to directory param
      * @throws DataTableNotFoundException   If dataTable with id does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public File download(String id, String format, String directory) throws InternalErrorException, IOException, DataTableNotFoundException {
+    public File download(String id, String format, String directory) throws InternalErrorException, IOException, DataTableNotFoundException, UnauthorizedException {
         File file;
         DataTableExportFormat downloadFormat = null;
 
@@ -198,7 +214,9 @@ public class DataTables {
         try {
             file = this.dataTablesApi.downloadDataTable(id, downloadFormat);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new DataTableNotFoundException("DataTable with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to download dataTable", e);
@@ -231,8 +249,9 @@ public class DataTables {
      * @param tableName                 A name to give to the table
      * @return                          The DataTable that was uploaded
      * @throws InternalErrorException   If any errors uploading the dataTable
+     * @throws UnauthorizedException    If unauthorized
      */
-    public DataTable upload(File dataTableFile, String tableName) throws InternalErrorException {
+    public DataTable upload(File dataTableFile, String tableName) throws InternalErrorException, UnauthorizedException {
         return this.upload(dataTableFile, tableName, 1, 1);
 //        return this.upload(dataTableFile, tableName, null, null);
     }
@@ -246,15 +265,19 @@ public class DataTables {
      * @param sheetNumber               The sheet number of an excel file to use
      * @return                          The DataTable that was uploaded
      * @throws InternalErrorException   If any errors uploading the dataTable
+     * @throws UnauthorizedException    If unauthorized
      */
-    public DataTable upload(File dataTableFile, String tableName, Integer headerRow, Integer sheetNumber) throws InternalErrorException {
-        org.catalytic.sdk.model.DataTable internalDataTable;
+    public DataTable upload(File dataTableFile, String tableName, Integer headerRow, Integer sheetNumber) throws InternalErrorException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.DataTable internalDataTable;
         List<File> files = new ArrayList<>();
         files.add(dataTableFile);
         try {
 //            internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, List.of(dataTableFile));
             internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, files);
         } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            }
             throw new InternalErrorException("Unable to upload dataTable", e);
         }
 
@@ -270,8 +293,9 @@ public class DataTables {
      * @return                              The newly replaced DataTable
      * @throws InternalErrorException       If any errors replacing the dataTable
      * @throws DataTableNotFoundException   If dataTable with id does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable replace(String id, File dataTableFile) throws DataTableNotFoundException, InternalErrorException {
+    public DataTable replace(String id, File dataTableFile) throws DataTableNotFoundException, InternalErrorException, UnauthorizedException {
         return this.replace(id, dataTableFile, null, null);
     }
 
@@ -285,13 +309,16 @@ public class DataTables {
      * @return                              The newly replaced DataTable
      * @throws InternalErrorException       If any errors replacing the dataTable
      * @throws DataTableNotFoundException   If dataTable with id does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable replace(String id, File dataTableFile, Integer headerRow, Integer sheetNumber) throws InternalErrorException, DataTableNotFoundException {
-        org.catalytic.sdk.model.DataTable internalDataTable;
+    public DataTable replace(String id, File dataTableFile, Integer headerRow, Integer sheetNumber) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.DataTable internalDataTable;
         try {
             internalDataTable = this.dataTablesApi.replaceDataTable(id, headerRow, sheetNumber, List.of(dataTableFile));
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new DataTableNotFoundException("DataTable with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to replace dataTable", e);
@@ -307,10 +334,10 @@ public class DataTables {
      * @param internalDataTable The internal dataTable to create a DataTable object from
      * @return                  The created DataTable object
      */
-    private DataTable createDataTable(org.catalytic.sdk.model.DataTable internalDataTable) {
+    private DataTable createDataTable(org.catalytic.sdk.generated.model.DataTable internalDataTable) {
         List<DataTableColumn> columns = new ArrayList<>();
 
-        for (org.catalytic.sdk.model.DataTableColumn internalColumn : internalDataTable.getColumns()) {
+        for (org.catalytic.sdk.generated.model.DataTableColumn internalColumn : internalDataTable.getColumns()) {
 
             FieldRestrictions restrictions = new FieldRestrictions(
                     internalColumn.getRestrictions().getChoices(),

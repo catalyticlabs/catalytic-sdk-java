@@ -22,13 +22,18 @@ Java 8 and later
 Maven
 
 ```xml
-TODO
+<dependency>
+  <groupId>org.catalytic</groupId>
+  <artifactId>sdk</artifactId>
+  <version>0.0.1</version>
+  <scope>compile</scope>
+</dependency>
 ```
 
 Gradle
 
 ```groovy
-TODO
+compile 'org.catalytic:sdk:0.0.1
 ```
 
 ## Documentation

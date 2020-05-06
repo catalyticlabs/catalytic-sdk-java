@@ -1,5 +1,8 @@
 package org.catalytic.sdk.exceptions;
 
+/**
+ * An exception to be thrown when Credentials are not found
+ */
 public class CredentialsNotFoundException extends NotFoundException {
 
     public CredentialsNotFoundException() {

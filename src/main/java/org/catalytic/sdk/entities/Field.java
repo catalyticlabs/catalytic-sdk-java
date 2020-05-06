@@ -1,6 +1,6 @@
 package org.catalytic.sdk.entities;
 
-import org.catalytic.sdk.model.FieldRestrictions;
+import org.catalytic.sdk.generated.model.FieldRestrictions;
 
 import java.util.UUID;
 

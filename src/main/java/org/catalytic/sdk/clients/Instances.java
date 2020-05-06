@@ -1,15 +1,15 @@
 package org.catalytic.sdk.clients;
 
-import org.catalytic.sdk.ApiClient;
-import org.catalytic.sdk.ApiException;
 import org.catalytic.sdk.ConfigurationUtils;
-import org.catalytic.sdk.api.InstanceStepsApi;
-import org.catalytic.sdk.api.InstancesApi;
 import org.catalytic.sdk.entities.*;
 import org.catalytic.sdk.exceptions.*;
-import org.catalytic.sdk.model.CompleteStepRequest;
-import org.catalytic.sdk.model.FieldUpdateRequest;
-import org.catalytic.sdk.model.StartInstanceRequest;
+import org.catalytic.sdk.generated.ApiClient;
+import org.catalytic.sdk.generated.ApiException;
+import org.catalytic.sdk.generated.api.InstanceStepsApi;
+import org.catalytic.sdk.generated.api.InstancesApi;
+import org.catalytic.sdk.generated.model.CompleteStepRequest;
+import org.catalytic.sdk.generated.model.FieldUpdateRequest;
+import org.catalytic.sdk.generated.model.StartInstanceRequest;
 import org.catalytic.sdk.search.Filter;
 import org.catalytic.sdk.search.SearchUtils;
 
@@ -38,13 +38,16 @@ public class Instances {
      * @return                              The Instance object
      * @throws InternalErrorException       If any error getting workflow
      * @throws InstanceNotFoundException    If instance with id does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
     public Instance get(String id) throws Exception {
-        org.catalytic.sdk.model.Instance internalInstance = null;
+        org.catalytic.sdk.generated.model.Instance internalInstance = null;
         try {
             internalInstance = this.instancesApi.getInstance(id);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new InstanceNotFoundException("Instance with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to get instance", e);
@@ -58,8 +61,9 @@ public class Instances {
      *
      * @return                          An InstancesPage which contains the results
      * @throws InternalErrorException   If any error finding workflows
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstancesPage find() throws InternalErrorException {
+    public InstancesPage find() throws InternalErrorException, UnauthorizedException {
         return this.find(null, null, null);
     }
 
@@ -69,8 +73,9 @@ public class Instances {
      * @param pageToken                 The token of the page to fetch
      * @return                          An InstancesPage which contains the results
      * @throws InternalErrorException   If any error finding workflows
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstancesPage find(String pageToken) throws InternalErrorException {
+    public InstancesPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
         return this.find(null, pageToken, null);
     }
 
@@ -80,8 +85,9 @@ public class Instances {
      * @param filter                    The filter criteria to search instances by
      * @return                          An InstancesPage which contains the results
      * @throws InternalErrorException   If any error finding workflows
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstancesPage find(Filter filter) throws InternalErrorException {
+    public InstancesPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
         return this.find(filter, null, null);
     }
 
@@ -92,8 +98,9 @@ public class Instances {
      * @param pageToken                 The token of the page to fetch
      * @return                          An InstancesPage which contains the results
      * @throws InternalErrorException   If any error finding workflows
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstancesPage find(Filter filter, String pageToken) throws InternalErrorException {
+    public InstancesPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
         return this.find(filter, pageToken, null);
     }
 
@@ -105,8 +112,9 @@ public class Instances {
      * @param pageSize                  The number of workflows per page to fetch
      * @return                          An InstancesPage which contains the results
      * @throws InternalErrorException   If any error finding workflows
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstancesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException {
+    public InstancesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
         String text = null;
         String owner = null;
         String status = null;
@@ -119,15 +127,18 @@ public class Instances {
             workflowId = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "workflowId");
         }
 
-        org.catalytic.sdk.model.InstancesPage internalInstances = null;
+        org.catalytic.sdk.generated.model.InstancesPage internalInstances = null;
         try {
             internalInstances = this.instancesApi.findInstances(text, status, workflowId, null, owner, null, null, pageToken, pageSize);
         } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            }
             throw new InternalErrorException("Unable to find instances", e);
         }
         List<Instance> instances = new ArrayList<>();
 
-        for (org.catalytic.sdk.model.Instance internalInstance : internalInstances.getInstances()) {
+        for (org.catalytic.sdk.generated.model.Instance internalInstance : internalInstances.getInstances()) {
             Instance instance = createInstance(internalInstance);
             instances.add(instance);
         }
@@ -143,8 +154,9 @@ public class Instances {
      * @return                              The newly created instance
      * @throws InternalErrorException       If any errors starting an instance
      * @throws WorkflowNotFoundException    If workflow with workflowId does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public Instance start(String workflowId) throws InternalErrorException, WorkflowNotFoundException {
+    public Instance start(String workflowId) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
         return this.start(UUID.fromString(workflowId), null, null, null);
     }
 
@@ -155,8 +167,9 @@ public class Instances {
      * @return                              The newly created instance
      * @throws InternalErrorException       If any errors starting an instance
      * @throws WorkflowNotFoundException    If workflow with workflowId does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public Instance start(UUID workflowId) throws InternalErrorException, WorkflowNotFoundException {
+    public Instance start(UUID workflowId) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
         return this.start(workflowId, null, null, null);
     }
 
@@ -170,8 +183,9 @@ public class Instances {
      * @return                              The newly created instance
      * @throws InternalErrorException       If any errors starting an instance
      * @throws WorkflowNotFoundException    If workflow with workflowId does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public Instance start(String workflowId, String name, String description, List<Field> fields) throws InternalErrorException, WorkflowNotFoundException {
+    public Instance start(String workflowId, String name, String description, List<Field> fields) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
         return this.start(UUID.fromString(workflowId), name, description, fields);
     }
 
@@ -185,14 +199,17 @@ public class Instances {
      * @return                              The newly created instance
      * @throws InternalErrorException       If any errors starting an instance
      * @throws WorkflowNotFoundException    If workflow with workflowId does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public Instance start(UUID workflowId, String name, String description, List<Field> fields) throws InternalErrorException, WorkflowNotFoundException {
+    public Instance start(UUID workflowId, String name, String description, List<Field> fields) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
         StartInstanceRequest startInstanceRequest = createStartInstanceRequest(workflowId, name, description, fields);
-        org.catalytic.sdk.model.Instance internalInstance = null;
+        org.catalytic.sdk.generated.model.Instance internalInstance = null;
         try {
             internalInstance = this.instancesApi.startInstance(startInstanceRequest);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new WorkflowNotFoundException("Workflow with id " + workflowId + " not found");
             }
             throw new InternalErrorException("Unable to start workflow instance", e);
@@ -208,8 +225,9 @@ public class Instances {
      * @return                              The Instance that was stopped
      * @throws InternalErrorException       If any errors stopping the instance
      * @throws InstanceNotFoundException    If instance with id does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public Instance stop(UUID id) throws InstanceNotFoundException, InternalErrorException {
+    public Instance stop(UUID id) throws InstanceNotFoundException, InternalErrorException, UnauthorizedException {
         return this.stop(id.toString());
     }
 
@@ -220,13 +238,16 @@ public class Instances {
      * @return                              The Instance that was stopped
      * @throws InternalErrorException       If any errors stopping the instance
      * @throws InstanceNotFoundException    If instance with id does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public Instance stop(String id) throws InstanceNotFoundException, InternalErrorException {
-        org.catalytic.sdk.model.Instance internalInstance = null;
+    public Instance stop(String id) throws InstanceNotFoundException, InternalErrorException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.Instance internalInstance = null;
         try {
             internalInstance = this.instancesApi.stopInstance(id);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new InstanceNotFoundException("Instance with id " + id + " not found");
             }
             throw new InternalErrorException("Unable to stop workflow instance with id " + id, e);
@@ -242,8 +263,9 @@ public class Instances {
      * @return                                  The InstanceStep object
      * @throws InternalErrorException           If any errors getting the step
      * @throws InstanceStepNotFoundException    If instance with id does not exist
+     * @throws UnauthorizedException            If unauthorized
      */
-    public InstanceStep getStep(UUID id) throws InternalErrorException, InstanceStepNotFoundException {
+    public InstanceStep getStep(UUID id) throws InternalErrorException, InstanceStepNotFoundException, UnauthorizedException {
         return this.getStep(id.toString());
     }
 
@@ -254,13 +276,16 @@ public class Instances {
      * @return                                  The InstanceStep object
      * @throws InternalErrorException           If any errors getting the step
      * @throws InstanceStepNotFoundException    If instance with id does not exist
+     * @throws UnauthorizedException            If unauthorized
      */
-    public InstanceStep getStep(String id) throws InternalErrorException, InstanceStepNotFoundException {
-        org.catalytic.sdk.model.InstanceStep internalStep = null;
+    public InstanceStep getStep(String id) throws InternalErrorException, InstanceStepNotFoundException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.InstanceStep internalStep = null;
         try {
             internalStep = getStepById(id);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new InstanceStepNotFoundException("Instance step with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to get step with id " + id, e);
@@ -275,8 +300,9 @@ public class Instances {
      * @param instanceId                The id of the instances to get steps for
      * @return                          The InstanceStepsPage which contains the results
      * @throws InternalErrorException   If any errors getting steps
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstanceStepsPage getSteps(UUID instanceId) throws InternalErrorException {
+    public InstanceStepsPage getSteps(UUID instanceId) throws InternalErrorException, UnauthorizedException {
         return this.getSteps(instanceId.toString());
     }
 
@@ -286,18 +312,22 @@ public class Instances {
      * @param instanceId                The id of the instances to get steps for
      * @return                          The InstanceStepsPage which contains the results
      * @throws InternalErrorException   If any errors getting steps
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstanceStepsPage getSteps(String instanceId) throws InternalErrorException {
-        org.catalytic.sdk.model.InstanceStepsPage internalInstanceSteps;
+    public InstanceStepsPage getSteps(String instanceId) throws InternalErrorException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceSteps;
         try {
             internalInstanceSteps = this.instanceStepsApi.findInstanceSteps(instanceId, null, null, null, null, null, null, null, null, null);
         } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            }
             throw new InternalErrorException("Unable to get steps for instance " + instanceId, e);
         }
 
         List<InstanceStep> instanceSteps = new ArrayList<>();
 
-        for (org.catalytic.sdk.model.InstanceStep internalInstanceStep : internalInstanceSteps.getSteps()) {
+        for (org.catalytic.sdk.generated.model.InstanceStep internalInstanceStep : internalInstanceSteps.getSteps()) {
             InstanceStep instanceStep = createInstanceStep(internalInstanceStep);
             instanceSteps.add(instanceStep);
         }
@@ -312,8 +342,9 @@ public class Instances {
      * @param pageToken                 The token of the page to fetch
      * @return                          An InstanceStepsPage which contains the results
      * @throws InternalErrorException   If any errors finding steps
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstanceStepsPage findSteps(String pageToken) throws InternalErrorException {
+    public InstanceStepsPage findSteps(String pageToken) throws InternalErrorException, UnauthorizedException {
         return this.findSteps(null, pageToken, null);
     }
 
@@ -323,8 +354,9 @@ public class Instances {
      * @param filter                    The filter criteria to search instance steps by
      * @return                          An InstanceStepsPage which contains the results
      * @throws InternalErrorException   If any errors finding steps
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstanceStepsPage findSteps(Filter filter) throws InternalErrorException {
+    public InstanceStepsPage findSteps(Filter filter) throws InternalErrorException, UnauthorizedException {
         return this.findSteps(filter, null, null);
     }
 
@@ -335,8 +367,9 @@ public class Instances {
      * @param pageToken                 The token of the page to fetch
      * @return                          An InstanceStepsPage which contains the results
      * @throws InternalErrorException   If any errors finding steps
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstanceStepsPage findSteps(Filter filter, String pageToken) throws InternalErrorException {
+    public InstanceStepsPage findSteps(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
         return this.findSteps(filter, pageToken, null);
     }
 
@@ -348,8 +381,9 @@ public class Instances {
      * @param pageSize                  The number of instance steps per page to fetch
      * @return                          An InstanceStepsPage which contains the results
      * @throws InternalErrorException   If any errors finding steps
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstanceStepsPage findSteps(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException {
+    public InstanceStepsPage findSteps(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
         // The REST api supports wildcard instance id when searching for instance steps
         // https://cloud.google.com/apis/design/design_patterns#list_sub-collections
         String wildcardInstanceId = "-";
@@ -363,15 +397,18 @@ public class Instances {
             assignee = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "assignee");
         }
 
-        org.catalytic.sdk.model.InstanceStepsPage internalInstanceStepsPage = null;
+        org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceStepsPage = null;
         try {
             internalInstanceStepsPage = this.instanceStepsApi.findInstanceSteps(wildcardInstanceId, text, null, workflowId, null, null, null, assignee, pageToken, pageSize);
         } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            }
             throw new InternalErrorException("Unable to find steps", e);
         }
         List<InstanceStep> steps = new ArrayList<>();
 
-        for (org.catalytic.sdk.model.InstanceStep internalStep : internalInstanceStepsPage.getSteps()) {
+        for (org.catalytic.sdk.generated.model.InstanceStep internalStep : internalInstanceStepsPage.getSteps()) {
             InstanceStep step = createInstanceStep(internalStep);
             steps.add(step);
         }
@@ -387,8 +424,9 @@ public class Instances {
      * @param fields                    Fields and the values to use when completing a step
      * @return                          The completed InstanceStep
      * @throws InternalErrorException   If any errors completing the step
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstanceStep completeStep(UUID id, List<Field> fields) throws InternalErrorException {
+    public InstanceStep completeStep(UUID id, List<Field> fields) throws InternalErrorException, UnauthorizedException {
         return this.completeStep(id.toString(), fields);
     }
 
@@ -399,18 +437,21 @@ public class Instances {
      * @param fields                    Fields and the values to use when completing a step
      * @return                          The completed InstanceStep
      * @throws InternalErrorException   If any errors completing the step
+     * @throws UnauthorizedException    If unauthorized
      */
-    public InstanceStep completeStep(String id, List<Field> fields) throws InternalErrorException {
+    public InstanceStep completeStep(String id, List<Field> fields) throws InternalErrorException, UnauthorizedException {
         List<FieldUpdateRequest> fieldUpdateRequests = createFieldUpdateRequests(fields);
         CompleteStepRequest completeStepRequest = new CompleteStepRequest();
         completeStepRequest.setId(UUID.fromString(id));
         completeStepRequest.setStepOutputFields(fieldUpdateRequests);
-        org.catalytic.sdk.model.InstanceStep internalStep;
+        org.catalytic.sdk.generated.model.InstanceStep internalStep;
         try {
-            org.catalytic.sdk.model.InstanceStep step = getStepById(id);
+            org.catalytic.sdk.generated.model.InstanceStep step = getStepById(id);
             internalStep = this.instanceStepsApi.completeStep(id, step.getInstanceId().toString(), completeStepRequest);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new InternalErrorException("Step with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to complete step with id " + id, e);
@@ -423,7 +464,7 @@ public class Instances {
     /**
      * Creates a StartInstanceRequest object with the passed in params
      *
-     * @param workflowId     The id to create the CompleteStepRequest with
+     * @param workflowId    The id to create the CompleteStepRequest with
      * @param name          The name to create the CompleteStepRequest with
      * @param description   The description to create the CompleteStepRequest with
      * @param fields        The fields to create the CompleteStepRequest with
@@ -469,11 +510,11 @@ public class Instances {
      * @return              The InstanceStep object
      * @throws ApiException If any errors getting the instance step
      */
-    private org.catalytic.sdk.model.InstanceStep getStepById(String id) throws ApiException {
+    private org.catalytic.sdk.generated.model.InstanceStep getStepById(String id) throws ApiException {
         // The REST api supports wildcard instance id when searching for instance steps
         // https://cloud.google.com/apis/design/design_patterns#list_sub-collections
         String wildcardInstanceId = "-";
-        org.catalytic.sdk.model.InstanceStep step = this.instanceStepsApi.getInstanceStep(id, wildcardInstanceId);
+        org.catalytic.sdk.generated.model.InstanceStep step = this.instanceStepsApi.getInstanceStep(id, wildcardInstanceId);
         return step;
     }
 
@@ -483,7 +524,7 @@ public class Instances {
      * @param internalInstance  The internal instance to create an Instance object from
      * @return                  The created Instance object
      */
-    private Instance createInstance(org.catalytic.sdk.model.Instance internalInstance)
+    private Instance createInstance(org.catalytic.sdk.generated.model.Instance internalInstance)
     {
         List<InstanceStep> steps = new ArrayList<>();
         List<Field> fields = new ArrayList<>();
@@ -491,7 +532,7 @@ public class Instances {
         // Create external steps from internal steps if any exist
         if (internalInstance.getSteps() != null) {
 
-            for (org.catalytic.sdk.model.InstanceStep internalInstanceStep : internalInstance.getSteps()) {
+            for (org.catalytic.sdk.generated.model.InstanceStep internalInstanceStep : internalInstance.getSteps()) {
 
                 // Create external outputFields from internal outputFields
                 List<Field> outputFields = createFields(internalInstanceStep.getOutputFields());
@@ -513,7 +554,7 @@ public class Instances {
         }
 
         // Create external fields from internal fields
-        for (org.catalytic.sdk.model.Field internalField : internalInstance.getFields()) {
+        for (org.catalytic.sdk.generated.model.Field internalField : internalInstance.getFields()) {
             Field field = createField(internalField);
             fields.add(field);
         }
@@ -544,7 +585,7 @@ public class Instances {
      * @param internalInstanceStep  The internal instance step to create an InstanceStep object from
      * @return                      The created InstanceStep object
      */
-    private InstanceStep createInstanceStep(org.catalytic.sdk.model.InstanceStep internalInstanceStep) {
+    private InstanceStep createInstanceStep(org.catalytic.sdk.generated.model.InstanceStep internalInstanceStep) {
         // Create external outputFields from internal outputFields
         List<Field> outputFields = createFields(internalInstanceStep.getOutputFields());
 
@@ -569,12 +610,12 @@ public class Instances {
      * @param internalFields    The internal fields to create external fields from
      * @return                  External fields
      */
-    private List<Field> createFields (List<org.catalytic.sdk.model.Field> internalFields) {
+    private List<Field> createFields (List<org.catalytic.sdk.generated.model.Field> internalFields) {
         List<Field> fields = new ArrayList<>();
 
         // Create external outputFields from internal outputFields
         if (internalFields != null) {
-            for (org.catalytic.sdk.model.Field internalField : internalFields) {
+            for (org.catalytic.sdk.generated.model.Field internalField : internalFields) {
                 Field field = createField(internalField);
                 fields.add(field);
             }
@@ -589,7 +630,7 @@ public class Instances {
      * @param internalField The internal field to create an external field from
      * @return              An external field
      */
-    private Field createField(org.catalytic.sdk.model.Field internalField) {
+    private Field createField(org.catalytic.sdk.generated.model.Field internalField) {
         Field field = new Field(
                 internalField.getId(),
                 internalField.getName(),

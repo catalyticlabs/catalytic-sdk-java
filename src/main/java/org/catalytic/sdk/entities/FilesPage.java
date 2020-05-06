@@ -7,19 +7,19 @@ import java.util.List;
  */
 public class FilesPage extends Page {
 
-    private List<FileMetadata> files;
+    private List<File> files;
 
-    public FilesPage(List<FileMetadata> files, int count, String nextPageToken) {
+    public FilesPage(List<File> files, int count, String nextPageToken) {
         this.files = files;
         this.count = count;
         this.nextPageToken = nextPageToken;
     }
 
-    public List<FileMetadata> getFiles() {
+    public List<File> getFiles() {
         return files;
     }
 
-    public void setFiles(List<FileMetadata> files) {
+    public void setFiles(List<File> files) {
         this.files = files;
     }
 }

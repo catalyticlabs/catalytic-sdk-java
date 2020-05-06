@@ -88,7 +88,7 @@ if(hasProperty('target') && target == 'android') {
 
     install {
         repositories.mavenInstaller {
-            pom.artifactId = 'openapi-java-client'
+            pom.artifactId = 'sdk'
         }
     }
 

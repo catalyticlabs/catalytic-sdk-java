@@ -1,17 +1,19 @@
 package org.catalytic.sdk.clients;
 
-import org.catalytic.sdk.ApiClient;
-import org.catalytic.sdk.ApiException;
 import org.catalytic.sdk.ConfigurationUtils;
-import org.catalytic.sdk.api.FilesApi;
-import org.catalytic.sdk.entities.FileMetadata;
+import org.catalytic.sdk.entities.File;
 import org.catalytic.sdk.entities.FilesPage;
 import org.catalytic.sdk.exceptions.FileNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
+import org.catalytic.sdk.exceptions.UnauthorizedException;
+import org.catalytic.sdk.generated.ApiClient;
+import org.catalytic.sdk.generated.ApiException;
+import org.catalytic.sdk.generated.api.FilesApi;
+import org.catalytic.sdk.generated.model.FileMetadata;
 import org.catalytic.sdk.search.Filter;
 import org.catalytic.sdk.search.SearchUtils;
 
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -38,8 +40,9 @@ public class Files {
      * @return                          The File object
      * @throws InternalErrorException   If any errors fetching the file
      * @throws FileNotFoundException    If file with id does not exist
+     * @throws UnauthorizedException    If unauthorized
      */
-    public FileMetadata get(UUID id) throws InternalErrorException, FileNotFoundException {
+    public File get(UUID id) throws InternalErrorException, FileNotFoundException, UnauthorizedException {
         return this.get(id.toString());
     }
 
@@ -50,18 +53,22 @@ public class Files {
      * @return                          The File object
      * @throws InternalErrorException   If any errors fetching the file
      * @throws FileNotFoundException    If file with id does not exist
+     * @throws UnauthorizedException    If unauthorized
      */
-    public FileMetadata get(String id) throws InternalErrorException, FileNotFoundException {
-        FileMetadata file;
+    public File get(String id) throws InternalErrorException, FileNotFoundException, UnauthorizedException {
+        FileMetadata internalFile;
         try {
-            file = this.filesApi.getFile(id);
+            internalFile = this.filesApi.getFile(id);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new FileNotFoundException("File meta data with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to get file meta data", e);
         }
 
+        File file = createFile(internalFile);
         return file;
     }
 
@@ -70,8 +77,9 @@ public class Files {
      *
      * @return                          A FilesPage which contains the results
      * @throws InternalErrorException   If any errors finding files
+     * @throws UnauthorizedException    If unauthorized
      */
-    public FilesPage find() throws InternalErrorException {
+    public FilesPage find() throws InternalErrorException, UnauthorizedException {
         return this.find(null, null, null);
     }
 
@@ -81,8 +89,9 @@ public class Files {
      * @param filter                    The filter criteria to search files by
      * @return                          A FilesPage which contains the results
      * @throws InternalErrorException   If any errors finding files
+     * @throws UnauthorizedException    If unauthorized
      */
-    public FilesPage find(Filter filter) throws InternalErrorException {
+    public FilesPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
         return this.find(filter, null, null);
     }
 
@@ -92,8 +101,9 @@ public class Files {
      * @param pageToken                 The token of the page to fetch
      * @return                          A FilesPage which contains the results
      * @throws InternalErrorException   If any errors finding files
+     * @throws UnauthorizedException    If unauthorized
      */
-    public FilesPage find(String pageToken) throws InternalErrorException {
+    public FilesPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
         return this.find(null, pageToken, null);
     }
 
@@ -104,8 +114,9 @@ public class Files {
      * @param pageToken                 The token of the page to fetch
      * @return                          A FilesPage which contains the results
      * @throws InternalErrorException   If any errors finding files
+     * @throws UnauthorizedException    If unauthorized
      */
-    public FilesPage find(Filter filter, String pageToken) throws InternalErrorException {
+    public FilesPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
         return this.find(filter, pageToken, null);
     }
 
@@ -117,8 +128,9 @@ public class Files {
      * @param pageSize                  The number of files per page to fetch
      * @return                          A FilesPage which contains the results
      * @throws InternalErrorException   If any errors finding files
+     * @throws UnauthorizedException    If unauthorized
      */
-    public FilesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException {
+    public FilesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
         String text = null;
         String owner = null;
         String workflowId = null;
@@ -131,17 +143,20 @@ public class Files {
             instanceId = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "instance_id");
         }
 
-        org.catalytic.sdk.model.FilesPage results = null;
-        List<FileMetadata> files = new ArrayList<>();
+        org.catalytic.sdk.generated.model.FileMetadataPage results = null;
+        List<File> files = new ArrayList<>();
 
         try {
             results = this.filesApi.findFiles(text, null, workflowId, instanceId, owner, null, null, pageToken, pageSize);
         } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            }
             throw new InternalErrorException("Unable to find files", e);
         }
 
-        for (org.catalytic.sdk.model.FileMetadata internalFile : results.getFiles()) {
-            FileMetadata fileMetadata = createFile(internalFile);
+        for (org.catalytic.sdk.generated.model.FileMetadata internalFile : results.getFiles()) {
+            File fileMetadata = createFile(internalFile);
             files.add(fileMetadata);
         }
 
@@ -160,8 +175,10 @@ public class Files {
      * @return                          An object containing the file info
      * @throws InternalErrorException   If any errors downloading the file
      * @throws FileNotFoundException    If file with id does not exist
+     * @throws IOException              If any errors saving the file to temp dir
+     * @throws UnauthorizedException    If unauthorized
      */
-    public File download(String id) throws InternalErrorException, FileNotFoundException {
+    public java.io.File download(String id) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException {
         return this.download(id, null);
     }
 
@@ -172,8 +189,10 @@ public class Files {
      * @return                          An object containing the file info
      * @throws InternalErrorException   If any errors downloading the file
      * @throws FileNotFoundException    If file with id does not exist
+     * @throws IOException              If any errors saving the file to temp dir
+     * @throws UnauthorizedException    If unauthorized
      */
-    public File download(UUID id) throws InternalErrorException, FileNotFoundException {
+    public java.io.File download(UUID id) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException {
         return this.download(id.toString(), null);
     }
 
@@ -185,8 +204,10 @@ public class Files {
      * @return                          An object containing the file info
      * @throws InternalErrorException   If any errors downloading the file
      * @throws FileNotFoundException    If file with id does not exist
+     * @throws IOException              If any errors saving the file to directory param
+     * @throws UnauthorizedException    If unauthorized
      */
-    public File download(UUID id, String directory) throws InternalErrorException, FileNotFoundException {
+    public java.io.File download(UUID id, String directory) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException {
         return this.download(id.toString(), directory);
     }
 
@@ -198,14 +219,18 @@ public class Files {
      * @return                          An object containing the file info
      * @throws InternalErrorException   If any errors downloading the file
      * @throws FileNotFoundException    If file with id does not exist
+     * @throws IOException              If any errors saving the file to directory param
+     * @throws UnauthorizedException    If unauthorized
      */
-    public File download(String id, String directory) throws InternalErrorException, FileNotFoundException {
-        File file;
+    public java.io.File download(String id, String directory) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException {
+        java.io.File file;
 
         try {
             file = this.filesApi.downloadFile(id);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
                 throw new FileNotFoundException("File with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to download file", e);
@@ -227,7 +252,7 @@ public class Files {
         String targetPath = directory + file.getName();
         Path target = Paths.get(targetPath);
         Path newPath = java.nio.file.Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
-        file = new File(newPath.toString());
+        file = new java.io.File(newPath.toString());
         return file;
     }
 
@@ -237,18 +262,22 @@ public class Files {
      * @param fileToUpload              The file to upload
      * @return                          The meta data of the file that was uploaded
      * @throws InternalErrorException   If any errors uploading the file
+     * @throws UnauthorizedException    If unauthorized
      */
-    public FileMetadata upload(java.io.File fileToUpload) throws Exception {
+    public File upload(java.io.File fileToUpload) throws UnauthorizedException, InternalErrorException {
 //        List<java.io.File> filesToUpload = new ArrayList<>();
 //        filesToUpload.add(fileToUpload);
-        org.catalytic.sdk.model.FilesPage internalFile;
+        org.catalytic.sdk.generated.model.FileMetadataPage internalFile;
         try {
             internalFile = this.filesApi.uploadFiles(List.of(fileToUpload));
         } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            }
             throw new InternalErrorException("Unable to upload file", e);
         }
 
-        FileMetadata file = createFile(internalFile.getFiles().get(0));
+        File file = createFile(internalFile.getFiles().get(0));
         return file;
     }
 
@@ -258,9 +287,9 @@ public class Files {
      * @param internalFile  The internal file to create a File object from
      * @return              The created File object
      */
-    private FileMetadata createFile(FileMetadata internalFile) {
-        FileMetadata fileMetadata = new FileMetadata(
-                internalFile.getId(),
+    private File createFile(FileMetadata internalFile) {
+        File fileMetadata = new File(
+                internalFile.getId().toString(),
                 internalFile.getName(),
                 internalFile.getTeamName(),
                 internalFile.getContentType(),

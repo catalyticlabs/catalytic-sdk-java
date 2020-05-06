@@ -1,7 +1,7 @@
 package org.catalytic.sdk.exceptions;
 
 /**
- * An exception to be thrown when a file is not found
+ * An exception to be thrown when a File is not found
  */
 public class FileNotFoundException extends NotFoundException {
     public FileNotFoundException() {

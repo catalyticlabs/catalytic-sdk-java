@@ -1,5 +1,7 @@
 package org.catalytic.sdk;
 
+import org.catalytic.sdk.generated.ApiClient;
+
 /**
  * A convenience class so that we only create a singleton of ApiClient
  */

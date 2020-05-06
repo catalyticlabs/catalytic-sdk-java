@@ -1,5 +1,8 @@
 package org.catalytic.sdk.exceptions;
 
+/**
+ * An exception to be thrown when an InstanceStep is not found
+ */
 public class InstanceStepNotFoundException extends NotFoundException {
     public InstanceStepNotFoundException() {
     }

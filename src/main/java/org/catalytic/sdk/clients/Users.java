@@ -1,12 +1,14 @@
 package org.catalytic.sdk.clients;
 
-import org.catalytic.sdk.ApiClient;
-import org.catalytic.sdk.ApiException;
 import org.catalytic.sdk.ConfigurationUtils;
-import org.catalytic.sdk.api.UsersApi;
 import org.catalytic.sdk.entities.User;
 import org.catalytic.sdk.entities.UsersPage;
 import org.catalytic.sdk.exceptions.InternalErrorException;
+import org.catalytic.sdk.exceptions.UnauthorizedException;
+import org.catalytic.sdk.exceptions.UserNotFoundException;
+import org.catalytic.sdk.generated.ApiClient;
+import org.catalytic.sdk.generated.ApiException;
+import org.catalytic.sdk.generated.api.UsersApi;
 import org.catalytic.sdk.search.Filter;
 import org.catalytic.sdk.search.SearchUtils;
 
@@ -30,15 +32,19 @@ public class Users {
      *
      * @param identifier                The id, email, or username of the user to get
      * @return                          The User object
+     * @throws UserNotFoundException    If user is not found
      * @throws InternalErrorException   If any error getting a user
+     * @throws UnauthorizedException    If unauthorized
      */
-    public User get(String identifier) throws InternalErrorException {
-        org.catalytic.sdk.model.User internalUser = null;
+    public User get(String identifier) throws InternalErrorException, UserNotFoundException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.User internalUser = null;
         try {
             internalUser = this.usersApi.getUser(identifier);
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
-                throw new InternalErrorException("User with id, email, or username " + identifier + " not found", e);
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            } else if (e.getCode() == 404) {
+                throw new UserNotFoundException("User with id, email, or username " + identifier + " not found", e);
             }
             throw new InternalErrorException("Unable to get user", e);
         }
@@ -51,8 +57,9 @@ public class Users {
      *
      * @return                          A UsersPage object which contains the results
      * @throws InternalErrorException   If any error finding users
+     * @throws UnauthorizedException    If unauthorized
      */
-    public UsersPage find() throws InternalErrorException {
+    public UsersPage find() throws InternalErrorException, UnauthorizedException {
         return find(null, null, null);
     }
 
@@ -62,8 +69,9 @@ public class Users {
      * @param pageToken                 The token of the page to fetch
      * @return                          A UsersPage object which contains the results
      * @throws InternalErrorException   If any error finding users
+     * @throws UnauthorizedException    If unauthorized
      */
-    public UsersPage find(String pageToken) throws InternalErrorException {
+    public UsersPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
         return this.find(null, pageToken, null);
     }
 
@@ -73,8 +81,9 @@ public class Users {
      * @param filter                    The filter to search users by
      * @return                          A UsersPage object which contains the results
      * @throws InternalErrorException   If any error finding users
+     * @throws UnauthorizedException    If unauthorized
      */
-    public UsersPage find(Filter filter) throws InternalErrorException {
+    public UsersPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
         return find(filter, null, null);
     }
 
@@ -85,8 +94,9 @@ public class Users {
      * @param pageToken                 The token of the page to fetch
      * @return                          A UsersPage object which contains the results
      * @throws InternalErrorException   If any error finding users
+     * @throws UnauthorizedException    If unauthorized
      */
-    public UsersPage find(Filter filter, String pageToken) throws InternalErrorException {
+    public UsersPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
         return find(filter, pageToken, null);
     }
 
@@ -98,24 +108,28 @@ public class Users {
      * @param pageSize                  The number of users per page to fetch
      * @return                          A UsersPage object which contains the results
      * @throws InternalErrorException   If any error finding users
+     * @throws UnauthorizedException    If unauthorized
      */
-    public UsersPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException {
+    public UsersPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
         String text = null;
 
         if (filter != null) {
             text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
         }
 
-        org.catalytic.sdk.model.UsersPage results;
-        List<User> users = new ArrayList<User>();
+        org.catalytic.sdk.generated.model.UsersPage results;
+        List<User> users = new ArrayList<>();
 
         try {
             results = this.usersApi.findUsers(text, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException();
+            }
             throw new InternalErrorException("Unable to find users", e);
         }
 
-        for (org.catalytic.sdk.model.User internalUser : results.getUsers()) {
+        for (org.catalytic.sdk.generated.model.User internalUser : results.getUsers()) {
             User user = createUser(internalUser);
             users.add(user);
         }
@@ -130,7 +144,7 @@ public class Users {
      * @param internalUser  The internal user to create a User object from
      * @return User         The created User object
      */
-    private User createUser(org.catalytic.sdk.model.User internalUser) {
+    private User createUser(org.catalytic.sdk.generated.model.User internalUser) {
         User user = new User(
                 internalUser.getId(),
                 internalUser.getUsername(),

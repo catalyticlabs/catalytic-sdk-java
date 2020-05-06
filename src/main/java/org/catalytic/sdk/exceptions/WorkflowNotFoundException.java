@@ -1,7 +1,7 @@
 package org.catalytic.sdk.exceptions;
 
 /**
- * An exception to be thrown when a workflow is not found
+ * An exception to be thrown when a Workflow is not found
  */
 public class WorkflowNotFoundException extends NotFoundException {
     public WorkflowNotFoundException() {

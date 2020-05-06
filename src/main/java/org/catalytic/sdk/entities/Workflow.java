@@ -1,7 +1,7 @@
 package org.catalytic.sdk.entities;
 
-import org.catalytic.sdk.model.FieldVisibility;
-import org.catalytic.sdk.model.InstanceVisibilty;
+import org.catalytic.sdk.generated.model.FieldVisibility;
+import org.catalytic.sdk.generated.model.InstanceVisibilty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class Workflow {
 
     public Workflow() {}
 
-    public Workflow(UUID id, String name, String teamName, String description, String category, String owner, String createdBy, List<org.catalytic.sdk.model.Field> inputFields, boolean isPublished, boolean isArchived, FieldVisibility fieldVisibility, InstanceVisibilty instanceVisibility, List<String> adminUsers, List<String> standardUsers) {
+    public Workflow(UUID id, String name, String teamName, String description, String category, String owner, String createdBy, List<org.catalytic.sdk.generated.model.Field> inputFields, boolean isPublished, boolean isArchived, FieldVisibility fieldVisibility, InstanceVisibilty instanceVisibility, List<String> adminUsers, List<String> standardUsers) {
         this.id = id;
         this.name = name;
         this.teamName = teamName;
@@ -38,8 +38,8 @@ public class Workflow {
         this.owner = owner;
         this.createdBy = createdBy;
 
-        List<Field> newInputFields = new ArrayList<Field>();
-        for (org.catalytic.sdk.model.Field internalField : inputFields) {
+        List<Field> newInputFields = new ArrayList<>();
+        for (org.catalytic.sdk.generated.model.Field internalField : inputFields) {
             Field field = new Field(
                     internalField.getId(),
                     internalField.getName(),

@@ -7,6 +7,7 @@ import org.catalytic.sdk.entities.WorkflowsPage;
 import org.catalytic.sdk.search.Where;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.UUID;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -37,9 +38,9 @@ public class WorkflowsTests {
         WorkflowsPage results = catalytic.workflows().find(
                 where.text().matches("php sdk")
         );
-        assertThat(results.getWorkflows()).hasSize(1);
+        assertThat(results.getWorkflows()).hasSize(5);
         assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getCount()).isEqualTo(5);
     }
 
     @Test
@@ -49,9 +50,9 @@ public class WorkflowsTests {
         WorkflowsPage results = catalytic.workflows().find(
                 where.owner().is("tcaflisch@catalytic.com")
         );
-        assertThat(results.getWorkflows()).hasSize(2);
+        assertThat(results.getWorkflows()).hasSize(6);
         assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getCount()).isEqualTo(2);
+        assertThat(results.getCount()).isEqualTo(6);
     }
 
     @Test
@@ -93,13 +94,14 @@ public class WorkflowsTests {
         assertThat(workflowExport.getErrorMessage()).isNull();
     }
 
-//    @Test
-//    public void itShouldImportAWorkflowNoPassword() throws Exception {
-//        Client catalytic = new Client();
-//        Workflow workflow = catalytic.workflows().importWorkflow();
-//        assertThat(workflow).isNotNull();
-//        assertThat(workflow.getName()).containsMatch("Testing PHP SDK");
-//    }
+    @Test
+    public void itShouldImportAWorkflowNoPassword() throws Exception {
+        Client catalytic = new Client();
+        File importFile = new File("/Users/tomcaflisch/Downloads/testing-php-sdk-export.catalytic");
+        Workflow workflow = catalytic.workflows().importWorkflow(importFile);
+        assertThat(workflow).isNotNull();
+        assertThat(workflow.getName()).containsMatch("Testing PHP SDK");
+    }
 //
 //    @Test
 //    public void itShouldImportAWorkflowNoPassword() throws Exception {

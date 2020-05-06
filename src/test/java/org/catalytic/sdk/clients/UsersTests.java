@@ -3,6 +3,7 @@ package org.catalytic.sdk.clients;
 import org.catalytic.sdk.Client;
 import org.catalytic.sdk.entities.User;
 import org.catalytic.sdk.entities.UsersPage;
+import org.catalytic.sdk.exceptions.UserNotFoundException;
 import org.catalytic.sdk.search.Where;
 import org.junit.Test;
 
@@ -18,15 +19,10 @@ public class UsersTests {
         assertThat(user.getEmail()).containsMatch("tcaflisch@catalytic.com");
     }
 
-    @Test
+    @Test(expected = UserNotFoundException.class)
     public void itShouldThrowExceptionIfUserDoesNotExist() throws Exception {
         Client catalytic = new Client();
         User user = catalytic.users().get("foo@bar.com");
-        assertThat(user).isInstanceOf(User.class);
-        assertThat(user.getId()).isNull();
-        assertThat(user.getEmail()).isNull();
-        assertThat(user.getFullName()).isNull();
-        assertThat(user.getUsername()).isNull();
     }
 
     @Test
