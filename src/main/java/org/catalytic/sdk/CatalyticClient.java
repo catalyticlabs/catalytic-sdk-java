@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Client for connecting to Catalytic
  */
-public class Client {
+public class CatalyticClient {
 
     private Workflows workflows;
     private Instances instances;
@@ -23,7 +23,7 @@ public class Client {
      * @throws CredentialsNotFoundException If no token can be found
      * @throws IOException                  If any errors reading a file
      */
-    public Client () throws CredentialsNotFoundException, IOException {
+    public CatalyticClient() throws CredentialsNotFoundException, IOException {
         this(null);
     }
 
@@ -35,7 +35,7 @@ public class Client {
      * @throws CredentialsNotFoundException If no token can be found
      * @throws IOException                  If any errors reading a file
      */
-    public Client (String tokenOrFile) throws CredentialsNotFoundException, IOException {
+    public CatalyticClient(String tokenOrFile) throws CredentialsNotFoundException, IOException {
         Credentials credentials = new Credentials();
         String token = credentials.fetchToken(tokenOrFile);
         this.workflows = new Workflows(token);

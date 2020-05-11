@@ -1,6 +1,6 @@
 package org.catalytic.sdk.integration;
 
-import org.catalytic.sdk.Client;
+import org.catalytic.sdk.CatalyticClient;
 import org.catalytic.sdk.entities.Workflow;
 import org.catalytic.sdk.entities.WorkflowExport;
 import org.catalytic.sdk.entities.WorkflowsPage;
@@ -14,7 +14,7 @@ public class WorkflowsTests {
 
     @Test
     public void itShouldGetAWorkflow() throws Exception {
-        Client catalytic = new Client();
+        CatalyticClient catalytic = new CatalyticClient();
         Workflow workflow = catalytic.workflows().get("7e77254c-d2d6-4271-965a-98390aefa50a");
         assertThat(workflow).isNotNull();
         assertThat(workflow.getName()).containsMatch("Testing PHP SDK");
@@ -22,7 +22,7 @@ public class WorkflowsTests {
 
     @Test
     public void itShouldFindAllWorkflows() throws Exception {
-        Client catalytic = new Client();
+        CatalyticClient catalytic = new CatalyticClient();
         WorkflowsPage results = catalytic.workflows().find();
         assertThat(results.getWorkflows()).isNotEmpty();
         assertThat(results.getNextPageToken()).isNotNull();
@@ -75,7 +75,7 @@ public class WorkflowsTests {
 
     @Test
     public void itShouldExportAWorkflowFromUUIDNoPassword() throws Exception {
-        Client catalytic = new Client();
+        CatalyticClient catalytic = new CatalyticClient();
         WorkflowExport workflowExport = catalytic.workflows().export(UUID.fromString("7e77254c-d2d6-4271-965a-98390aefa50a"));
         assertThat(workflowExport.getId()).isNotNull();
         assertThat(workflowExport.getErrorMessage()).isNull();
@@ -83,7 +83,7 @@ public class WorkflowsTests {
 
     @Test
     public void itShouldExportAWorkflowUUIDWithPassword() throws Exception {
-        Client catalytic = new Client();
+        CatalyticClient catalytic = new CatalyticClient();
         WorkflowExport workflowExport = catalytic.workflows().export(
                 UUID.fromString("7e77254c-d2d6-4271-965a-98390aefa50a"),
                 "my-super-secret-password"

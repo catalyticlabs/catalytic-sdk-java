@@ -1,6 +1,6 @@
 package org.catalytic.sdk.integration;
 
-import org.catalytic.sdk.Client;
+import org.catalytic.sdk.CatalyticClient;
 import org.catalytic.sdk.entities.User;
 import org.catalytic.sdk.entities.UsersPage;
 import org.catalytic.sdk.exceptions.UserNotFoundException;
@@ -13,7 +13,7 @@ public class UsersTests {
 
     @Test
     public void itShouldGetAUser() throws Exception {
-        Client catalytic = new Client();
+        CatalyticClient catalytic = new CatalyticClient();
         User user = catalytic.users().get("tcaflisch@catalytic.com");
         assertThat(user).isNotNull();
         assertThat(user.getEmail()).containsMatch("tcaflisch@catalytic.com");
@@ -21,13 +21,13 @@ public class UsersTests {
 
     @Test(expected = UserNotFoundException.class)
     public void itShouldThrowUserNotFoundExceptionIfUserDoesNotExist() throws Exception {
-        Client catalytic = new Client();
+        CatalyticClient catalytic = new CatalyticClient();
         catalytic.users().get("foo@bar.com");
     }
 
     @Test
     public void itShouldFindAllUsers() throws Exception {
-        Client catalytic = new Client();
+        CatalyticClient catalytic = new CatalyticClient();
         UsersPage results = catalytic.users().find();
         assertThat(results.getUsers()).isNotEmpty();
         assertThat(results.getNextPageToken()).isNotNull();
@@ -36,7 +36,7 @@ public class UsersTests {
 
     @Test
     public void itShouldFindUserByEmail() throws Exception {
-        Client catalytic = new Client();
+        CatalyticClient catalytic = new CatalyticClient();
         Where where = new Where();
         UsersPage results = catalytic.users().find(
                 where.text().matches("tcaflisch@catalytic.com")
