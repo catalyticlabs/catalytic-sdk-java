@@ -1,5 +1,12 @@
 package org.catalytic.sdk.integration;
 
+import org.catalytic.sdk.CatalyticClient;
+import org.catalytic.sdk.entities.Workflow;
+import org.catalytic.sdk.entities.WorkflowsPage;
+import org.junit.Test;
+
+import static com.google.common.truth.Truth.assertThat;
+
 public class WorkflowsTests {
 
 //    @Test

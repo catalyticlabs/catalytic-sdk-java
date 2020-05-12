@@ -13,7 +13,7 @@ public class Field {
     private String name;
     private String referenceName;
     private String description;
-    private int position;
+    private Integer position;
     private FieldRestrictions restrictions;
     private String fieldType;
     private String value;
@@ -30,7 +30,7 @@ public class Field {
         this.value = value;
     }
 
-    public Field(UUID id, String name, String referenceName, String description, int position, FieldRestrictions restrictions, String fieldType, String value, String defaultValue) {
+    public Field(UUID id, String name, String referenceName, String description, Integer position, FieldRestrictions restrictions, String fieldType, String value, String defaultValue) {
         this.id = id;
         this.name = name;
         this.referenceName = referenceName;
@@ -74,11 +74,11 @@ public class Field {
         this.description = description;
     }
 
-    public int getPosition() {
+    public Integer getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(Integer position) {
         this.position = position;
     }
 

@@ -3,7 +3,6 @@ package org.catalytic.sdk.entities;
 import org.catalytic.sdk.generated.model.FieldVisibility;
 import org.catalytic.sdk.generated.model.InstanceVisibilty;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,8 +19,8 @@ public class Workflow {
     private String owner;
     private String createdBy;
     private List<Field> inputFields;
-    private boolean isPublished;
-    private boolean isArchived;
+    private Boolean isPublished;
+    private Boolean isArchived;
     private FieldVisibility fieldVisibility;
     private InstanceVisibilty instanceVisibility;
     private List<String> adminUsers;
@@ -29,7 +28,7 @@ public class Workflow {
 
     public Workflow() {}
 
-    public Workflow(UUID id, String name, String teamName, String description, String category, String owner, String createdBy, List<org.catalytic.sdk.generated.model.Field> inputFields, boolean isPublished, boolean isArchived, FieldVisibility fieldVisibility, InstanceVisibilty instanceVisibility, List<String> adminUsers, List<String> standardUsers) {
+    public Workflow(UUID id, String name, String teamName, String description, String category, String owner, String createdBy, List<Field> inputFields, Boolean isPublished, Boolean isArchived, FieldVisibility fieldVisibility, InstanceVisibilty instanceVisibility, List<String> adminUsers, List<String> standardUsers) {
         this.id = id;
         this.name = name;
         this.teamName = teamName;
@@ -37,24 +36,7 @@ public class Workflow {
         this.category = category;
         this.owner = owner;
         this.createdBy = createdBy;
-
-        List<Field> newInputFields = new ArrayList<>();
-        for (org.catalytic.sdk.generated.model.Field internalField : inputFields) {
-            Field field = new Field(
-                    internalField.getId(),
-                    internalField.getName(),
-                    internalField.getReferenceName(),
-                    internalField.getDescription(),
-                    internalField.getPosition(),
-                    internalField.getRestrictions(),
-                    internalField.getFieldType().getValue(),
-                    internalField.getValue(),
-                    internalField.getDefaultValue()
-            );
-            newInputFields.add(field);
-        }
-
-        this.inputFields = newInputFields;
+        this.inputFields = inputFields;
         this.isPublished = isPublished;
         this.isArchived = isArchived;
         this.fieldVisibility = fieldVisibility;
@@ -127,19 +109,19 @@ public class Workflow {
         this.inputFields = inputFields;
     }
 
-    public boolean getIsPublished() {
+    public Boolean getIsPublished() {
         return isPublished;
     }
 
-    public void setPublished(boolean published) {
+    public void setPublished(Boolean published) {
         isPublished = published;
     }
 
-    public boolean getIsArchived() {
+    public Boolean getIsArchived() {
         return isArchived;
     }
 
-    public void setArchived(boolean archived) {
+    public void setArchived(Boolean archived) {
         isArchived = archived;
     }
 

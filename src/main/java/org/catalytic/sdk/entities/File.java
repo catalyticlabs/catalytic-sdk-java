@@ -15,6 +15,8 @@ public class File {
     private String md5Hash;
     private String referenceName;
 
+    public File() {}
+
     public File(String id, String name, String teamName, String contentType, int sizeInBytes, String displaySize, boolean isPublic, String md5Hash, String referenceName) {
         this.id = id;
         this.name = name;

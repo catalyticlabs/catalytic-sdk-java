@@ -2,9 +2,11 @@ package org.catalytic.sdk.clients;
 
 
 import org.catalytic.sdk.ConfigurationUtils;
+import org.catalytic.sdk.entities.Field;
+import org.catalytic.sdk.entities.File;
 import org.catalytic.sdk.entities.Workflow;
-import org.catalytic.sdk.entities.WorkflowExport;
 import org.catalytic.sdk.entities.WorkflowsPage;
+import org.catalytic.sdk.exceptions.FileNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
 import org.catalytic.sdk.exceptions.WorkflowNotFoundException;
@@ -17,7 +19,6 @@ import org.catalytic.sdk.generated.model.WorkflowImportRequest;
 import org.catalytic.sdk.search.Filter;
 import org.catalytic.sdk.search.SearchUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,10 +29,25 @@ import java.util.UUID;
 public class Workflows {
 
     private WorkflowsApi workflowsApi;
+    private Files filesClient;
 
     public Workflows(String secret) {
         ApiClient apiClient = ConfigurationUtils.getApiClient(secret);
         this.workflowsApi = new WorkflowsApi(apiClient);
+        this.filesClient = new Files(secret);
+    }
+
+    /**
+     * Constructor used for unit testing.
+     *
+     * Allows you to pass in mocks for WorkflowsApi and Files
+     *
+     * @param workflowsApi  The mocked WorkflowsApi
+     * @param filesClient   The mocked Files client
+     */
+    public Workflows(WorkflowsApi workflowsApi, Files filesClient) {
+        this.workflowsApi = workflowsApi;
+        this.filesClient = filesClient;
     }
 
     /**
@@ -158,20 +174,7 @@ public class Workflows {
      * @throws InternalErrorException       If any error exporting the workflow
      * @throws UnauthorizedException        If unauthorized
      */
-    public WorkflowExport export(String id) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
-        return this.export(UUID.fromString(id), null);
-    }
-
-    /**
-     * Export a workflow by id
-     *
-     * @param id                            The id of the workflow to export
-     * @return                              The exported workflow object
-     * @throws WorkflowNotFoundException    If Workflow not found
-     * @throws InternalErrorException       If any error exporting the workflow
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public WorkflowExport export(UUID id) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+    public File export(String id) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
         return this.export(id, null);
     }
 
@@ -185,37 +188,24 @@ public class Workflows {
      * @throws InternalErrorException       If any error exporting the workflow
      * @throws UnauthorizedException        If unauthorized
      */
-    public WorkflowExport export(String id, String password) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
-        return this.export(UUID.fromString(id), password);
-    }
-
-    /**
-     * Export a workflow by id
-     *
-     * @param id                            The id of the workflow to export
-     * @param password                      The password for the workflow
-     * @return                              The exported workflow object
-     * @throws WorkflowNotFoundException    If Workflow not found
-     * @throws InternalErrorException       If any error exporting the workflow
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public WorkflowExport export(UUID id, String password) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
-
+    public File export(String id, String password) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+        File file;
         WorkflowExportRequest workflowExportRequest = new WorkflowExportRequest();
-        workflowExportRequest.setWorkflowId(id);
+        workflowExportRequest.setWorkflowId(UUID.fromString(id));
         workflowExportRequest.setPassword(password);
         org.catalytic.sdk.generated.model.WorkflowExport internalWorkflowExport;
+
         try {
             // Submit a request to export a workflow
-            internalWorkflowExport = this.workflowsApi.exportWorkflow(id.toString(), workflowExportRequest);
+            internalWorkflowExport = this.workflowsApi.exportWorkflow(id, workflowExportRequest);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
             }
             if (e.getCode() == 404) {
-                throw new WorkflowNotFoundException("Workflow with id " + id.toString() + " not found", e);
+                throw new WorkflowNotFoundException("Workflow with id " + id + " not found", e);
             }
-            throw new InternalErrorException("Unable to export workflow with id " + id.toString(), e);
+            throw new InternalErrorException("Unable to export workflow with id " + id, e);
         }
 
         // Poll another request every second until the export is ready
@@ -224,23 +214,22 @@ public class Workflows {
             try {
                 internalWorkflowExport = this.workflowsApi.getWorkflowExport(exportId.toString());
             } catch (ApiException e) {
-                throw new InternalErrorException("Unable to export workflow with id " + id.toString(), e);
+                throw new InternalErrorException("Unable to export workflow with id " + id, e);
             }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                throw new InternalErrorException("Unexpected error exporting workflow with id " + id.toString(), e);
+                throw new InternalErrorException("Unexpected error exporting workflow with id " + id, e);
             }
         }
 
-        // TODO: Change this to fetch the actual file, not return the WorkflowExport. Look at php as an example
-        WorkflowExport workflowExport = new WorkflowExport(
-                internalWorkflowExport.getId(),
-                internalWorkflowExport.getName(),
-                internalWorkflowExport.getFileId(),
-                internalWorkflowExport.getErrorMessage()
-        );
-        return workflowExport;
+        try {
+            file = this.filesClient.get(internalWorkflowExport.getId().toString());
+        } catch (FileNotFoundException e) {
+            throw new InternalErrorException("Unable to export workflow with id " + id, e);
+        }
+
+        return file;
     }
 
     /**
@@ -252,7 +241,7 @@ public class Workflows {
      * @throws InternalErrorException       If any errors importing the workflow
      * @throws UnauthorizedException        If unauthorized
      */
-    public Workflow importWorkflow(File importFile) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+    public Workflow importWorkflow(java.io.File importFile) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
         return this.importWorkflow(importFile, null);
     }
 
@@ -266,10 +255,11 @@ public class Workflows {
      * @throws InternalErrorException       If any errors importing the workflow
      * @throws UnauthorizedException        If unauthorized
      */
-    public Workflow importWorkflow(File importFile, String password) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
-        // TODO: First need to upload the file. Similar to https://github.com/catalyticlabs/CatalyticSDKAPI/blob/master/CatalyticSDKClient/src/Clients/WorkflowClient.cs#L71
+    public Workflow importWorkflow(java.io.File importFile, String password) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+        File file = this.filesClient.upload(importFile);
+
         WorkflowImportRequest workflowImportRequest = new WorkflowImportRequest();
-//        workflowImportRequest.setFileId(importFile);
+        workflowImportRequest.setFileId(UUID.fromString(file.getId()));
         workflowImportRequest.setPassword(password);
 
         WorkflowImport internalWorkflowImport;
@@ -279,6 +269,9 @@ public class Workflows {
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
+            }
+            if (e.getCode() == 404) {
+                throw new WorkflowNotFoundException("Workflow with id " + file.getId() + " not found", e);
             }
             throw new InternalErrorException("Unable to import workflow", e);
         }
@@ -299,11 +292,29 @@ public class Workflows {
     /**
      * Create a Workflow object from an internal Workflow object
      *
-     * @param internalWorkflow   The internal workflow to create a Workflow object from
+     * @param internalWorkflow  The internal workflow to create a Workflow object from
      * @return                  The created Workflow object
      */
     private Workflow createWorkflow(org.catalytic.sdk.generated.model.Workflow internalWorkflow)
     {
+        List<Field> newInputFields = new ArrayList<>();
+        if (internalWorkflow.getInputFields() != null) {
+            for (org.catalytic.sdk.generated.model.Field internalField : internalWorkflow.getInputFields()) {
+                Field field = new Field(
+                        internalField.getId(),
+                        internalField.getName(),
+                        internalField.getReferenceName(),
+                        internalField.getDescription(),
+                        internalField.getPosition(),
+                        internalField.getRestrictions(),
+                        internalField.getFieldType().getValue(),
+                        internalField.getValue(),
+                        internalField.getDefaultValue()
+                );
+                newInputFields.add(field);
+            }
+        }
+
         Workflow workflow = new Workflow(
                 internalWorkflow.getId(),
                 internalWorkflow.getName(),
@@ -312,7 +323,7 @@ public class Workflows {
                 internalWorkflow.getCategory(),
                 internalWorkflow.getOwner(),
                 internalWorkflow.getCreatedBy(),
-                internalWorkflow.getInputFields(),
+                newInputFields,
                 internalWorkflow.getIsPublished(),
                 internalWorkflow.getIsArchived(),
                 internalWorkflow.getFieldVisibility(),

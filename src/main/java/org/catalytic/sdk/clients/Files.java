@@ -43,19 +43,6 @@ public class Files {
      * @throws FileNotFoundException    If file with id does not exist
      * @throws UnauthorizedException    If unauthorized
      */
-    public File get(UUID id) throws InternalErrorException, FileNotFoundException, UnauthorizedException {
-        return this.get(id.toString());
-    }
-
-    /**
-     * Get a file by id
-     *
-     * @param id                        The id of the file to get
-     * @return                          The File object
-     * @throws InternalErrorException   If any errors fetching the file
-     * @throws FileNotFoundException    If file with id does not exist
-     * @throws UnauthorizedException    If unauthorized
-     */
     public File get(String id) throws InternalErrorException, FileNotFoundException, UnauthorizedException {
         FileMetadata internalFile;
         try {
