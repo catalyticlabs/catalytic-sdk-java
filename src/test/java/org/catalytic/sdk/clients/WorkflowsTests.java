@@ -17,7 +17,7 @@ import org.catalytic.sdk.search.Where;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.UUID;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -94,8 +94,8 @@ public class WorkflowsTests {
         org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
         myWorkflow.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(List.of(myWorkflow));
-        workflowsPage.setCount(List.of(myWorkflow).size());
+        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
+        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
         when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null))
                 .thenReturn(workflowsPage);
@@ -112,8 +112,8 @@ public class WorkflowsTests {
         org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
         myWorkflow.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(List.of(myWorkflow));
-        workflowsPage.setCount(List.of(myWorkflow).size());
+        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
+        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
         when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, "25", null))
                 .thenReturn(workflowsPage);
@@ -130,8 +130,8 @@ public class WorkflowsTests {
         org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
         myWorkflow.setName("My Workflow");
         org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(List.of(myWorkflow));
-        workflowsPage.setCount(List.of(myWorkflow).size());
+        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
+        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
         when(workflowsApi.findWorkflows("My Workflow", null, null, null, null, null, null, null, null))
                 .thenReturn(workflowsPage);
@@ -149,8 +149,8 @@ public class WorkflowsTests {
         org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
         myWorkflow.setOwner("alice@example.com");
         org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(List.of(myWorkflow));
-        workflowsPage.setCount(List.of(myWorkflow).size());
+        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
+        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
         when(workflowsApi.findWorkflows(null, null, null, null, "alice@example.com", null, null, null, null))
                 .thenReturn(workflowsPage);
@@ -168,8 +168,8 @@ public class WorkflowsTests {
         org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
         myWorkflow.setCategory("general");
         org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(List.of(myWorkflow));
-        workflowsPage.setCount(List.of(myWorkflow).size());
+        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
+        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
         when(workflowsApi.findWorkflows(null, null, null, null, null, "general", null, null, null))
                 .thenReturn(workflowsPage);
@@ -187,8 +187,8 @@ public class WorkflowsTests {
         org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
         myWorkflow.setName("My Workflow");
         org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(List.of(myWorkflow));
-        workflowsPage.setCount(List.of(myWorkflow).size());
+        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
+        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
         when(workflowsApi.findWorkflows("My Workflow", null, null, null, null, null, null, "25", null))
                 .thenReturn(workflowsPage);

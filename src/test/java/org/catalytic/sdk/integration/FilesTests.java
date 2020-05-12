@@ -11,63 +11,6 @@ public class FilesTests {
 //    }
 
 //    @Test
-//    public void itShouldFindAllFiles() throws Exception {
-//        Client catalytic = new Client();
-//        FilesPage results = catalytic.files().find();
-//        assertThat(results.getFiles()).isNotEmpty();
-//        assertThat(results.getNextPageToken()).isNotNull();
-//        assertThat(results.getCount()).isGreaterThan(0);
-//    }
-
-//    @Test
-//    public void itShouldFindFilesByText() throws Exception {
-//        Client catalytic = new Client();
-//        Where where = new Where();
-//        FilesPage results = catalytic.files().find(
-//                where.text().matches("mycsv")
-//        );
-//        assertThat(results.getFiles()).hasSize(1);
-//        assertThat(results.getNextPageToken()).isNull();
-//        assertThat(results.getCount()).isEqualTo(1);
-//    }
-//
-//    @Test
-//    public void itShouldFindFilesByOwner() throws Exception {
-//        Client catalytic = new Client();
-//        Where where = new Where();
-//        FilesPage results = catalytic.files().find(
-//                where.owner().is("tcaflisch@catalytic.com")
-//        );
-//        assertThat(results.getFiles()).hasSize(101);
-//        assertThat(results.getNextPageToken()).isEqualTo("25");
-//        assertThat(results.getCount()).isEqualTo(25);
-//    }
-//
-//    @Test
-//    public void itShouldFindFilesByWorkflowId() throws Exception {
-//        Client catalytic = new Client();
-//        Where where = new Where();
-//        FilesPage results = catalytic.files().find(
-//                where.workflowId().is("7e77254c-d2d6-4271-965a-98390aefa50a")
-//        );
-//        assertThat(results.getFiles()).isNotEmpty();
-//        assertThat(results.getNextPageToken()).isNotNull();
-//        assertThat(results.getCount()).isGreaterThan(0);
-//    }
-//
-//    @Test
-//    public void itShouldFindFilesByInstanceId() throws Exception {
-//        Client catalytic = new Client();
-//        Where where = new Where();
-//        FilesPage results = catalytic.files().find(
-//                where.instanceId().is("f956af4a-6e2c-4bee-9f6e-09d3387b7c8c")
-//        );
-//        assertThat(results.getFiles()).isNotEmpty();
-//        assertThat(results.getNextPageToken()).isNotNull();
-//        assertThat(results.getCount()).isGreaterThan(0);
-//    }
-
-//    @Test
 //    public void itShouldUploadAFile() throws Exception {
 //        CatalyticClient catalytic = new CatalyticClient();
 //        java.io.File fileToUpload = new java.io.File("/users/tomcaflisch/Downloads/mytest.txt");

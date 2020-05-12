@@ -2,7 +2,6 @@ package org.catalytic.sdk.clients;
 
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.File;
-import org.catalytic.sdk.entities.FilesPage;
 import org.catalytic.sdk.exceptions.FileNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
@@ -10,16 +9,12 @@ import org.catalytic.sdk.generated.ApiClient;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.FilesApi;
 import org.catalytic.sdk.generated.model.FileMetadata;
-import org.catalytic.sdk.search.Filter;
-import org.catalytic.sdk.search.SearchUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -58,98 +53,6 @@ public class Files {
 
         File file = createFile(internalFile);
         return file;
-    }
-
-    /**
-     * Find all files
-     *
-     * @return                          A FilesPage which contains the results
-     * @throws InternalErrorException   If any errors finding files
-     * @throws UnauthorizedException    If unauthorized
-     */
-    public FilesPage find() throws InternalErrorException, UnauthorizedException {
-        return this.find(null, null, null);
-    }
-
-    /**
-     * Find files by a variety of criteria
-     *
-     * @param filter                    The filter criteria to search files by
-     * @return                          A FilesPage which contains the results
-     * @throws InternalErrorException   If any errors finding files
-     * @throws UnauthorizedException    If unauthorized
-     */
-    public FilesPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
-        return this.find(filter, null, null);
-    }
-
-    /**
-     * Find files by a variety of criteria
-     *
-     * @param pageToken                 The token of the page to fetch
-     * @return                          A FilesPage which contains the results
-     * @throws InternalErrorException   If any errors finding files
-     * @throws UnauthorizedException    If unauthorized
-     */
-    public FilesPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
-        return this.find(null, pageToken, null);
-    }
-
-    /**
-     * Find files by a variety of criteria
-     *
-     * @param filter                    The filter criteria to search files by
-     * @param pageToken                 The token of the page to fetch
-     * @return                          A FilesPage which contains the results
-     * @throws InternalErrorException   If any errors finding files
-     * @throws UnauthorizedException    If unauthorized
-     */
-    public FilesPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
-        return this.find(filter, pageToken, null);
-    }
-
-    /**
-     * Find files by a variety of criteria
-     *
-     * @param filter                    The filter criteria to search files by
-     * @param pageToken                 The token of the page to fetch
-     * @param pageSize                  The number of files per page to fetch
-     * @return                          A FilesPage which contains the results
-     * @throws InternalErrorException   If any errors finding files
-     * @throws UnauthorizedException    If unauthorized
-     */
-    public FilesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
-        String text = null;
-        String owner = null;
-        String workflowId = null;
-        String instanceId = null;
-
-        if (filter != null) {
-            text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
-            owner = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "owner");
-            workflowId = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "workflow_id");
-            instanceId = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "instance_id");
-        }
-
-        org.catalytic.sdk.generated.model.FileMetadataPage results = null;
-        List<File> files = new ArrayList<>();
-
-        try {
-            results = this.filesApi.findFiles(text, null, workflowId, instanceId, owner, null, null, pageToken, pageSize);
-        } catch (ApiException e) {
-            if (e.getCode() == 401) {
-                throw new UnauthorizedException();
-            }
-            throw new InternalErrorException("Unable to find files", e);
-        }
-
-        for (org.catalytic.sdk.generated.model.FileMetadata internalFile : results.getFiles()) {
-            File fileMetadata = createFile(internalFile);
-            files.add(fileMetadata);
-        }
-
-        FilesPage filesPage = new FilesPage(files, results.getCount(), results.getNextPageToken());
-        return filesPage;
     }
 
 //    public Stream getFileStream(String id) {
