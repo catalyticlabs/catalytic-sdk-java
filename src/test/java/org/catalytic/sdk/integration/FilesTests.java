@@ -1,11 +1,5 @@
 package org.catalytic.sdk.integration;
 
-import org.catalytic.sdk.CatalyticClient;
-import org.catalytic.sdk.entities.File;
-import org.junit.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-
 public class FilesTests {
 
 //    @Test

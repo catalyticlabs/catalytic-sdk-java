@@ -1,4 +1,6 @@
-![Java CI with Gradle](https://github.com/catalyticlabs/catalytic-sdk-java/workflows/Java%20CI%20with%20Gradle/badge.svg)
+![Java Build with Gradle](https://github.com/catalyticlabs/catalytic-sdk-java/workflows/Java%20CI%20with%20Gradle/badge.svg)
+[![Maintainability](https://api.codeclimate.com/v1/badges/216fa69d608273f7293c/maintainability)](https://codeclimate.com/repos/5eba26eb362eac017c00a298/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/216fa69d608273f7293c/test_coverage)](https://codeclimate.com/repos/5eba26eb362eac017c00a298/test_coverage)
 
 # catalytic/sdk
 > Catalytic's Java SDK
