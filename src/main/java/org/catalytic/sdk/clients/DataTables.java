@@ -23,7 +23,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * DataTables client
@@ -40,16 +39,14 @@ public class DataTables {
     }
 
     /**
-     * Get a dataTable by id
+     * Constructor used for unit testing.
      *
-     * @param id                            The id of the dataTable to get
-     * @return                              The DataTable object
-     * @throws InternalErrorException       If any errors fetching the dataTable
-     * @throws DataTableNotFoundException   If user with id doesn't exist
-     * @throws UnauthorizedException        If unauthorized
+     * Allows you to pass in a mock DataTablesApi
+     *
+     * @param dataTablesApi The mocked DataTablesApi
      */
-    public DataTable get(UUID id) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
-        return this.get(id.toString());
+    public DataTables(DataTablesApi dataTablesApi) {
+        this.dataTablesApi = dataTablesApi;
     }
 
     /**
@@ -246,21 +243,20 @@ public class DataTables {
     /**
      * Uploads the passed in file as a dataTable
      *
-     * @param dataTableFile             The file to upload as a dataTable
+     * @param fileToUpload              The file to upload as a dataTable
      * @param tableName                 A name to give to the table
      * @return                          The DataTable that was uploaded
      * @throws InternalErrorException   If any errors uploading the dataTable
      * @throws UnauthorizedException    If unauthorized
      */
-    public DataTable upload(File dataTableFile, String tableName) throws InternalErrorException, UnauthorizedException {
-        return this.upload(dataTableFile, tableName, 1, 1);
-//        return this.upload(dataTableFile, tableName, null, null);
+    public DataTable upload(File fileToUpload, String tableName) throws InternalErrorException, UnauthorizedException {
+        return this.upload(fileToUpload, tableName, null, null);
     }
 
     /**
      * Uploads the passed in file as a dataTable
      *
-     * @param dataTableFile             The file to upload as a dataTable
+     * @param fileToUpload              The file to upload as a dataTable
      * @param tableName                 A name to give to the table
      * @param headerRow                 The header row
      * @param sheetNumber               The sheet number of an excel file to use
@@ -268,12 +264,11 @@ public class DataTables {
      * @throws InternalErrorException   If any errors uploading the dataTable
      * @throws UnauthorizedException    If unauthorized
      */
-    public DataTable upload(File dataTableFile, String tableName, Integer headerRow, Integer sheetNumber) throws InternalErrorException, UnauthorizedException {
+    public DataTable upload(File fileToUpload, String tableName, Integer headerRow, Integer sheetNumber) throws InternalErrorException, UnauthorizedException {
         org.catalytic.sdk.generated.model.DataTable internalDataTable;
 
         try {
-            internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, Arrays.asList(dataTableFile));
-//            internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, files);
+            internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, Arrays.asList(fileToUpload));
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
@@ -289,21 +284,21 @@ public class DataTables {
      * Replaces the dataTable with id with the passed in dataTableFile
      *
      * @param id                            The id of the dataTable to replace
-     * @param dataTableFile                 The dataTable to replace with
+     * @param fileToUpload                  The dataTable to replace with
      * @return                              The newly replaced DataTable
      * @throws InternalErrorException       If any errors replacing the dataTable
      * @throws DataTableNotFoundException   If dataTable with id does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable replace(String id, File dataTableFile) throws DataTableNotFoundException, InternalErrorException, UnauthorizedException {
-        return this.replace(id, dataTableFile, null, null);
+    public DataTable replace(String id, File fileToUpload) throws DataTableNotFoundException, InternalErrorException, UnauthorizedException {
+        return this.replace(id, fileToUpload, null, null);
     }
 
     /**
      * Replaces the dataTable with id with the passed in dataTableFile
      *
      * @param id                            The id of the dataTable to replace
-     * @param dataTableFile                 The dataTable to replace with
+     * @param fileToUpload                  The dataTable to replace with
      * @param headerRow                     The header row
      * @param sheetNumber                   The sheet number of an excel file to use
      * @return                              The newly replaced DataTable
@@ -311,10 +306,10 @@ public class DataTables {
      * @throws DataTableNotFoundException   If dataTable with id does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable replace(String id, File dataTableFile, Integer headerRow, Integer sheetNumber) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
+    public DataTable replace(String id, File fileToUpload, Integer headerRow, Integer sheetNumber) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
         org.catalytic.sdk.generated.model.DataTable internalDataTable;
         try {
-            internalDataTable = this.dataTablesApi.replaceDataTable(id, headerRow, sheetNumber, Arrays.asList(dataTableFile));
+            internalDataTable = this.dataTablesApi.replaceDataTable(id, headerRow, sheetNumber, Arrays.asList(fileToUpload));
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
@@ -336,21 +331,22 @@ public class DataTables {
      */
     private DataTable createDataTable(org.catalytic.sdk.generated.model.DataTable internalDataTable) {
         List<DataTableColumn> columns = new ArrayList<>();
+        String type = null;
+        String visibility = null;
 
-        for (org.catalytic.sdk.generated.model.DataTableColumn internalColumn : internalDataTable.getColumns()) {
+        if (internalDataTable.getColumns() != null) {
+            for (org.catalytic.sdk.generated.model.DataTableColumn internalColumn : internalDataTable.getColumns()) {
+                DataTableColumn column = createDataTableColumn(internalColumn);
+                columns.add(column);
+            }
+        }
 
-            FieldRestrictions restrictions = new FieldRestrictions(
-                    internalColumn.getRestrictions().getChoices(),
-                    internalColumn.getRestrictions().getValueRequired()
-            );
+        if (internalDataTable.getType() != null) {
+            type = internalDataTable.getType().getValue();
+        }
 
-            DataTableColumn column = new DataTableColumn(
-                    internalColumn.getName(),
-                    internalColumn.getType().getValue(),
-                    internalColumn.getReferenceName(),
-                    restrictions
-            );
-            columns.add(column);
+        if (internalDataTable.getVisibility() != null) {
+            visibility = internalDataTable.getVisibility().getValue();
         }
 
         DataTable dataTable = new DataTable(
@@ -361,13 +357,35 @@ public class DataTables {
                 internalDataTable.getDescription(),
                 columns,
                 internalDataTable.getIsArchived(),
-                internalDataTable.getType().getValue(),
-                internalDataTable.getVisibility().getValue(),
+                type,
+                visibility,
                 internalDataTable.getVisibleToUsers(),
                 internalDataTable.getRowLimit(),
                 internalDataTable.getColumnLimit(),
                 internalDataTable.getCellLimit()
         );
         return dataTable;
+    }
+
+    /**
+     * Create a DataTableColumn object from an internal DataTableColumn object
+     *
+     * @param internalColumn    The internal column to create a DataTableColumn object from
+     * @return                  The created DataTableColumn object
+     */
+    private DataTableColumn createDataTableColumn(org.catalytic.sdk.generated.model.DataTableColumn internalColumn) {
+        FieldRestrictions restrictions = new FieldRestrictions(
+                internalColumn.getRestrictions().getChoices(),
+                internalColumn.getRestrictions().getValueRequired()
+        );
+
+        DataTableColumn column = new DataTableColumn(
+                internalColumn.getName(),
+                internalColumn.getType().getValue(),
+                internalColumn.getReferenceName(),
+                restrictions
+        );
+
+        return column;
     }
 }

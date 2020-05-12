@@ -60,7 +60,7 @@ public class Workflows {
      * @throws UnauthorizedException        If unauthorized
      */
     public Workflow get(String id) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
-        org.catalytic.sdk.generated.model.Workflow internalWorkflow = null;
+        org.catalytic.sdk.generated.model.Workflow internalWorkflow;
         try {
             internalWorkflow = this.workflowsApi.getWorkflow(id);
         } catch (ApiException e) {

@@ -14,15 +14,15 @@ public class DataTable {
     private String teamName;
     private String description;
     private List<DataTableColumn> columns;
-    private boolean isArchived;
+    private Boolean isArchived;
     private String type;
     private String visibility;
     private List<String> visibleToUsers;
-    private int rowLimit;
-    private int columnLimit;
-    private int cellLimit;
+    private Integer rowLimit;
+    private Integer columnLimit;
+    private Integer cellLimit;
 
-    public DataTable(UUID id, String referenceName, String name, String teamName, String description, List<DataTableColumn> columns, boolean isArchived, String type, String visibility, List<String> visibleToUsers, int rowLimit, int columnLimit, int cellLimit) {
+    public DataTable(UUID id, String referenceName, String name, String teamName, String description, List<DataTableColumn> columns, Boolean isArchived, String type, String visibility, List<String> visibleToUsers, Integer rowLimit, Integer columnLimit, Integer cellLimit) {
         this.id = id;
         this.referenceName = referenceName;
         this.name = name;
@@ -86,11 +86,11 @@ public class DataTable {
         columns = columns;
     }
 
-    public boolean isArchived() {
+    public Boolean isArchived() {
         return isArchived;
     }
 
-    public void setArchived(boolean archived) {
+    public void setArchived(Boolean archived) {
         isArchived = archived;
     }
 
@@ -118,27 +118,27 @@ public class DataTable {
         this.visibleToUsers = visibleToUsers;
     }
 
-    public int getRowLimit() {
+    public Integer getRowLimit() {
         return rowLimit;
     }
 
-    public void setRowLimit(int rowLimit) {
+    public void setRowLimit(Integer rowLimit) {
         this.rowLimit = rowLimit;
     }
 
-    public int getColumnLimit() {
+    public Integer getColumnLimit() {
         return columnLimit;
     }
 
-    public void setColumnLimit(int columnLimit) {
+    public void setColumnLimit(Integer columnLimit) {
         this.columnLimit = columnLimit;
     }
 
-    public int getCellLimit() {
+    public Integer getCellLimit() {
         return cellLimit;
     }
 
-    public void setCellLimit(int cellLimit) {
+    public void setCellLimit(Integer cellLimit) {
         this.cellLimit = cellLimit;
     }
 }

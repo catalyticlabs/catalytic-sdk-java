@@ -17,19 +17,31 @@ jobs:
 
     name: Java ${{ matrix.java}} build
     steps:
+    # Checkout the code
     - uses: actions/checkout@v2
-      
+
+    # Setup JDK version
     - name: Set up JDK ${{ matrix.java }}
       uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java }}
 
+    # Get dependency cache
+    - name: Cache dependencies
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+
+    # Grant permissions to gradlew
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-      
+
+    # Build and test
     - name: Build with Gradle
       run: ./gradlew build
-    
+
+    # Publish code coverage
     - name: Test and publish code coverage
       uses: paambaati/codeclimate-action@v2.6.0
       env:
