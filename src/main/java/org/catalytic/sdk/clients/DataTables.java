@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -269,11 +270,10 @@ public class DataTables {
      */
     public DataTable upload(File dataTableFile, String tableName, Integer headerRow, Integer sheetNumber) throws InternalErrorException, UnauthorizedException {
         org.catalytic.sdk.generated.model.DataTable internalDataTable;
-        List<File> files = new ArrayList<>();
-        files.add(dataTableFile);
+
         try {
-//            internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, List.of(dataTableFile));
-            internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, files);
+            internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, Arrays.asList(dataTableFile));
+//            internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, files);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
@@ -314,7 +314,7 @@ public class DataTables {
     public DataTable replace(String id, File dataTableFile, Integer headerRow, Integer sheetNumber) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
         org.catalytic.sdk.generated.model.DataTable internalDataTable;
         try {
-            internalDataTable = this.dataTablesApi.replaceDataTable(id, headerRow, sheetNumber, List.of(dataTableFile));
+            internalDataTable = this.dataTablesApi.replaceDataTable(id, headerRow, sheetNumber, Arrays.asList(dataTableFile));
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();

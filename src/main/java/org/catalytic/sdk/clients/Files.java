@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -269,7 +270,7 @@ public class Files {
 //        filesToUpload.add(fileToUpload);
         org.catalytic.sdk.generated.model.FileMetadataPage internalFile;
         try {
-            internalFile = this.filesApi.uploadFiles(List.of(fileToUpload));
+            internalFile = this.filesApi.uploadFiles(Arrays.asList(fileToUpload));
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
