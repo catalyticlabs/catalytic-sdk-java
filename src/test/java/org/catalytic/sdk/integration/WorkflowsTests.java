@@ -1,33 +1,23 @@
 package org.catalytic.sdk.integration;
 
-import org.catalytic.sdk.CatalyticClient;
-import org.catalytic.sdk.entities.Workflow;
-import org.catalytic.sdk.entities.WorkflowExport;
-import org.catalytic.sdk.entities.WorkflowsPage;
-import org.junit.Test;
-
-import java.util.UUID;
-
-import static com.google.common.truth.Truth.assertThat;
-
 public class WorkflowsTests {
 
-    @Test
-    public void itShouldGetAWorkflow() throws Exception {
-        CatalyticClient catalytic = new CatalyticClient();
-        Workflow workflow = catalytic.workflows().get("7e77254c-d2d6-4271-965a-98390aefa50a");
-        assertThat(workflow).isNotNull();
-        assertThat(workflow.getName()).containsMatch("Testing PHP SDK");
-    }
-
-    @Test
-    public void itShouldFindAllWorkflows() throws Exception {
-        CatalyticClient catalytic = new CatalyticClient();
-        WorkflowsPage results = catalytic.workflows().find();
-        assertThat(results.getWorkflows()).isNotEmpty();
-        assertThat(results.getNextPageToken()).isNotNull();
-        assertThat(results.getCount()).isGreaterThan(0);
-    }
+//    @Test
+//    public void itShouldGetAWorkflow() throws Exception {
+//        CatalyticClient catalytic = new CatalyticClient();
+//        Workflow workflow = catalytic.workflows().get("7e77254c-d2d6-4271-965a-98390aefa50a");
+//        assertThat(workflow).isNotNull();
+//        assertThat(workflow.getName()).containsMatch("Testing PHP SDK");
+//    }
+//
+//    @Test
+//    public void itShouldFindAllWorkflows() throws Exception {
+//        CatalyticClient catalytic = new CatalyticClient();
+//        WorkflowsPage results = catalytic.workflows().find();
+//        assertThat(results.getWorkflows()).isNotEmpty();
+//        assertThat(results.getNextPageToken()).isNotNull();
+//        assertThat(results.getCount()).isGreaterThan(0);
+//    }
 
 //    @Test
 //    public void itShouldFindWorkflowsByFuzzyName() throws Exception {
@@ -73,24 +63,24 @@ public class WorkflowsTests {
 //        assertThat(workflowExport.getErrorMessage()).isNull();
 //    }
 
-    @Test
-    public void itShouldExportAWorkflowFromUUIDNoPassword() throws Exception {
-        CatalyticClient catalytic = new CatalyticClient();
-        WorkflowExport workflowExport = catalytic.workflows().export(UUID.fromString("7e77254c-d2d6-4271-965a-98390aefa50a"));
-        assertThat(workflowExport.getId()).isNotNull();
-        assertThat(workflowExport.getErrorMessage()).isNull();
-    }
-
-    @Test
-    public void itShouldExportAWorkflowUUIDWithPassword() throws Exception {
-        CatalyticClient catalytic = new CatalyticClient();
-        WorkflowExport workflowExport = catalytic.workflows().export(
-                UUID.fromString("7e77254c-d2d6-4271-965a-98390aefa50a"),
-                "my-super-secret-password"
-        );
-        assertThat(workflowExport.getId()).isNotNull();
-        assertThat(workflowExport.getErrorMessage()).isNull();
-    }
+//    @Test
+//    public void itShouldExportAWorkflowFromUUIDNoPassword() throws Exception {
+//        CatalyticClient catalytic = new CatalyticClient();
+//        WorkflowExport workflowExport = catalytic.workflows().export(UUID.fromString("7e77254c-d2d6-4271-965a-98390aefa50a"));
+//        assertThat(workflowExport.getId()).isNotNull();
+//        assertThat(workflowExport.getErrorMessage()).isNull();
+//    }
+//
+//    @Test
+//    public void itShouldExportAWorkflowUUIDWithPassword() throws Exception {
+//        CatalyticClient catalytic = new CatalyticClient();
+//        WorkflowExport workflowExport = catalytic.workflows().export(
+//                UUID.fromString("7e77254c-d2d6-4271-965a-98390aefa50a"),
+//                "my-super-secret-password"
+//        );
+//        assertThat(workflowExport.getId()).isNotNull();
+//        assertThat(workflowExport.getErrorMessage()).isNull();
+//    }
 
 //    @Test
 //    public void itShouldImportAWorkflowNoPassword() throws Exception {
