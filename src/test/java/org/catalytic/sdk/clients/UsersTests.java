@@ -11,7 +11,7 @@ import org.catalytic.sdk.search.Where;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
@@ -85,8 +85,8 @@ public class UsersTests {
         org.catalytic.sdk.generated.model.User alice = new org.catalytic.sdk.generated.model.User();
         alice.setEmail("alice@example.com");
         org.catalytic.sdk.generated.model.UsersPage usersPage = new org.catalytic.sdk.generated.model.UsersPage();
-        usersPage.setUsers(List.of(alice));
-        usersPage.setCount(List.of(alice).size());
+        usersPage.setUsers(Arrays.asList(alice));
+        usersPage.setCount(Arrays.asList(alice).size());
         usersPage.setNextPageToken(null);
         when(usersApi.findUsers(null, null, null, null, null, null, null, null, null))
                 .thenReturn(usersPage);
@@ -103,8 +103,8 @@ public class UsersTests {
         org.catalytic.sdk.generated.model.User alice = new org.catalytic.sdk.generated.model.User();
         alice.setEmail("alice@example.com");
         org.catalytic.sdk.generated.model.UsersPage usersPage = new org.catalytic.sdk.generated.model.UsersPage();
-        usersPage.setUsers(List.of(alice));
-        usersPage.setCount(List.of(alice).size());
+        usersPage.setUsers(Arrays.asList(alice));
+        usersPage.setCount(Arrays.asList(alice).size());
         usersPage.setNextPageToken(null);
         when(usersApi.findUsers(null, null, null, null, null, null, null, "25", null))
                 .thenReturn(usersPage);
@@ -121,8 +121,8 @@ public class UsersTests {
         org.catalytic.sdk.generated.model.User alice = new org.catalytic.sdk.generated.model.User();
         alice.setEmail("alice@example.com");
         org.catalytic.sdk.generated.model.UsersPage usersPage = new org.catalytic.sdk.generated.model.UsersPage();
-        usersPage.setUsers(List.of(alice));
-        usersPage.setCount(List.of(alice).size());
+        usersPage.setUsers(Arrays.asList(alice));
+        usersPage.setCount(Arrays.asList(alice).size());
         usersPage.setNextPageToken(null);
         when(usersApi.findUsers("alice@example.com", null, null, null, null, null, null, null, null))
                 .thenReturn(usersPage);
@@ -140,8 +140,8 @@ public class UsersTests {
         org.catalytic.sdk.generated.model.User alice = new org.catalytic.sdk.generated.model.User();
         alice.setEmail("alice@example.com");
         org.catalytic.sdk.generated.model.UsersPage usersPage = new org.catalytic.sdk.generated.model.UsersPage();
-        usersPage.setUsers(List.of(alice));
-        usersPage.setCount(List.of(alice).size());
+        usersPage.setUsers(Arrays.asList(alice));
+        usersPage.setCount(Arrays.asList(alice).size());
         usersPage.setNextPageToken(null);
         when(usersApi.findUsers("alice@example.com", null, null, null, null, null, null, "25", null))
                 .thenReturn(usersPage);
