@@ -337,9 +337,9 @@ public class WorkflowsTests {
     public void importWorkflow_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         java.io.File importFile = new java.io.File("/foo/bar");
         File file = new File();
-        file.setId("ac14952a-a331-457c-ac7d-9a284258b65a");
+        file.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         WorkflowImportRequest workflowImportRequest = new WorkflowImportRequest();
-        workflowImportRequest.setFileId(UUID.fromString(file.getId()));
+        workflowImportRequest.setFileId(file.getId());
         when(filesClient.upload(importFile)).thenReturn(file);
         when(workflowsApi.importWorkflow(workflowImportRequest)).thenThrow(new ApiException(401, null));
 
@@ -351,9 +351,9 @@ public class WorkflowsTests {
     public void importWorkflow_itShouldThrowWorkflowNotFoundExceptionIfWorkflowDoesNotExist() throws Exception {
         java.io.File importFile = new java.io.File("/foo/bar");
         File file = new File();
-        file.setId("ac14952a-a331-457c-ac7d-9a284258b65a");
+        file.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         WorkflowImportRequest workflowImportRequest = new WorkflowImportRequest();
-        workflowImportRequest.setFileId(UUID.fromString(file.getId()));
+        workflowImportRequest.setFileId(file.getId());
         when(filesClient.upload(importFile)).thenReturn(file);
         when(workflowsApi.importWorkflow(workflowImportRequest)).thenThrow(new ApiException(404, null));
 
@@ -365,9 +365,9 @@ public class WorkflowsTests {
     public void importWorkflow_itShouldThrowInternalErrorException() throws Exception {
         java.io.File importFile = new java.io.File("/foo/bar");
         File file = new File();
-        file.setId("ac14952a-a331-457c-ac7d-9a284258b65a");
+        file.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         WorkflowImportRequest workflowImportRequest = new WorkflowImportRequest();
-        workflowImportRequest.setFileId(UUID.fromString(file.getId()));
+        workflowImportRequest.setFileId(file.getId());
         when(filesClient.upload(importFile)).thenReturn(file);
         when(workflowsApi.importWorkflow(workflowImportRequest)).thenThrow(new ApiException(500, null));
 
@@ -379,10 +379,10 @@ public class WorkflowsTests {
     public void importWorkflow_itShouldThrowInternalErrorExceptionWhenGettingWorkflowImport() throws Exception {
         java.io.File importFile = new java.io.File("/foo/bar");
         File file = new File();
-        file.setId("ac14952a-a331-457c-ac7d-9a284258b65a");
+        file.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
 
         WorkflowImportRequest workflowImportRequest = new WorkflowImportRequest();
-        workflowImportRequest.setFileId(UUID.fromString(file.getId()));
+        workflowImportRequest.setFileId(file.getId());
 
         WorkflowImport initialWorkflowImport = new WorkflowImport();
         initialWorkflowImport.setId(UUID.fromString("31b490e8-e52d-41fb-ad72-f7e45edcdd92"));
@@ -406,10 +406,10 @@ public class WorkflowsTests {
     public void importWorkflow_itShouldExportAWorkflowWithNoPassword() throws Exception {
         java.io.File importFile = new java.io.File("/foo/bar");
         File file = new File();
-        file.setId("ac14952a-a331-457c-ac7d-9a284258b65a");
+        file.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
 
         WorkflowImportRequest workflowImportRequest = new WorkflowImportRequest();
-        workflowImportRequest.setFileId(UUID.fromString(file.getId()));
+        workflowImportRequest.setFileId(file.getId());
 
         WorkflowImport initialWorkflowImport = new WorkflowImport();
         initialWorkflowImport.setId(UUID.fromString("31b490e8-e52d-41fb-ad72-f7e45edcdd92"));
@@ -435,10 +435,10 @@ public class WorkflowsTests {
     public void importWorkflow_itShouldExportAWorkflowWithWithPassword() throws Exception {
         java.io.File importFile = new java.io.File("/foo/bar");
         File file = new File();
-        file.setId("ac14952a-a331-457c-ac7d-9a284258b65a");
+        file.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
 
         WorkflowImportRequest workflowImportRequest = new WorkflowImportRequest();
-        workflowImportRequest.setFileId(UUID.fromString(file.getId()));
+        workflowImportRequest.setFileId(file.getId());
         workflowImportRequest.setPassword("my-password");
 
         WorkflowImport initialWorkflowImport = new WorkflowImport();

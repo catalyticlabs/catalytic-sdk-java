@@ -259,7 +259,7 @@ public class Workflows {
         File file = this.filesClient.upload(importFile);
 
         WorkflowImportRequest workflowImportRequest = new WorkflowImportRequest();
-        workflowImportRequest.setFileId(UUID.fromString(file.getId()));
+        workflowImportRequest.setFileId(file.getId());
         workflowImportRequest.setPassword(password);
 
         WorkflowImport internalWorkflowImport;

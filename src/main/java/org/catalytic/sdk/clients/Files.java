@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-import java.util.UUID;
 
 /**
  * Files client
@@ -27,6 +26,17 @@ public class Files {
     public Files(String secret) {
         ApiClient apiClient = ConfigurationUtils.getApiClient(secret);
         this.filesApi = new FilesApi(apiClient);
+    }
+
+    /**
+     * Constructor used for unit testing.
+     *
+     * Allows you to pass in a mock FilesApi
+     *
+     * @param filesApi  The mocked FilesApi
+     */
+    public Files(FilesApi filesApi) {
+        this.filesApi = filesApi;
     }
 
     /**
@@ -71,35 +81,6 @@ public class Files {
      */
     public java.io.File download(String id) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException {
         return this.download(id, null);
-    }
-
-    /**
-     * Downloads a file to the users temp dir
-     *
-     * @param id                        The id of the file to download
-     * @return                          An object containing the file info
-     * @throws InternalErrorException   If any errors downloading the file
-     * @throws FileNotFoundException    If file with id does not exist
-     * @throws IOException              If any errors saving the file to temp dir
-     * @throws UnauthorizedException    If unauthorized
-     */
-    public java.io.File download(UUID id) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException {
-        return this.download(id.toString(), null);
-    }
-
-    /**
-     * Downloads a file to the users temp dir or a specified dir if passed in
-     *
-     * @param id                        The id of the file to download
-     * @param directory                 The dir to download the file to
-     * @return                          An object containing the file info
-     * @throws InternalErrorException   If any errors downloading the file
-     * @throws FileNotFoundException    If file with id does not exist
-     * @throws IOException              If any errors saving the file to directory param
-     * @throws UnauthorizedException    If unauthorized
-     */
-    public java.io.File download(UUID id, String directory) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException {
-        return this.download(id.toString(), directory);
     }
 
     /**
@@ -156,11 +137,9 @@ public class Files {
      * @throws UnauthorizedException    If unauthorized
      */
     public File upload(java.io.File fileToUpload) throws UnauthorizedException, InternalErrorException {
-//        List<java.io.File> filesToUpload = new ArrayList<>();
-//        filesToUpload.add(fileToUpload);
-        org.catalytic.sdk.generated.model.FileMetadataPage internalFile;
+        org.catalytic.sdk.generated.model.FileMetadataPage results;
         try {
-            internalFile = this.filesApi.uploadFiles(Arrays.asList(fileToUpload));
+            results = this.filesApi.uploadFiles(Arrays.asList(fileToUpload));
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
@@ -168,7 +147,7 @@ public class Files {
             throw new InternalErrorException("Unable to upload file", e);
         }
 
-        File file = createFile(internalFile.getFiles().get(0));
+        File file = createFile(results.getFiles().get(0));
         return file;
     }
 
@@ -180,7 +159,7 @@ public class Files {
      */
     private File createFile(FileMetadata internalFile) {
         File fileMetadata = new File(
-                internalFile.getId().toString(),
+                internalFile.getId(),
                 internalFile.getName(),
                 internalFile.getTeamName(),
                 internalFile.getContentType(),

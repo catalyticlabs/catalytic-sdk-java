@@ -1,23 +1,25 @@
 package org.catalytic.sdk.entities;
 
+import java.util.UUID;
+
 /**
  * A File object
  */
 public class File {
 
-    private String id;
+    private UUID id;
     private String name;
     private String teamName;
     private String contentType;
-    private int sizeInBytes;
+    private Integer sizeInBytes;
     private String displaySize;
-    private boolean isPublic;
+    private Boolean isPublic;
     private String md5Hash;
     private String referenceName;
 
     public File() {}
 
-    public File(String id, String name, String teamName, String contentType, int sizeInBytes, String displaySize, boolean isPublic, String md5Hash, String referenceName) {
+    public File(UUID id, String name, String teamName, String contentType, Integer sizeInBytes, String displaySize, Boolean isPublic, String md5Hash, String referenceName) {
         this.id = id;
         this.name = name;
         this.teamName = teamName;
@@ -29,11 +31,11 @@ public class File {
         this.referenceName = referenceName;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -61,7 +63,7 @@ public class File {
         this.contentType = contentType;
     }
 
-    public int getSizeInBytes() {
+    public Integer getSizeInBytes() {
         return sizeInBytes;
     }
 
@@ -77,7 +79,7 @@ public class File {
         this.displaySize = displaySize;
     }
 
-    public boolean getIsPublic() {
+    public Boolean getIsPublic() {
         return isPublic;
     }
 
