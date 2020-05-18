@@ -13,7 +13,7 @@ public class InstanceStep {
     private UUID workflowId;
     private String name;
     private String teamName;
-    private int position;
+    private Integer position;
     private String description;
     private String status;
     private String assignedTo;
@@ -21,7 +21,7 @@ public class InstanceStep {
 
     public InstanceStep() {}
 
-    public InstanceStep(UUID id, UUID instanceId, UUID workflowId, String name, String teamName, int position, String description, String status, String assignedTo, List<Field> outputFields) {
+    public InstanceStep(UUID id, UUID instanceId, UUID workflowId, String name, String teamName, Integer position, String description, String status, String assignedTo, List<Field> outputFields) {
         this.id = id;
         this.instanceId = instanceId;
         this.workflowId = workflowId;
@@ -74,11 +74,11 @@ public class InstanceStep {
         this.teamName = teamName;
     }
 
-    public int getPosition() {
+    public Integer getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(Integer position) {
         this.position = position;
     }
 

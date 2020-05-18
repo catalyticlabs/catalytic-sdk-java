@@ -77,7 +77,7 @@ public class Filter {
      * @return  The created FilterCriteria object
      */
     public FilterCriteria assignee () {
-        FilterCriteria filterCriteria = new FilterCriteria(this, "participating_users");
+        FilterCriteria filterCriteria = new FilterCriteria(this, "assignee");
         return filterCriteria;
     }
 
@@ -87,7 +87,7 @@ public class Filter {
      * @return  The created FilterCriteria object
      */
     public FilterCriteria instanceId () {
-        FilterCriteria filterCriteria = new FilterCriteria(this, "run_id");
+        FilterCriteria filterCriteria = new FilterCriteria(this, "instanceId");
         return filterCriteria;
     }
 }
