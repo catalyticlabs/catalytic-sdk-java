@@ -33,8 +33,9 @@ import org.catalytic.sdk.generated.model.InstanceStep;
 import org.catalytic.sdk.generated.model.InstanceVisibilty;
 
 /**
- * Instance
+ * Represents an Instance of a Workflow
  */
+@ApiModel(description = "Represents an Instance of a Workflow")
 
 public class Instance {
   public static final String SERIALIZED_NAME_ID = "id";
@@ -101,10 +102,10 @@ public class Instance {
   }
 
    /**
-   * Get id
+   * The unique ID of the Instance
    * @return id
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The unique ID of the Instance")
 
   public UUID getId() {
     return id;
@@ -123,10 +124,10 @@ public class Instance {
   }
 
    /**
-   * Get workflowId
+   * The unique ID of the Workflow this Instance was started from
    * @return workflowId
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The unique ID of the Workflow this Instance was started from")
 
   public UUID getWorkflowId() {
     return workflowId;
@@ -145,11 +146,11 @@ public class Instance {
   }
 
    /**
-   * Get name
+   * The descriptive name of the Instance
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The descriptive name of the Instance")
 
   public String getName() {
     return name;
@@ -168,11 +169,11 @@ public class Instance {
   }
 
    /**
-   * Get teamName
+   * The name of the Catalytic team in which this Instance was started
    * @return teamName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The name of the Catalytic team in which this Instance was started")
 
   public String getTeamName() {
     return teamName;
@@ -191,11 +192,11 @@ public class Instance {
   }
 
    /**
-   * Get description
+   * A description of the Instance
    * @return description
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A description of the Instance")
 
   public String getDescription() {
     return description;
@@ -214,11 +215,11 @@ public class Instance {
   }
 
    /**
-   * Get category
+   * A descriptive grouping for the Instance
    * @return category
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A descriptive grouping for the Instance")
 
   public String getCategory() {
     return category;
@@ -237,11 +238,11 @@ public class Instance {
   }
 
    /**
-   * Get owner
+   * The email address of the user who owns this Instance
    * @return owner
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The email address of the user who owns this Instance")
 
   public String getOwner() {
     return owner;
@@ -260,11 +261,11 @@ public class Instance {
   }
 
    /**
-   * Get createdBy
+   * The email address of the user who created this Instance
    * @return createdBy
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The email address of the user who created this Instance")
 
   public String getCreatedBy() {
     return createdBy;
@@ -291,11 +292,11 @@ public class Instance {
   }
 
    /**
-   * Get steps
+   * A collection of the Tasks belonging to this Instance
    * @return steps
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A collection of the Tasks belonging to this Instance")
 
   public List<InstanceStep> getSteps() {
     return steps;
@@ -322,11 +323,11 @@ public class Instance {
   }
 
    /**
-   * Get fields
+   * A collection of the Fields belonging to this Instance
    * @return fields
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A collection of the Fields belonging to this Instance")
 
   public List<Field> getFields() {
     return fields;
@@ -422,11 +423,11 @@ public class Instance {
   }
 
    /**
-   * Get visibleToUsers
+   * The users who can find and interact with this Instance
    * @return visibleToUsers
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The users who can find and interact with this Instance")
 
   public List<String> getVisibleToUsers() {
     return visibleToUsers;

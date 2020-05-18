@@ -99,10 +99,10 @@ public class DataTable {
   }
 
    /**
-   * Get id
+   * The unique ID of the Data Table
    * @return id
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The unique ID of the Data Table")
 
   public UUID getId() {
     return id;
@@ -121,11 +121,11 @@ public class DataTable {
   }
 
    /**
-   * Get dataTableId
+   * Alias for &#x60;Id&#x60;
    * @return dataTableId
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Alias for `Id`")
 
   public UUID getDataTableId() {
     return dataTableId;
@@ -144,11 +144,11 @@ public class DataTable {
   }
 
    /**
-   * Get referenceName
+   * Gets a unique reference name for this Data Table
    * @return referenceName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Gets a unique reference name for this Data Table")
 
   public String getReferenceName() {
     return referenceName;
@@ -167,11 +167,11 @@ public class DataTable {
   }
 
    /**
-   * Get name
+   * The descriptive name of the Data Table
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The descriptive name of the Data Table")
 
   public String getName() {
     return name;
@@ -190,11 +190,11 @@ public class DataTable {
   }
 
    /**
-   * Get teamName
+   * The name of the team in which the Data Table is defined
    * @return teamName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The name of the team in which the Data Table is defined")
 
   public String getTeamName() {
     return teamName;
@@ -213,11 +213,11 @@ public class DataTable {
   }
 
    /**
-   * Get description
+   * A description of what kind of data is stored in the Table
    * @return description
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A description of what kind of data is stored in the Table")
 
   public String getDescription() {
     return description;
@@ -244,11 +244,11 @@ public class DataTable {
   }
 
    /**
-   * Get columns
+   * The ordered names of the columns in this Data Table
    * @return columns
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The ordered names of the columns in this Data Table")
 
   public List<DataTableColumn> getColumns() {
     return columns;
@@ -267,11 +267,11 @@ public class DataTable {
   }
 
    /**
-   * Get isArchived
+   * Whether or not this table is archived and excluded from default searches
    * @return isArchived
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Whether or not this table is archived and excluded from default searches")
 
   public Boolean getIsArchived() {
     return isArchived;
@@ -344,11 +344,11 @@ public class DataTable {
   }
 
    /**
-   * Get visibleToUsers
+   * The users who can find and modify this Data Table
    * @return visibleToUsers
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The users who can find and modify this Data Table")
 
   public List<String> getVisibleToUsers() {
     return visibleToUsers;
@@ -367,11 +367,11 @@ public class DataTable {
   }
 
    /**
-   * Get rowLimit
+   * The maximum number of rows in this Data Table
    * @return rowLimit
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The maximum number of rows in this Data Table")
 
   public Integer getRowLimit() {
     return rowLimit;
@@ -390,11 +390,11 @@ public class DataTable {
   }
 
    /**
-   * Get columnLimit
+   * The maximum number of columns in this Data Table
    * @return columnLimit
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The maximum number of columns in this Data Table")
 
   public Integer getColumnLimit() {
     return columnLimit;
@@ -413,11 +413,11 @@ public class DataTable {
   }
 
    /**
-   * Get cellLimit
+   * The maximum number of cells in this Data Table
    * @return cellLimit
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The maximum number of cells in this Data Table")
 
   public Integer getCellLimit() {
     return cellLimit;

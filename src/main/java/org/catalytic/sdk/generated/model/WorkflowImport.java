@@ -26,8 +26,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * WorkflowImport
+ * Represents a Workflow Import
  */
+@ApiModel(description = "Represents a Workflow Import")
 
 public class WorkflowImport {
   public static final String SERIALIZED_NAME_ID = "id";
@@ -54,11 +55,11 @@ public class WorkflowImport {
   }
 
    /**
-   * Get id
+   * The Id of the Workflow Import
    * @return id
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The Id of the Workflow Import")
 
   public UUID getId() {
     return id;
@@ -100,11 +101,11 @@ public class WorkflowImport {
   }
 
    /**
-   * Get workflowId
+   * The Id of the Workflow created by a successful Import
    * @return workflowId
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The Id of the Workflow created by a successful Import")
 
   public UUID getWorkflowId() {
     return workflowId;
@@ -123,11 +124,11 @@ public class WorkflowImport {
   }
 
    /**
-   * Get errorMessage
+   * The error message produced by a failed Import
    * @return errorMessage
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The error message produced by a failed Import")
 
   public String getErrorMessage() {
     return errorMessage;

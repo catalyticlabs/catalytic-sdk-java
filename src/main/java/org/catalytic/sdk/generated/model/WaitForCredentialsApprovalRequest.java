@@ -25,8 +25,9 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * WaitForCredentialsApprovalRequest
+ * A request to activate Credentials
  */
+@ApiModel(description = "A request to activate Credentials")
 
 public class WaitForCredentialsApprovalRequest {
   public static final String SERIALIZED_NAME_TOKEN = "token";
@@ -45,11 +46,11 @@ public class WaitForCredentialsApprovalRequest {
   }
 
    /**
-   * Get token
+   * Credentials Token
    * @return token
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Credentials Token")
 
   public String getToken() {
     return token;
@@ -68,11 +69,11 @@ public class WaitForCredentialsApprovalRequest {
   }
 
    /**
-   * Get waitTimeMillis
+   * Optional timeout to wait for Credentials to be approved via UI (milliseconds)  Defaults to 300000ms (5 minutes)
    * @return waitTimeMillis
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Optional timeout to wait for Credentials to be approved via UI (milliseconds)  Defaults to 300000ms (5 minutes)")
 
   public Integer getWaitTimeMillis() {
     return waitTimeMillis;

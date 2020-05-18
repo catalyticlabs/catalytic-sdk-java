@@ -27,8 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * FieldRestrictions
+ * Contains validation rules for field values
  */
+@ApiModel(description = "Contains validation rules for field values")
 
 public class FieldRestrictions {
   public static final String SERIALIZED_NAME_CHOICES = "choices";
@@ -55,11 +56,11 @@ public class FieldRestrictions {
   }
 
    /**
-   * Get choices
+   * A set of valid choices for this field. If set, FieldType must be  SingleChoice or MultipleChoice
    * @return choices
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A set of valid choices for this field. If set, FieldType must be  SingleChoice or MultipleChoice")
 
   public List<String> getChoices() {
     return choices;
@@ -78,11 +79,11 @@ public class FieldRestrictions {
   }
 
    /**
-   * Get valueRequired
+   * Indicates whether null or empty values will be rejected
    * @return valueRequired
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Indicates whether null or empty values will be rejected")
 
   public Boolean getValueRequired() {
     return valueRequired;

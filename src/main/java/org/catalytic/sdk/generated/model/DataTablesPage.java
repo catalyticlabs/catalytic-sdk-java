@@ -29,8 +29,9 @@ import org.catalytic.sdk.generated.model.DataTable;
 import org.catalytic.sdk.generated.model.PagingOptions;
 
 /**
- * DataTablesPage
+ * A page of DataTables returned from a FindAync request
  */
+@ApiModel(description = "A page of DataTables returned from a FindAync request")
 
 public class DataTablesPage {
   public static final String SERIALIZED_NAME_DATA_TABLES = "dataTables";
@@ -65,11 +66,11 @@ public class DataTablesPage {
   }
 
    /**
-   * Get dataTables
+   * The list of DataTables
    * @return dataTables
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The list of DataTables")
 
   public List<DataTable> getDataTables() {
     return dataTables;

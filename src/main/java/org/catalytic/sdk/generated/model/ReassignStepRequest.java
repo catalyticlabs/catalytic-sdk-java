@@ -46,11 +46,11 @@ public class ReassignStepRequest {
   }
 
    /**
-   * Get id
+   * ID of the step to reassign
    * @return id
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "ID of the step to reassign")
 
   public UUID getId() {
     return id;
@@ -69,11 +69,11 @@ public class ReassignStepRequest {
   }
 
    /**
-   * Get assignTo
+   * The email address of the user to reassign the task to
    * @return assignTo
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The email address of the user to reassign the task to")
 
   public String getAssignTo() {
     return assignTo;

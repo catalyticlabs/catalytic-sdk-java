@@ -25,8 +25,9 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * CredentialsCreationRequest
+ * Represents a request to generate new Credentials for authentication into a Catalytic team
  */
+@ApiModel(description = "Represents a request to generate new Credentials for authentication into a Catalytic team")
 
 public class CredentialsCreationRequest {
   public static final String SERIALIZED_NAME_DOMAIN = "domain";
@@ -45,11 +46,11 @@ public class CredentialsCreationRequest {
   }
 
    /**
-   * Get domain
+   * Catalytic team domain to authenticate in to (ex: \&quot;myteam.pushbot.com\&quot;)
    * @return domain
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Catalytic team domain to authenticate in to (ex: \"myteam.pushbot.com\")")
 
   public String getDomain() {
     return domain;
@@ -68,11 +69,11 @@ public class CredentialsCreationRequest {
   }
 
    /**
-   * Get name
+   * Optional Name to assign to Credentials; visible in Catalytic UI
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Optional Name to assign to Credentials; visible in Catalytic UI")
 
   public String getName() {
     return name;

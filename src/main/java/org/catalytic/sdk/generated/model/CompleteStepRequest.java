@@ -49,11 +49,11 @@ public class CompleteStepRequest {
   }
 
    /**
-   * Get id
+   * ID of the step to complete
    * @return id
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "ID of the step to complete")
 
   public UUID getId() {
     return id;
@@ -80,11 +80,11 @@ public class CompleteStepRequest {
   }
 
    /**
-   * Get stepOutputFields
+   * A collection of the required and optional input fields  that can be passed to this Workflow when starting it.
    * @return stepOutputFields
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A collection of the required and optional input fields  that can be passed to this Workflow when starting it.")
 
   public List<FieldUpdateRequest> getStepOutputFields() {
     return stepOutputFields;

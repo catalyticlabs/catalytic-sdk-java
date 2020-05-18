@@ -65,11 +65,11 @@ public class FileMetadataPage {
   }
 
    /**
-   * Get files
+   * A Collection of items with Dictionaries keyed by both ID and Name
    * @return files
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A Collection of items with Dictionaries keyed by both ID and Name")
 
   public List<FileMetadata> getFiles() {
     return files;

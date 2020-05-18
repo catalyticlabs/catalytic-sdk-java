@@ -29,8 +29,9 @@ import org.catalytic.sdk.generated.model.Credentials;
 import org.catalytic.sdk.generated.model.PagingOptions;
 
 /**
- * CredentialsPage
+ * Represents a page of Credentials
  */
+@ApiModel(description = "Represents a page of Credentials")
 
 public class CredentialsPage {
   public static final String SERIALIZED_NAME_CREDENTIALS = "credentials";
@@ -65,11 +66,11 @@ public class CredentialsPage {
   }
 
    /**
-   * Get credentials
+   * The Collection of Credentials in the page
    * @return credentials
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The Collection of Credentials in the page")
 
   public List<Credentials> getCredentials() {
     return credentials;

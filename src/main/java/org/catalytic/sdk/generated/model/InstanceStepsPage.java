@@ -29,8 +29,9 @@ import org.catalytic.sdk.generated.model.InstanceStep;
 import org.catalytic.sdk.generated.model.PagingOptions;
 
 /**
- * InstanceStepsPage
+ * A page of Instance Steps returned from a FindAync request
  */
+@ApiModel(description = "A page of Instance Steps returned from a FindAync request")
 
 public class InstanceStepsPage {
   public static final String SERIALIZED_NAME_STEPS = "steps";
@@ -65,11 +66,11 @@ public class InstanceStepsPage {
   }
 
    /**
-   * Get steps
+   * The list of Steps
    * @return steps
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The list of Steps")
 
   public List<InstanceStep> getSteps() {
     return steps;

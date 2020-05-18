@@ -25,8 +25,9 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * FieldUpdateRequest
+ * Request to update the value of a field
  */
+@ApiModel(description = "Request to update the value of a field")
 
 public class FieldUpdateRequest {
   public static final String SERIALIZED_NAME_NAME = "name";
@@ -49,11 +50,11 @@ public class FieldUpdateRequest {
   }
 
    /**
-   * Get name
+   * The name of the field
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The name of the field")
 
   public String getName() {
     return name;
@@ -72,11 +73,11 @@ public class FieldUpdateRequest {
   }
 
    /**
-   * Get referenceName
+   * The reference name of the field
    * @return referenceName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The reference name of the field")
 
   public String getReferenceName() {
     return referenceName;
@@ -95,11 +96,11 @@ public class FieldUpdateRequest {
   }
 
    /**
-   * Get value
+   * The string-serialized value of the field
    * @return value
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The string-serialized value of the field")
 
   public String getValue() {
     return value;

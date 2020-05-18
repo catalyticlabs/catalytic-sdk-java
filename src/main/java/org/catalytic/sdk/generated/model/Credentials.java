@@ -27,8 +27,9 @@ import java.util.UUID;
 import org.catalytic.sdk.generated.model.CredentialType;
 
 /**
- * Credentials
+ * A set of Credentials used for authentication via the SDK
  */
+@ApiModel(description = "A set of Credentials used for authentication via the SDK")
 
 public class Credentials {
   public static final String SERIALIZED_NAME_ID = "id";
@@ -71,10 +72,10 @@ public class Credentials {
   }
 
    /**
-   * Get id
+   * The public Id of the Credentials
    * @return id
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The public Id of the Credentials")
 
   public UUID getId() {
     return id;
@@ -93,11 +94,11 @@ public class Credentials {
   }
 
    /**
-   * Get domain
+   * The Domain of the Catalytic team with which these Credentials are associated
    * @return domain
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The Domain of the Catalytic team with which these Credentials are associated")
 
   public String getDomain() {
     return domain;
@@ -116,11 +117,11 @@ public class Credentials {
   }
 
    /**
-   * Get name
+   * The name associated with the Credentials
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The name associated with the Credentials")
 
   public String getName() {
     return name;
@@ -162,11 +163,11 @@ public class Credentials {
   }
 
    /**
-   * Get token
+   * The serialized Credentials Token
    * @return token
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The serialized Credentials Token")
 
   public String getToken() {
     return token;
@@ -185,11 +186,11 @@ public class Credentials {
   }
 
    /**
-   * Get secret
+   * The confidential Secret of the Credentials
    * @return secret
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The confidential Secret of the Credentials")
 
   public String getSecret() {
     return secret;
@@ -208,11 +209,11 @@ public class Credentials {
   }
 
    /**
-   * Get environment
+   * The environment of the Catalytic team associated with the Credentials
    * @return environment
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The environment of the Catalytic team associated with the Credentials")
 
   public String getEnvironment() {
     return environment;
@@ -231,11 +232,11 @@ public class Credentials {
   }
 
    /**
-   * Get owner
+   * The email address of the user who these Credentials belong to
    * @return owner
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The email address of the user who these Credentials belong to")
 
   public String getOwner() {
     return owner;

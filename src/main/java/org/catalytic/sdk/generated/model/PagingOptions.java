@@ -25,8 +25,9 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * PagingOptions
+ * Properties required for executing a search request
  */
+@ApiModel(description = "Properties required for executing a search request")
 
 public class PagingOptions {
   public static final String SERIALIZED_NAME_SIZE = "size";
@@ -49,11 +50,11 @@ public class PagingOptions {
   }
 
    /**
-   * Get size
+   * The page size of search results
    * @return size
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The page size of search results")
 
   public Integer getSize() {
     return size;
@@ -72,11 +73,11 @@ public class PagingOptions {
   }
 
    /**
-   * Get pageToken
+   * A token used to retrieve the next page of results
    * @return pageToken
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A token used to retrieve the next page of results")
 
   public String getPageToken() {
     return pageToken;
@@ -95,11 +96,11 @@ public class PagingOptions {
   }
 
    /**
-   * Get getAllResults
+   * Indicates whether all results should be retrieved
    * @return getAllResults
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Indicates whether all results should be retrieved")
 
   public Boolean getGetAllResults() {
     return getAllResults;

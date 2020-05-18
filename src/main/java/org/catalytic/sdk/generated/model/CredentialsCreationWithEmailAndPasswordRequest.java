@@ -25,8 +25,9 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * CredentialsCreationWithEmailAndPasswordRequest
+ * Represents a request to create and approve new Credentials for authentication into a Catalytic team  with passed username and password
  */
+@ApiModel(description = "Represents a request to create and approve new Credentials for authentication into a Catalytic team  with passed username and password")
 
 public class CredentialsCreationWithEmailAndPasswordRequest {
   public static final String SERIALIZED_NAME_EMAIL = "email";
@@ -53,11 +54,11 @@ public class CredentialsCreationWithEmailAndPasswordRequest {
   }
 
    /**
-   * Get email
+   * Optional email address of the Catalytic user for whom the Credentials should be created
    * @return email
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Optional email address of the Catalytic user for whom the Credentials should be created")
 
   public String getEmail() {
     return email;
@@ -76,11 +77,11 @@ public class CredentialsCreationWithEmailAndPasswordRequest {
   }
 
    /**
-   * Get password
+   * Optional password of the Catalytic user for whom the Credentials should be created
    * @return password
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Optional password of the Catalytic user for whom the Credentials should be created")
 
   public String getPassword() {
     return password;
@@ -99,11 +100,11 @@ public class CredentialsCreationWithEmailAndPasswordRequest {
   }
 
    /**
-   * Get domain
+   * Catalytic team domain to authenticate in to (ex: \&quot;myteam.pushbot.com\&quot;)
    * @return domain
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Catalytic team domain to authenticate in to (ex: \"myteam.pushbot.com\")")
 
   public String getDomain() {
     return domain;
@@ -122,11 +123,11 @@ public class CredentialsCreationWithEmailAndPasswordRequest {
   }
 
    /**
-   * Get name
+   * Optional Name to assign to Credentials; visible in Catalytic UI
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Optional Name to assign to Credentials; visible in Catalytic UI")
 
   public String getName() {
     return name;

@@ -57,11 +57,11 @@ public class StartInstanceRequest {
   }
 
    /**
-   * Get workflowId
+   * ID of the Workflow to start
    * @return workflowId
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "ID of the Workflow to start")
 
   public UUID getWorkflowId() {
     return workflowId;
@@ -80,11 +80,11 @@ public class StartInstanceRequest {
   }
 
    /**
-   * Get name
+   * Optional name for the instance
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Optional name for the instance")
 
   public String getName() {
     return name;
@@ -103,11 +103,11 @@ public class StartInstanceRequest {
   }
 
    /**
-   * Get description
+   * Optional description for the instance
    * @return description
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Optional description for the instance")
 
   public String getDescription() {
     return description;
@@ -134,11 +134,11 @@ public class StartInstanceRequest {
   }
 
    /**
-   * Get inputFields
+   * A collection of the required and optional input fields  that can be passed to this Workflow when starting it.
    * @return inputFields
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A collection of the required and optional input fields  that can be passed to this Workflow when starting it.")
 
   public List<FieldUpdateRequest> getInputFields() {
     return inputFields;

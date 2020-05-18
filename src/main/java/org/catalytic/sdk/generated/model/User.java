@@ -26,8 +26,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * User
+ * Represents a user on a Catalytic team
  */
+@ApiModel(description = "Represents a user on a Catalytic team")
 
 public class User {
   public static final String SERIALIZED_NAME_ID = "id";
@@ -58,10 +59,10 @@ public class User {
   }
 
    /**
-   * Get id
+   * Unique ID for the user
    * @return id
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Unique ID for the user")
 
   public UUID getId() {
     return id;
@@ -80,11 +81,11 @@ public class User {
   }
 
    /**
-   * Get username
+   * Unique username of user
    * @return username
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Unique username of user")
 
   public String getUsername() {
     return username;
@@ -103,11 +104,11 @@ public class User {
   }
 
    /**
-   * Get email
+   * The email address associated with this user
    * @return email
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The email address associated with this user")
 
   public String getEmail() {
     return email;
@@ -126,11 +127,11 @@ public class User {
   }
 
    /**
-   * Get fullName
+   * The user&#39;s full name
    * @return fullName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The user's full name")
 
   public String getFullName() {
     return fullName;
@@ -149,11 +150,11 @@ public class User {
   }
 
    /**
-   * Get teamName
+   * The name of this User&#39;s Catalytic team
    * @return teamName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The name of this User's Catalytic team")
 
   public String getTeamName() {
     return teamName;

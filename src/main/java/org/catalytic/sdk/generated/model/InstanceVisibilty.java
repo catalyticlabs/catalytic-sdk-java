@@ -15,6 +15,7 @@ package org.catalytic.sdk.generated.model;
 
 import java.util.Objects;
 import java.util.Arrays;
+import io.swagger.annotations.ApiModel;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * Gets or Sets InstanceVisibilty
+ * Represents whether or not an instance can be viewed by any  team member, or just specific team members
  */
 @JsonAdapter(InstanceVisibilty.Adapter.class)
 public enum InstanceVisibilty {

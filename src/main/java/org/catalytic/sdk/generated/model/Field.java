@@ -28,8 +28,9 @@ import org.catalytic.sdk.generated.model.FieldRestrictions;
 import org.catalytic.sdk.generated.model.FieldType;
 
 /**
- * Field
+ * Represents a named and typed variable within a Workflow or Instance
  */
+@ApiModel(description = "Represents a named and typed variable within a Workflow or Instance")
 
 public class Field {
   public static final String SERIALIZED_NAME_ID = "id";
@@ -76,11 +77,11 @@ public class Field {
   }
 
    /**
-   * Get id
+   * The unique ID of the field
    * @return id
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The unique ID of the field")
 
   public UUID getId() {
     return id;
@@ -99,11 +100,11 @@ public class Field {
   }
 
    /**
-   * Get name
+   * The descriptive name of the Field
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The descriptive name of the Field")
 
   public String getName() {
     return name;
@@ -122,11 +123,11 @@ public class Field {
   }
 
    /**
-   * Get referenceName
+   * A unique name (within the scope of the Workflow or Instance) that  can be used to reference the value of this field in  a template or operation.
    * @return referenceName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A unique name (within the scope of the Workflow or Instance) that  can be used to reference the value of this field in  a template or operation.")
 
   public String getReferenceName() {
     return referenceName;
@@ -145,11 +146,11 @@ public class Field {
   }
 
    /**
-   * Get description
+   * A description of this field. This can be used as instructions   for users filling out this field in a form
    * @return description
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A description of this field. This can be used as instructions   for users filling out this field in a form")
 
   public String getDescription() {
     return description;
@@ -168,11 +169,11 @@ public class Field {
   }
 
    /**
-   * Get position
+   * The visual position of this field relative others in the same scope
    * @return position
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The visual position of this field relative others in the same scope")
 
   public Integer getPosition() {
     return position;
@@ -237,11 +238,11 @@ public class Field {
   }
 
    /**
-   * Get value
+   * The value of this field, serialized as a string
    * @return value
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The value of this field, serialized as a string")
 
   public String getValue() {
     return value;
@@ -260,11 +261,11 @@ public class Field {
   }
 
    /**
-   * Get defaultValue
+   * The optional default value of this field, serialized as a string. The   serialization format depends on the type of field.
    * @return defaultValue
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The optional default value of this field, serialized as a string. The   serialization format depends on the type of field.")
 
   public String getDefaultValue() {
     return defaultValue;

@@ -13,16 +13,25 @@
 
 package org.catalytic.sdk.generated.model;
 
+import java.util.Objects;
+import java.util.Arrays;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import org.catalytic.sdk.generated.model.PagingOptions;
+import org.catalytic.sdk.generated.model.User;
 
 /**
- * UsersPage
+ * A page of Users returned from a FindAsync request
  */
+@ApiModel(description = "A page of Users returned from a FindAsync request")
 
 public class UsersPage {
   public static final String SERIALIZED_NAME_USERS = "users";
@@ -57,11 +66,11 @@ public class UsersPage {
   }
 
    /**
-   * Get users
+   * The List of Users
    * @return users
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The List of Users")
 
   public List<User> getUsers() {
     return users;

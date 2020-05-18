@@ -26,8 +26,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * WorkflowExport
+ * Represents a Workflow Export
  */
+@ApiModel(description = "Represents a Workflow Export")
 
 public class WorkflowExport {
   public static final String SERIALIZED_NAME_ID = "id";
@@ -54,11 +55,11 @@ public class WorkflowExport {
   }
 
    /**
-   * Get id
+   * The Id of the Workflow Export
    * @return id
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The Id of the Workflow Export")
 
   public UUID getId() {
     return id;
@@ -100,11 +101,11 @@ public class WorkflowExport {
   }
 
    /**
-   * Get fileId
+   * The Id of the File created by a successful Export
    * @return fileId
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The Id of the File created by a successful Export")
 
   public UUID getFileId() {
     return fileId;
@@ -123,11 +124,11 @@ public class WorkflowExport {
   }
 
    /**
-   * Get errorMessage
+   * The error message produced by a failed Export
    * @return errorMessage
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The error message produced by a failed Export")
 
   public String getErrorMessage() {
     return errorMessage;

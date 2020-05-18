@@ -26,8 +26,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * WorkflowImportRequest
+ * A request to import a Workflow from a .catalytic Workflow Export file
  */
+@ApiModel(description = "A request to import a Workflow from a .catalytic Workflow Export file")
 
 public class WorkflowImportRequest {
   public static final String SERIALIZED_NAME_FILE_ID = "fileId";
@@ -46,11 +47,11 @@ public class WorkflowImportRequest {
   }
 
    /**
-   * Get fileId
+   * The FileID of the uploaded .catalytic Workflow Export file
    * @return fileId
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The FileID of the uploaded .catalytic Workflow Export file")
 
   public UUID getFileId() {
     return fileId;
@@ -69,11 +70,11 @@ public class WorkflowImportRequest {
   }
 
    /**
-   * Get password
+   * The optional password used to secure the .catalytic Workflow Export file
    * @return password
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The optional password used to secure the .catalytic Workflow Export file")
 
   public String getPassword() {
     return password;

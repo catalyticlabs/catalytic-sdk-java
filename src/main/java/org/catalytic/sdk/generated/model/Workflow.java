@@ -31,8 +31,9 @@ import org.catalytic.sdk.generated.model.FieldVisibility;
 import org.catalytic.sdk.generated.model.InstanceVisibilty;
 
 /**
- * Workflow
+ * A Workflow is an automation on the Catalytic platform. It is a template  of the process you want to run each time your Workflow is started.
  */
+@ApiModel(description = "A Workflow is an automation on the Catalytic platform. It is a template  of the process you want to run each time your Workflow is started.")
 
 public class Workflow {
   public static final String SERIALIZED_NAME_ID = "id";
@@ -127,10 +128,10 @@ public class Workflow {
   }
 
    /**
-   * Get id
+   * The unique ID of the Workflow
    * @return id
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The unique ID of the Workflow")
 
   public UUID getId() {
     return id;
@@ -149,11 +150,11 @@ public class Workflow {
   }
 
    /**
-   * Get name
+   * The descriptive name of the Workflow
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The descriptive name of the Workflow")
 
   public String getName() {
     return name;
@@ -172,11 +173,11 @@ public class Workflow {
   }
 
    /**
-   * Get teamName
+   * The name of the team in which the Workflow is defined
    * @return teamName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The name of the team in which the Workflow is defined")
 
   public String getTeamName() {
     return teamName;
@@ -195,11 +196,11 @@ public class Workflow {
   }
 
    /**
-   * Get description
+   * A description of what the Workflow does
    * @return description
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A description of what the Workflow does")
 
   public String getDescription() {
     return description;
@@ -218,11 +219,11 @@ public class Workflow {
   }
 
    /**
-   * Get category
+   * A descriptive grouping for your Workflow
    * @return category
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A descriptive grouping for your Workflow")
 
   public String getCategory() {
     return category;
@@ -241,11 +242,11 @@ public class Workflow {
   }
 
    /**
-   * Get owner
+   * The email address of the user who owns this Workflow
    * @return owner
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The email address of the user who owns this Workflow")
 
   public String getOwner() {
     return owner;
@@ -264,11 +265,11 @@ public class Workflow {
   }
 
    /**
-   * Get createdBy
+   * The email address of the user who created this Workflow
    * @return createdBy
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The email address of the user who created this Workflow")
 
   public String getCreatedBy() {
     return createdBy;
@@ -295,11 +296,11 @@ public class Workflow {
   }
 
    /**
-   * Get inputFields
+   * A collection of the required and optional input fields  that can be passed to this Workflow when starting it.
    * @return inputFields
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A collection of the required and optional input fields  that can be passed to this Workflow when starting it.")
 
   public List<Field> getInputFields() {
     return inputFields;
@@ -318,11 +319,11 @@ public class Workflow {
   }
 
    /**
-   * Get isPublished
+   * Indicates whether the Workflow is published; if false, Workflow is in draft mode
    * @return isPublished
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Indicates whether the Workflow is published; if false, Workflow is in draft mode")
 
   public Boolean getIsPublished() {
     return isPublished;
@@ -341,11 +342,11 @@ public class Workflow {
   }
 
    /**
-   * Get isArchived
+   * Indicates whether is Archived and no longer available for users to find, start or edit.
    * @return isArchived
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Indicates whether is Archived and no longer available for users to find, start or edit.")
 
   public Boolean getIsArchived() {
     return isArchived;
@@ -418,11 +419,11 @@ public class Workflow {
   }
 
    /**
-   * Get adminUsers
+   * The users who may view, start, and edit this Workflow in addition to Catalytic.Sdk.Entities.Workflow.Owner
    * @return adminUsers
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The users who may view, start, and edit this Workflow in addition to Catalytic.Sdk.Entities.Workflow.Owner")
 
   public List<String> getAdminUsers() {
     return adminUsers;
@@ -449,11 +450,11 @@ public class Workflow {
   }
 
    /**
-   * Get standardUsers
+   * The users who can view and start this Workflow
    * @return standardUsers
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The users who can view and start this Workflow")
 
   public List<String> getStandardUsers() {
     return standardUsers;
@@ -472,11 +473,11 @@ public class Workflow {
   }
 
    /**
-   * Get taskCountLimit
+   * The maximum number of steps that can appear in an Instance of this Workflow
    * @return taskCountLimit
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The maximum number of steps that can appear in an Instance of this Workflow")
 
   public Integer getTaskCountLimit() {
     return taskCountLimit;
@@ -495,11 +496,11 @@ public class Workflow {
   }
 
    /**
-   * Get fieldCountLimit
+   * The maximum number of fields that can appear in an Instance of this Workflow
    * @return fieldCountLimit
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The maximum number of fields that can appear in an Instance of this Workflow")
 
   public Integer getFieldCountLimit() {
     return fieldCountLimit;
@@ -518,11 +519,11 @@ public class Workflow {
   }
 
    /**
-   * Get fieldSizeLimit
+   * The maximum size of data stored in any field in an Instance of this Workflow
    * @return fieldSizeLimit
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The maximum size of data stored in any field in an Instance of this Workflow")
 
   public Integer getFieldSizeLimit() {
     return fieldSizeLimit;
@@ -541,11 +542,11 @@ public class Workflow {
   }
 
    /**
-   * Get fieldTotalSizeLimit
+   * The maximum total size of data stored in all fields in an Instance of this Workflow
    * @return fieldTotalSizeLimit
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The maximum total size of data stored in all fields in an Instance of this Workflow")
 
   public Integer getFieldTotalSizeLimit() {
     return fieldTotalSizeLimit;
@@ -564,11 +565,11 @@ public class Workflow {
   }
 
    /**
-   * Get dataTableRowLimit
+   * The maximum number of rows of any data table created in an Instance of this Workflow
    * @return dataTableRowLimit
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The maximum number of rows of any data table created in an Instance of this Workflow")
 
   public Integer getDataTableRowLimit() {
     return dataTableRowLimit;
@@ -587,11 +588,11 @@ public class Workflow {
   }
 
    /**
-   * Get dataTableColumnLimit
+   * The maximum number of columns of any data table created in an Instance of this Workflow
    * @return dataTableColumnLimit
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The maximum number of columns of any data table created in an Instance of this Workflow")
 
   public Integer getDataTableColumnLimit() {
     return dataTableColumnLimit;
@@ -610,11 +611,11 @@ public class Workflow {
   }
 
    /**
-   * Get dataTableCellLimit
+   * The maximum number of cells of any data table created in an Instance of this Workflow
    * @return dataTableCellLimit
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The maximum number of cells of any data table created in an Instance of this Workflow")
 
   public Integer getDataTableCellLimit() {
     return dataTableCellLimit;

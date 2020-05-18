@@ -30,8 +30,9 @@ import org.catalytic.sdk.generated.model.Field;
 import org.catalytic.sdk.generated.model.InstanceStepStatus;
 
 /**
- * InstanceStep
+ * Represents a single Step of an Instance
  */
+@ApiModel(description = "Represents a single Step of an Instance")
 
 public class InstanceStep {
   public static final String SERIALIZED_NAME_ID = "id";
@@ -82,10 +83,10 @@ public class InstanceStep {
   }
 
    /**
-   * Get id
+   * Unique ID of this Task
    * @return id
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Unique ID of this Task")
 
   public UUID getId() {
     return id;
@@ -104,10 +105,10 @@ public class InstanceStep {
   }
 
    /**
-   * Get instanceId
+   * Unique ID of this Instance to which this Step belongs
    * @return instanceId
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Unique ID of this Instance to which this Step belongs")
 
   public UUID getInstanceId() {
     return instanceId;
@@ -126,10 +127,10 @@ public class InstanceStep {
   }
 
    /**
-   * Get workflowId
+   * Unique ID of the Workflow to which this Step belongs
    * @return workflowId
   **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Unique ID of the Workflow to which this Step belongs")
 
   public UUID getWorkflowId() {
     return workflowId;
@@ -148,11 +149,11 @@ public class InstanceStep {
   }
 
    /**
-   * Get name
+   * Display name of this Task
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Display name of this Task")
 
   public String getName() {
     return name;
@@ -171,11 +172,11 @@ public class InstanceStep {
   }
 
    /**
-   * Get teamName
+   * The name of the Catalytic team in which this Task exists
    * @return teamName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "The name of the Catalytic team in which this Task exists")
 
   public String getTeamName() {
     return teamName;
@@ -194,11 +195,11 @@ public class InstanceStep {
   }
 
    /**
-   * Get position
+   * The position of this Task amongst the other Tasks in the Instance
    * @return position
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The position of this Task amongst the other Tasks in the Instance")
 
   public Integer getPosition() {
     return position;
@@ -217,11 +218,11 @@ public class InstanceStep {
   }
 
    /**
-   * Get description
+   * A description or instructions of the Task
    * @return description
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A description or instructions of the Task")
 
   public String getDescription() {
     return description;
@@ -263,11 +264,11 @@ public class InstanceStep {
   }
 
    /**
-   * Get assignedTo
+   * The email of the user (if any) that this InstanceStep is assigned to
    * @return assignedTo
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The email of the user (if any) that this InstanceStep is assigned to")
 
   public String getAssignedTo() {
     return assignedTo;
@@ -294,11 +295,11 @@ public class InstanceStep {
   }
 
    /**
-   * Get outputFields
+   * A collection of the required and optional output fields  that can be set by this InstanceStep when completing it.
    * @return outputFields
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A collection of the required and optional output fields  that can be set by this InstanceStep when completing it.")
 
   public List<Field> getOutputFields() {
     return outputFields;
