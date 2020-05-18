@@ -19,7 +19,7 @@ public class ConfigurationUtils {
         if (apiClient == null) {
             apiClient = new ApiClient();
             // TODO: Dynamically fetch the version from build.gradle
-            apiClient.setUserAgent("Catalytic Java SDK/0.0.1-SNAPSHOT");
+            apiClient.setUserAgent("Catalytic Java SDK/0.0.1");
             apiClient.setBearerToken(secret.trim());
         }
 

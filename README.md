@@ -1,11 +1,10 @@
+[![](https://jitpack.io/v/catalyticlabs/catalytic-sdk-java.svg)](https://jitpack.io/#catalyticlabs/catalytic-sdk-java)
 ![Java Build with Gradle](https://github.com/catalyticlabs/catalytic-sdk-java/workflows/Java%20CI%20with%20Gradle/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/216fa69d608273f7293c/maintainability)](https://codeclimate.com/repos/5eba26eb362eac017c00a298/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/216fa69d608273f7293c/test_coverage)](https://codeclimate.com/repos/5eba26eb362eac017c00a298/test_coverage)
 
 # catalytic/sdk
 > Catalytic's Java SDK
->
-> Current version **0.0.1-SNAPSHOT**
 
 The Catalytic SDK allows you to integration your app with the Catalytic Platform.
 
@@ -23,21 +22,43 @@ Key Benefits:
 Java 8 and later
 
 ## Installation
-Maven
+
+### Gradle
+
+Add the [Jitpack](https://jitpack.io/) repository
+
+```groovy
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+}
+```
+
+Add the Catalytic SDK dependency
+
+```groovy
+compile 'com.github.catalyticlabs:catalytic-sdk-java:0.0.1'
+```
+
+### Maven
+
+Add the [Jitpack](https://jitpack.io) repository
+
+```xml
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+```
 
 ```xml
 <dependency>
-  <groupId>org.catalytic</groupId>
-  <artifactId>sdk</artifactId>
+  <groupId>com.github.catalyticlabs</groupId>
+  <artifactId>catalytic-sdk-java</artifactId>
   <version>0.0.1</version>
   <scope>compile</scope>
 </dependency>
-```
-
-Gradle
-
-```groovy
-compile 'org.catalytic:sdk:0.0.1
 ```
 
 ## Documentation
