@@ -80,14 +80,4 @@ public class Filter {
         FilterCriteria filterCriteria = new FilterCriteria(this, "assignee");
         return filterCriteria;
     }
-
-    /**
-     * Creates a FilterCriteria object for filtering instanceId
-     *
-     * @return  The created FilterCriteria object
-     */
-    public FilterCriteria instanceId () {
-        FilterCriteria filterCriteria = new FilterCriteria(this, "instanceId");
-        return filterCriteria;
-    }
 }

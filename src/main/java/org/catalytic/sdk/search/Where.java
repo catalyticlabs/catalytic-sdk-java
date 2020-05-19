@@ -60,13 +60,4 @@ public class Where {
     public FilterCriteria assignee() {
         return new Filter().assignee();
     }
-
-    /**
-     * InstanceId to be filtered
-     *
-     * @return  The created FilterCritiera object
-     */
-    public FilterCriteria instanceId() {
-        return new Filter().instanceId();
-    }
 }

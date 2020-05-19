@@ -26,7 +26,7 @@ import java.util.UUID;
 /**
  * Workflows client
  */
-public class Workflows {
+public class Workflows extends BaseClient {
 
     private WorkflowsApi workflowsApi;
     private Files filesClient;
@@ -297,23 +297,7 @@ public class Workflows {
      */
     private Workflow createWorkflow(org.catalytic.sdk.generated.model.Workflow internalWorkflow)
     {
-        List<Field> newInputFields = new ArrayList<>();
-        if (internalWorkflow.getInputFields() != null) {
-            for (org.catalytic.sdk.generated.model.Field internalField : internalWorkflow.getInputFields()) {
-                Field field = new Field(
-                        internalField.getId(),
-                        internalField.getName(),
-                        internalField.getReferenceName(),
-                        internalField.getDescription(),
-                        internalField.getPosition(),
-                        internalField.getRestrictions(),
-                        internalField.getFieldType().getValue(),
-                        internalField.getValue(),
-                        internalField.getDefaultValue()
-                );
-                newInputFields.add(field);
-            }
-        }
+        List<Field> newInputFields = createFields(internalWorkflow.getInputFields());
 
         Workflow workflow = new Workflow(
                 internalWorkflow.getId(),

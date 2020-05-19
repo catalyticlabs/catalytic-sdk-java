@@ -138,7 +138,7 @@ public class WorkflowsTests {
 
         Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
         Where where = new Where();
-        WorkflowsPage results = workflowsClient.find(where.text().is("My Workflow"));
+        WorkflowsPage results = workflowsClient.find(where.text().matches("My Workflow"));
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
         assertThat(results.getWorkflows().get(0).getName()).isEqualTo("My Workflow");

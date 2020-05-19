@@ -20,7 +20,7 @@ import java.util.UUID;
 /**
  * Instances client
  */
-public class Instances {
+public class Instances extends BaseClient {
 
     private InstancesApi instancesApi;
     private InstanceStepsApi instanceStepsApi;
@@ -459,45 +459,14 @@ public class Instances {
      */
     private Instance createInstance(org.catalytic.sdk.generated.model.Instance internalInstance)
     {
-        List<InstanceStep> steps = new ArrayList<>();
-        List<Field> fields = new ArrayList<>();
         String status = null;
 
         if (internalInstance.getStatus() != null) {
             status = internalInstance.getStatus().getValue();
         }
 
-        // Create external steps from internal steps if any exist
-        if (internalInstance.getSteps() != null) {
-
-            for (org.catalytic.sdk.generated.model.InstanceStep internalInstanceStep : internalInstance.getSteps()) {
-
-                // Create external outputFields from internal outputFields
-                List<Field> outputFields = createFields(internalInstanceStep.getOutputFields());
-
-                org.catalytic.sdk.entities.InstanceStep step = new org.catalytic.sdk.entities.InstanceStep(
-                        internalInstanceStep.getId(),
-                        internalInstanceStep.getInstanceId(),
-                        internalInstanceStep.getWorkflowId(),
-                        internalInstanceStep.getName(),
-                        internalInstanceStep.getTeamName(),
-                        internalInstanceStep.getPosition(),
-                        internalInstanceStep.getDescription(),
-                        internalInstanceStep.getStatus().getValue(),
-                        internalInstanceStep.getAssignedTo(),
-                        outputFields
-                );
-                steps.add(step);
-            }
-        }
-
-        // Create external fields from internal fields
-        if (internalInstance.getFields() != null) {
-            for (org.catalytic.sdk.generated.model.Field internalField : internalInstance.getFields()) {
-                Field field = createField(internalField);
-                fields.add(field);
-            }
-        }
+        List<Field> fields = createFields(internalInstance.getFields());
+        List<InstanceStep> steps = createInstanceSteps(internalInstance.getSteps());
 
         // Create an external Instance
         Instance instance = new Instance(
@@ -516,6 +485,7 @@ public class Instances {
                 internalInstance.getVisibility(),
                 internalInstance.getVisibleToUsers()
         );
+
         return instance;
     }
 
@@ -539,58 +509,37 @@ public class Instances {
         }
 
         InstanceStep instanceStep = new InstanceStep(
-                internalInstanceStep.getId(),
-                internalInstanceStep.getInstanceId(),
-                internalInstanceStep.getWorkflowId(),
-                internalInstanceStep.getName(),
-                internalInstanceStep.getTeamName(),
-                internalInstanceStep.getPosition(),
-                internalInstanceStep.getDescription(),
-                status,
-                internalInstanceStep.getAssignedTo(),
-                outputFields
+            internalInstanceStep.getId(),
+            internalInstanceStep.getInstanceId(),
+            internalInstanceStep.getWorkflowId(),
+            internalInstanceStep.getName(),
+            internalInstanceStep.getTeamName(),
+            internalInstanceStep.getPosition(),
+            internalInstanceStep.getDescription(),
+            status,
+            internalInstanceStep.getAssignedTo(),
+            outputFields
         );
         return instanceStep;
     }
 
     /**
-     * Create external Fields from internal Fields
+     * Create external InstanceStep from internal InstanceSteps
      *
-     * @param internalFields    The internal fields to create external fields from
-     * @return                  External fields
+     * @param internalSteps The internal steps to create external steps from
+     * @return              External steps
      */
-    private List<Field> createFields (List<org.catalytic.sdk.generated.model.Field> internalFields) {
-        List<Field> fields = new ArrayList<>();
+    private List<InstanceStep> createInstanceSteps(List<org.catalytic.sdk.generated.model.InstanceStep> internalSteps) {
+        List<InstanceStep> steps = new ArrayList<>();
 
-        // Create external outputFields from internal outputFields
-        if (internalFields != null) {
-            for (org.catalytic.sdk.generated.model.Field internalField : internalFields) {
-                Field field = createField(internalField);
-                fields.add(field);
+        // Create external steps from internal steps
+        if (internalSteps != null) {
+            for (org.catalytic.sdk.generated.model.InstanceStep internalStep : internalSteps) {
+                InstanceStep step = createInstanceStep(internalStep);
+                steps.add(step);
             }
         }
 
-        return fields;
-    }
-
-    /**
-     * Create an external Field from an internal Field
-     *
-     * @param internalField The internal field to create an external field from
-     * @return              An external field
-     */
-    private Field createField(org.catalytic.sdk.generated.model.Field internalField) {
-        Field field = new Field(
-                internalField.getId(),
-                internalField.getName(),
-                internalField.getReferenceName(),
-                internalField.getDescription(),
-                internalField.getPosition(),
-                internalField.getRestrictions(),
-                internalField.getFieldType().getValue(),
-                internalField.getValue(),
-                internalField.getDefaultValue()
-        );
-        return field;
+        return steps;
     }
 }

@@ -5,7 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.0.1]
 ### Added
 - Initial methods for Users, Workflows, DataTables, Files, and Instances.
 
-[Unreleased]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.0.1...HEAD
+[0.0.1]: https://github.com/catalyticlabs/catalytic-sdk-java/releases/tag/v0.0.1
