@@ -8,8 +8,8 @@ import static com.google.common.truth.Truth.assertThat;
 public class ConfigurationUtilsTests {
 
     @Test
-    public void itShouldGetApiClient() {
-        ApiClient apiClient = ConfigurationUtils.getApiClient("abcd1234");
+    public void itShouldGetAnApiClient() {
+        ApiClient apiClient = ConfigurationUtils.getApiClient("foobar");
         assertThat(apiClient).isNotNull();
     }
 }
