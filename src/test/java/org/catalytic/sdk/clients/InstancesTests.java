@@ -36,7 +36,7 @@ public class InstancesTests {
     }
 
     @Test
-    public void getInstance_itShouldGetAInstance() throws Exception {
+    public void getInstance_itShouldGetAnInstance() throws Exception {
         org.catalytic.sdk.generated.model.Instance sdkInstance = new org.catalytic.sdk.generated.model.Instance();
         sdkInstance.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         when(instancesApi.getInstance("ac14952a-a331-457c-ac7d-9a284258b65a")).thenReturn(sdkInstance);

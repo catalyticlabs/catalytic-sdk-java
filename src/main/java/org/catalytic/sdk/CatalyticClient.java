@@ -9,6 +9,7 @@ import java.io.IOException;
  * Client for connecting to Catalytic
  */
 public class CatalyticClient {
+
     private Workflows workflows;
     private Instances instances;
     private Users users;

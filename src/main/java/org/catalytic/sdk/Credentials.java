@@ -1,5 +1,6 @@
 package org.catalytic.sdk;
 
+import org.apache.logging.log4j.Logger;
 import org.catalytic.sdk.exceptions.CredentialsNotFoundException;
 
 import java.io.IOException;
@@ -11,6 +12,8 @@ import java.nio.file.Paths;
  * Class containing various ways of fetching the Catalytic token
  */
 public class Credentials {
+
+    private static final Logger log = CatalyticLogger.getLogger(Credentials.class);
 
     /**
      * Tries to find a token.
@@ -57,6 +60,7 @@ public class Credentials {
 
         // If it didn't exist, try to get it from the default file
         if (token == null) {
+            log.debug("CATALYTIC_CREDENTIALS is null/empty");
             token = fetchTokenFromFile(null);
         }
 
@@ -97,6 +101,7 @@ public class Credentials {
      * @return  The Catalytic access token
      */
     private String fetchTokenFromEnvVar() {
+        log.debug("Looking for credentials on environment variable CATALYTIC_CREDENTIALS");
         String token = System.getenv("CATALYTIC_CREDENTIALS");
         return token;
     }
@@ -128,6 +133,7 @@ public class Credentials {
             path = home + "/.catalytic/credentials/default";
         }
 
+        log.debug("Looking for credentials file " + path);
         Path fullPath = Paths.get(path);
         token = new String(Files.readAllBytes(fullPath));
         return token;

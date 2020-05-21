@@ -1,6 +1,8 @@
 package org.catalytic.sdk.clients;
 
 
+import org.apache.logging.log4j.Logger;
+import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.Field;
 import org.catalytic.sdk.entities.File;
@@ -28,6 +30,7 @@ import java.util.UUID;
  */
 public class Workflows extends BaseClient {
 
+    private static final Logger log = CatalyticLogger.getLogger(Workflows.class);
     private WorkflowsApi workflowsApi;
     private Files filesClient;
 
@@ -62,6 +65,7 @@ public class Workflows extends BaseClient {
     public Workflow get(String id) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
         org.catalytic.sdk.generated.model.Workflow internalWorkflow;
         try {
+            log.debug("Getting workflow with id {}", () -> id);
             internalWorkflow = this.workflowsApi.getWorkflow(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -148,6 +152,7 @@ public class Workflows extends BaseClient {
         List<Workflow> workflows = new ArrayList<>();
 
         try {
+            log.debug("Finding workflows with text: {} owner: {} category: {}", text, owner, category);
             results = this.workflowsApi.findWorkflows(text, null, null, null, owner, category, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -196,6 +201,7 @@ public class Workflows extends BaseClient {
         org.catalytic.sdk.generated.model.WorkflowExport internalWorkflowExport;
 
         try {
+            log.debug("Exporting workflow with id {}", () -> id);
             // Submit a request to export a workflow
             internalWorkflowExport = this.workflowsApi.exportWorkflow(id, workflowExportRequest);
         } catch (ApiException e) {
@@ -212,6 +218,7 @@ public class Workflows extends BaseClient {
         while (internalWorkflowExport.getFileId() == null) {
             UUID exportId = internalWorkflowExport.getId();
             try {
+                log.debug("Getting export workflow with id {}", () -> exportId.toString());
                 internalWorkflowExport = this.workflowsApi.getWorkflowExport(exportId.toString());
             } catch (ApiException e) {
                 throw new InternalErrorException("Unable to export workflow with id " + id, e);
@@ -224,6 +231,7 @@ public class Workflows extends BaseClient {
         }
 
         try {
+            log.debug("Getting file with id {}", internalWorkflowExport.getId().toString());
             file = this.filesClient.get(internalWorkflowExport.getId().toString());
         } catch (FileNotFoundException e) {
             throw new InternalErrorException("Unable to export workflow with id " + id, e);
@@ -264,6 +272,7 @@ public class Workflows extends BaseClient {
 
         WorkflowImport internalWorkflowImport;
         try {
+            log.debug("Importing workflow");
             // Submit a request to import a workflow
             internalWorkflowImport = this.workflowsApi.importWorkflow(workflowImportRequest);
         } catch (ApiException e) {
@@ -279,6 +288,7 @@ public class Workflows extends BaseClient {
         // Poll another request every second until the import has completed
         while (internalWorkflowImport.getWorkflowId() == null) {
             try {
+                log.debug("Getting workflow import with id {}", internalWorkflowImport.getId().toString());
                 internalWorkflowImport = this.workflowsApi.getWorkflowImport(internalWorkflowImport.getId().toString());
             } catch (ApiException e) {
                 throw new InternalErrorException("Unable to import workflow", e);

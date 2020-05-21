@@ -1,5 +1,7 @@
 package org.catalytic.sdk.clients;
 
+import org.apache.logging.log4j.Logger;
+import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.File;
 import org.catalytic.sdk.exceptions.FileNotFoundException;
@@ -21,6 +23,7 @@ import java.util.Arrays;
  */
 public class Files {
 
+    private static final Logger log = CatalyticLogger.getLogger(Files.class);
     private FilesApi filesApi;
 
     public Files(String secret) {
@@ -51,6 +54,7 @@ public class Files {
     public File get(String id) throws InternalErrorException, FileNotFoundException, UnauthorizedException {
         FileMetadata internalFile;
         try {
+            log.debug("Getting file with id {}", () -> id);
             internalFile = this.filesApi.getFile(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -98,6 +102,7 @@ public class Files {
         java.io.File file;
 
         try {
+            log.debug("Downloading file with id {}", () -> id);
             file = this.filesApi.downloadFile(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -139,6 +144,7 @@ public class Files {
     public File upload(java.io.File fileToUpload) throws UnauthorizedException, InternalErrorException {
         org.catalytic.sdk.generated.model.FileMetadataPage results;
         try {
+            log.debug("Uploading file");
             results = this.filesApi.uploadFiles(Arrays.asList(fileToUpload));
         } catch (ApiException e) {
             if (e.getCode() == 401) {

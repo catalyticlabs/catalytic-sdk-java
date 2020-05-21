@@ -1,5 +1,7 @@
 package org.catalytic.sdk.clients;
 
+import org.apache.logging.log4j.Logger;
+import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.DataTable;
 import org.catalytic.sdk.entities.DataTableColumn;
@@ -29,6 +31,7 @@ import java.util.List;
  */
 public class DataTables {
 
+    private static final Logger log = CatalyticLogger.getLogger(DataTables.class);
     private DataTablesApi dataTablesApi;
     private Files files;
 
@@ -61,6 +64,7 @@ public class DataTables {
     public DataTable get(String id) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
         org.catalytic.sdk.generated.model.DataTable internalDataTable;
         try {
+            log.debug("Getting dataTable with id {}", () -> id);
             internalDataTable = this.dataTablesApi.getDataTable(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -142,6 +146,7 @@ public class DataTables {
 
         org.catalytic.sdk.generated.model.DataTablesPage internalDataTables = null;
         try {
+            log.debug("Finding dataTables with text {}", text);
             internalDataTables = this.dataTablesApi.findDataTables(text, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -210,6 +215,7 @@ public class DataTables {
         }
 
         try {
+            log.debug("Downloading dataTable with id {} and format {}", id, downloadFormat);
             file = this.dataTablesApi.downloadDataTable(id, downloadFormat);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -268,6 +274,7 @@ public class DataTables {
         org.catalytic.sdk.generated.model.DataTable internalDataTable;
 
         try {
+            log.debug("Uploading dataTable with tableName {}", () -> tableName);
             internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, Arrays.asList(fileToUpload));
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -309,6 +316,7 @@ public class DataTables {
     public DataTable replace(String id, File fileToUpload, Integer headerRow, Integer sheetNumber) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
         org.catalytic.sdk.generated.model.DataTable internalDataTable;
         try {
+            log.debug("Replacing dataTable with id {}", () -> id);
             internalDataTable = this.dataTablesApi.replaceDataTable(id, headerRow, sheetNumber, Arrays.asList(fileToUpload));
         } catch (ApiException e) {
             if (e.getCode() == 401) {

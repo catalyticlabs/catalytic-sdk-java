@@ -1,5 +1,7 @@
 package org.catalytic.sdk.clients;
 
+import org.apache.logging.log4j.Logger;
+import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.*;
 import org.catalytic.sdk.exceptions.*;
@@ -22,6 +24,7 @@ import java.util.UUID;
  */
 public class Instances extends BaseClient {
 
+    private static final Logger log = CatalyticLogger.getLogger(Instances.class);
     private InstancesApi instancesApi;
     private InstanceStepsApi instanceStepsApi;
 
@@ -56,6 +59,7 @@ public class Instances extends BaseClient {
     public Instance get(String id) throws Exception {
         org.catalytic.sdk.generated.model.Instance internalInstance = null;
         try {
+            log.debug("Getting instance with id {}", () -> id);
             internalInstance = this.instancesApi.getInstance(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -142,6 +146,7 @@ public class Instances extends BaseClient {
 
         org.catalytic.sdk.generated.model.InstancesPage internalInstances = null;
         try {
+            log.debug("Finding instances with text: {}, owner: {}, status: {}, workflowId: {}", text, owner, status, workflowId);
             internalInstances = this.instancesApi.findInstances(text, status, workflowId, null, owner, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -189,6 +194,7 @@ public class Instances extends BaseClient {
         StartInstanceRequest startInstanceRequest = createStartInstanceRequest(UUID.fromString(workflowId), name, description, fields);
         org.catalytic.sdk.generated.model.Instance internalInstance = null;
         try {
+            log.debug("Starting instance with workflowId {}", () -> workflowId);
             internalInstance = this.instancesApi.startInstance(startInstanceRequest);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -214,6 +220,7 @@ public class Instances extends BaseClient {
     public Instance stop(String id) throws InstanceNotFoundException, InternalErrorException, UnauthorizedException {
         org.catalytic.sdk.generated.model.Instance internalInstance;
         try {
+            log.debug("Stopping instance with id {}", () -> id);
             internalInstance = this.instancesApi.stopInstance(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -237,8 +244,9 @@ public class Instances extends BaseClient {
      * @throws UnauthorizedException            If unauthorized
      */
     public InstanceStep getStep(String id) throws InternalErrorException, InstanceStepNotFoundException, UnauthorizedException {
-        org.catalytic.sdk.generated.model.InstanceStep internalStep = null;
+        org.catalytic.sdk.generated.model.InstanceStep internalStep;
         try {
+            log.debug("Getting step with id {}", () -> id);
             internalStep = getStepById(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -263,6 +271,7 @@ public class Instances extends BaseClient {
     public InstanceStepsPage getSteps(String instanceId) throws InternalErrorException, UnauthorizedException {
         org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceSteps;
         try {
+            log.debug("Getting all the steps for instance {}", () -> instanceId);
             internalInstanceSteps = this.instanceStepsApi.findInstanceSteps(instanceId, null, null, null, null, null, null, null, null, null);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -343,8 +352,9 @@ public class Instances extends BaseClient {
             assignee = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "assignee");
         }
 
-        org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceStepsPage = null;
+        org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceStepsPage;
         try {
+            log.debug("Finding steps with text: {}, workflowId: {}, assignee: {}", text, workflowId, assignee);
             internalInstanceStepsPage = this.instanceStepsApi.findInstanceSteps(wildcardInstanceId, text, null, workflowId, null, null, null, assignee, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -379,6 +389,7 @@ public class Instances extends BaseClient {
         completeStepRequest.setStepOutputFields(fieldUpdateRequests);
         org.catalytic.sdk.generated.model.InstanceStep internalStep;
         try {
+            log.debug("Completing step with id {}", () -> id);
             org.catalytic.sdk.generated.model.InstanceStep step = getStepById(id);
             internalStep = this.instanceStepsApi.completeStep(id, step.getInstanceId().toString(), completeStepRequest);
         } catch (ApiException e) {

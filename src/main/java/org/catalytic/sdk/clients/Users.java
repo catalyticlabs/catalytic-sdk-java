@@ -1,5 +1,7 @@
 package org.catalytic.sdk.clients;
 
+import org.apache.logging.log4j.Logger;
+import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.User;
 import org.catalytic.sdk.entities.UsersPage;
@@ -20,6 +22,7 @@ import java.util.List;
  */
 public class Users {
 
+    private static final Logger log = CatalyticLogger.getLogger(Users.class);
     private UsersApi usersApi;
 
     public Users(String secret) {
@@ -50,6 +53,7 @@ public class Users {
     public User get(String identifier) throws InternalErrorException, UserNotFoundException, UnauthorizedException {
         org.catalytic.sdk.generated.model.User internalUser = null;
         try {
+            log.debug("Getting user with identifier {}", () -> identifier);
             internalUser = this.usersApi.getUser(identifier);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
@@ -122,16 +126,16 @@ public class Users {
      * @throws UnauthorizedException    If unauthorized
      */
     public UsersPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.UsersPage results;
+        List<User> users = new ArrayList<>();
         String text = null;
 
         if (filter != null) {
             text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
         }
 
-        org.catalytic.sdk.generated.model.UsersPage results;
-        List<User> users = new ArrayList<>();
-
         try {
+            log.debug("Finding users with text: {}", text);
             results = this.usersApi.findUsers(text, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {

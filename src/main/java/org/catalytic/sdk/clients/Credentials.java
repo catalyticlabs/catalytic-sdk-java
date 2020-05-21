@@ -1,5 +1,7 @@
 package org.catalytic.sdk.clients;
 
+import org.apache.logging.log4j.Logger;
+import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.exceptions.CredentialsNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
@@ -13,6 +15,7 @@ import org.catalytic.sdk.generated.api.UserCredentialsApi;
  */
 public class Credentials {
 
+    private static final Logger log = CatalyticLogger.getLogger(Credentials.class);
     private UserCredentialsApi userCredentialsApi;
 
     public Credentials(String secret) {
@@ -30,8 +33,9 @@ public class Credentials {
      * @throws UnauthorizedException        If unauthorized
      */
     public org.catalytic.sdk.entities.Credentials get(String id) throws InternalErrorException, CredentialsNotFoundException, UnauthorizedException {
-        org.catalytic.sdk.generated.model.Credentials internalCredentials = null;
+        org.catalytic.sdk.generated.model.Credentials internalCredentials;
         try {
+            log.debug("Getting credentials with id {}", () -> id);
             internalCredentials = this.userCredentialsApi.getCredentials(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
