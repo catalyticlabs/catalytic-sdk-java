@@ -207,8 +207,7 @@ public class Workflows extends BaseClient {
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
-            }
-            if (e.getCode() == 404) {
+            } else if (e.getCode() == 404) {
                 throw new WorkflowNotFoundException("Workflow with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to export workflow with id " + id, e);
@@ -278,9 +277,6 @@ public class Workflows extends BaseClient {
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
-            }
-            if (e.getCode() == 404) {
-                throw new WorkflowNotFoundException("Workflow with id " + file.getId() + " not found", e);
             }
             throw new InternalErrorException("Unable to import workflow", e);
         }

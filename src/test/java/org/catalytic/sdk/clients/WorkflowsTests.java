@@ -347,20 +347,6 @@ public class WorkflowsTests {
         workflowsClient.importWorkflow(importFile);
     }
 
-    @Test(expected = WorkflowNotFoundException.class)
-    public void importWorkflow_itShouldThrowWorkflowNotFoundExceptionIfWorkflowDoesNotExist() throws Exception {
-        java.io.File importFile = new java.io.File("/foo/bar");
-        File file = new File();
-        file.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-        WorkflowImportRequest workflowImportRequest = new WorkflowImportRequest();
-        workflowImportRequest.setFileId(file.getId());
-        when(filesClient.upload(importFile)).thenReturn(file);
-        when(workflowsApi.importWorkflow(workflowImportRequest)).thenThrow(new ApiException(404, null));
-
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
-        workflowsClient.importWorkflow(importFile);
-    }
-
     @Test(expected = InternalErrorException.class)
     public void importWorkflow_itShouldThrowInternalErrorException() throws Exception {
         java.io.File importFile = new java.io.File("/foo/bar");
