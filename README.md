@@ -1,7 +1,6 @@
 [![](https://jitpack.io/v/catalyticlabs/catalytic-sdk-java.svg)](https://jitpack.io/#catalyticlabs/catalytic-sdk-java)
-![Java Build with Gradle](https://github.com/catalyticlabs/catalytic-sdk-java/workflows/Java%20CI%20with%20Gradle/badge.svg)
-[![Maintainability](https://api.codeclimate.com/v1/badges/216fa69d608273f7293c/maintainability)](https://codeclimate.com/repos/5eba26eb362eac017c00a298/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/216fa69d608273f7293c/test_coverage)](https://codeclimate.com/repos/5eba26eb362eac017c00a298/test_coverage)
+![CI](https://github.com/catalyticlabs/catalytic-sdk-java/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/catalyticlabs/catalytic-sdk-java/branch/master/graph/badge.svg)](https://codecov.io/gh/catalyticlabs/catalytic-sdk-java)
 
 # catalytic/sdk
 > Catalytic's Java SDK
