@@ -1,28 +1,30 @@
 package org.catalytic.sdk.entities;
 
+import java.util.List;
+
 /**
  * An object which represents a page of credentials
  */
 public class CredentialsPage extends Page {
 
-    private Credentials[] credentials;
+    private List<Credentials> credentials;
 
-    public CredentialsPage(Credentials[] credentials, int count) {
+    public CredentialsPage(List<Credentials> credentials, int count) {
         this.credentials = credentials;
         this.count = count;
     }
 
-    public CredentialsPage(Credentials[] credentials, int count, String nextPageToken) {
+    public CredentialsPage(List<Credentials> credentials, int count, String nextPageToken) {
         this.credentials = credentials;
         this.count = count;
         this.nextPageToken = nextPageToken;
     }
 
-    public Credentials[] getCredentials() {
+    public List<Credentials> getCredentials() {
         return credentials;
     }
 
-    public void setCredentials(Credentials[] credentials) {
+    public void setCredentials(List<Credentials> credentials) {
         this.credentials = credentials;
     }
 }

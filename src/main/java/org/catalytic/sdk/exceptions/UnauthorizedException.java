@@ -17,7 +17,7 @@ public class UnauthorizedException extends Exception {
     }
 
     public UnauthorizedException(Throwable cause) {
-        super(cause);
+        super("Unauthorized", cause);
     }
 
     public UnauthorizedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {

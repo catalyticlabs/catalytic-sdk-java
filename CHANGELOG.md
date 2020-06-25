@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - CatalyticLogger and log statements
+- Credentials.find methods
+- Credentials.create methods
+- Credentials.createWithWebApprovalFlow methods
+- Credentials.getApprovalUrl methods
+- Credentials.revoke method
 
 ## [0.0.1]
 ### Added
