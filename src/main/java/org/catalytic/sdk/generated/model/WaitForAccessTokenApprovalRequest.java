@@ -25,11 +25,11 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * A request to activate Credentials
+ * A request to activate AccessToken
  */
-@ApiModel(description = "A request to activate Credentials")
+@ApiModel(description = "A request to activate AccessToken")
 
-public class WaitForCredentialsApprovalRequest {
+public class WaitForAccessTokenApprovalRequest {
   public static final String SERIALIZED_NAME_TOKEN = "token";
   @SerializedName(SERIALIZED_NAME_TOKEN)
   private String token;
@@ -39,18 +39,18 @@ public class WaitForCredentialsApprovalRequest {
   private Integer waitTimeMillis;
 
 
-  public WaitForCredentialsApprovalRequest token(String token) {
+  public WaitForAccessTokenApprovalRequest token(String token) {
     
     this.token = token;
     return this;
   }
 
    /**
-   * Credentials Token
+   * AccessToken string
    * @return token
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "Credentials Token")
+  @ApiModelProperty(required = true, value = "AccessToken string")
 
   public String getToken() {
     return token;
@@ -62,18 +62,18 @@ public class WaitForCredentialsApprovalRequest {
   }
 
 
-  public WaitForCredentialsApprovalRequest waitTimeMillis(Integer waitTimeMillis) {
+  public WaitForAccessTokenApprovalRequest waitTimeMillis(Integer waitTimeMillis) {
     
     this.waitTimeMillis = waitTimeMillis;
     return this;
   }
 
    /**
-   * Optional timeout to wait for Credentials to be approved via UI (milliseconds)  Defaults to 300000ms (5 minutes)
+   * Optional timeout to wait for AccessToken to be approved via UI (milliseconds)  Defaults to 300000ms (5 minutes)
    * @return waitTimeMillis
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "Optional timeout to wait for Credentials to be approved via UI (milliseconds)  Defaults to 300000ms (5 minutes)")
+  @ApiModelProperty(value = "Optional timeout to wait for AccessToken to be approved via UI (milliseconds)  Defaults to 300000ms (5 minutes)")
 
   public Integer getWaitTimeMillis() {
     return waitTimeMillis;
@@ -93,9 +93,9 @@ public class WaitForCredentialsApprovalRequest {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    WaitForCredentialsApprovalRequest waitForCredentialsApprovalRequest = (WaitForCredentialsApprovalRequest) o;
-    return Objects.equals(this.token, waitForCredentialsApprovalRequest.token) &&
-        Objects.equals(this.waitTimeMillis, waitForCredentialsApprovalRequest.waitTimeMillis);
+    WaitForAccessTokenApprovalRequest waitForAccessTokenApprovalRequest = (WaitForAccessTokenApprovalRequest) o;
+    return Objects.equals(this.token, waitForAccessTokenApprovalRequest.token) &&
+        Objects.equals(this.waitTimeMillis, waitForAccessTokenApprovalRequest.waitTimeMillis);
   }
 
   @Override
@@ -107,7 +107,7 @@ public class WaitForCredentialsApprovalRequest {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class WaitForCredentialsApprovalRequest {\n");
+    sb.append("class WaitForAccessTokenApprovalRequest {\n");
     sb.append("    token: ").append(toIndentedString(token)).append("\n");
     sb.append("    waitTimeMillis: ").append(toIndentedString(waitTimeMillis)).append("\n");
     sb.append("}");

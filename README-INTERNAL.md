@@ -8,7 +8,7 @@ The `/src/main/java/org/catalytic/sdk/generated` folder is generated using [Open
 To regenerate the code, you'll probably need to update the url in `./regenerate` and then run the command:
 
 ```sh
-$ ./generate
+$ ./regenerate
 ```
 
 **Important!**: There seem to be some bugs in the generated code so there are 2 methods that need to be added/replaced.
@@ -85,7 +85,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>org.catalytic</groupId>
   <artifactId>sdk</artifactId>
-  <version>v1.0.0</version>
+  <version>0.0.2</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -95,6 +95,6 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build fileMetadata:
 
 ```groovy
-compile "org.catalytic:sdk:v1.0.0"
+compile "org.catalytic:sdk:0.0.2"
 ```
 

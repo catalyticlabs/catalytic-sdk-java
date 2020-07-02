@@ -25,18 +25,18 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.catalytic.sdk.generated.model.Credentials;
+import org.catalytic.sdk.generated.model.AccessToken;
 import org.catalytic.sdk.generated.model.PagingOptions;
 
 /**
- * Represents a page of Credentials
+ * Represents a page of AccessTokens
  */
-@ApiModel(description = "Represents a page of Credentials")
+@ApiModel(description = "Represents a page of AccessTokens")
 
-public class CredentialsPage {
-  public static final String SERIALIZED_NAME_CREDENTIALS = "credentials";
-  @SerializedName(SERIALIZED_NAME_CREDENTIALS)
-  private List<Credentials> credentials = null;
+public class AccessTokensPage {
+  public static final String SERIALIZED_NAME_ACCESS_TOKENS = "accessTokens";
+  @SerializedName(SERIALIZED_NAME_ACCESS_TOKENS)
+  private List<AccessToken> accessTokens = null;
 
   public static final String SERIALIZED_NAME_NEXT_PAGE_OPTIONS = "nextPageOptions";
   @SerializedName(SERIALIZED_NAME_NEXT_PAGE_OPTIONS)
@@ -51,38 +51,38 @@ public class CredentialsPage {
   private Integer count;
 
 
-  public CredentialsPage credentials(List<Credentials> credentials) {
+  public AccessTokensPage accessTokens(List<AccessToken> accessTokens) {
     
-    this.credentials = credentials;
+    this.accessTokens = accessTokens;
     return this;
   }
 
-  public CredentialsPage addCredentialsItem(Credentials credentialsItem) {
-    if (this.credentials == null) {
-      this.credentials = new ArrayList<>();
+  public AccessTokensPage addAccessTokensItem(AccessToken accessTokensItem) {
+    if (this.accessTokens == null) {
+      this.accessTokens = new ArrayList<>();
     }
-    this.credentials.add(credentialsItem);
+    this.accessTokens.add(accessTokensItem);
     return this;
   }
 
    /**
-   * The Collection of Credentials in the page
-   * @return credentials
+   * The Collection of AccessTokens in the page
+   * @return accessTokens
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "The Collection of Credentials in the page")
+  @ApiModelProperty(value = "The Collection of AccessTokens in the page")
 
-  public List<Credentials> getCredentials() {
-    return credentials;
+  public List<AccessToken> getAccessTokens() {
+    return accessTokens;
   }
 
 
-  public void setCredentials(List<Credentials> credentials) {
-    this.credentials = credentials;
+  public void setAccessTokens(List<AccessToken> accessTokens) {
+    this.accessTokens = accessTokens;
   }
 
 
-  public CredentialsPage nextPageOptions(PagingOptions nextPageOptions) {
+  public AccessTokensPage nextPageOptions(PagingOptions nextPageOptions) {
     
     this.nextPageOptions = nextPageOptions;
     return this;
@@ -105,7 +105,7 @@ public class CredentialsPage {
   }
 
 
-  public CredentialsPage nextPageToken(String nextPageToken) {
+  public AccessTokensPage nextPageToken(String nextPageToken) {
     
     this.nextPageToken = nextPageToken;
     return this;
@@ -128,7 +128,7 @@ public class CredentialsPage {
   }
 
 
-  public CredentialsPage count(Integer count) {
+  public AccessTokensPage count(Integer count) {
     
     this.count = count;
     return this;
@@ -159,24 +159,24 @@ public class CredentialsPage {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    CredentialsPage credentialsPage = (CredentialsPage) o;
-    return Objects.equals(this.credentials, credentialsPage.credentials) &&
-        Objects.equals(this.nextPageOptions, credentialsPage.nextPageOptions) &&
-        Objects.equals(this.nextPageToken, credentialsPage.nextPageToken) &&
-        Objects.equals(this.count, credentialsPage.count);
+    AccessTokensPage accessTokensPage = (AccessTokensPage) o;
+    return Objects.equals(this.accessTokens, accessTokensPage.accessTokens) &&
+        Objects.equals(this.nextPageOptions, accessTokensPage.nextPageOptions) &&
+        Objects.equals(this.nextPageToken, accessTokensPage.nextPageToken) &&
+        Objects.equals(this.count, accessTokensPage.count);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(credentials, nextPageOptions, nextPageToken, count);
+    return Objects.hash(accessTokens, nextPageOptions, nextPageToken, count);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class CredentialsPage {\n");
-    sb.append("    credentials: ").append(toIndentedString(credentials)).append("\n");
+    sb.append("class AccessTokensPage {\n");
+    sb.append("    accessTokens: ").append(toIndentedString(accessTokens)).append("\n");
     sb.append("    nextPageOptions: ").append(toIndentedString(nextPageOptions)).append("\n");
     sb.append("    nextPageToken: ").append(toIndentedString(nextPageToken)).append("\n");
     sb.append("    count: ").append(toIndentedString(count)).append("\n");

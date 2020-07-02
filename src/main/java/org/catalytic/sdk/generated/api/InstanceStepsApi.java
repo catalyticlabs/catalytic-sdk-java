@@ -205,6 +205,10 @@ public class InstanceStepsApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
      * @param _callback Callback for upload/download progress
@@ -217,7 +221,7 @@ public class InstanceStepsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findInstanceStepsCall(String instanceId, String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call findInstanceStepsCall(String instanceId, String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -254,6 +258,22 @@ public class InstanceStepsApi {
             localVarQueryParams.addAll(localVarApiClient.parameterToPair("participating_users", participatingUsers));
         }
 
+        if (startedBefore != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("started_before", startedBefore));
+        }
+
+        if (startedAfter != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("started_after", startedAfter));
+        }
+
+        if (endedBefore != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("ended_before", endedBefore));
+        }
+
+        if (endedAfter != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("ended_after", endedAfter));
+        }
+
         if (pageToken != null) {
             localVarQueryParams.addAll(localVarApiClient.parameterToPair("page_token", pageToken));
         }
@@ -284,7 +304,7 @@ public class InstanceStepsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call findInstanceStepsValidateBeforeCall(String instanceId, String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call findInstanceStepsValidateBeforeCall(String instanceId, String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'instanceId' is set
         if (instanceId == null) {
@@ -292,7 +312,7 @@ public class InstanceStepsApi {
         }
         
 
-        okhttp3.Call localVarCall = findInstanceStepsCall(instanceId, query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize, _callback);
+        okhttp3.Call localVarCall = findInstanceStepsCall(instanceId, query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize, _callback);
         return localVarCall;
 
     }
@@ -308,6 +328,10 @@ public class InstanceStepsApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
      * @return InstanceStepsPage
@@ -319,8 +343,8 @@ public class InstanceStepsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public InstanceStepsPage findInstanceSteps(String instanceId, String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize) throws ApiException {
-        ApiResponse<InstanceStepsPage> localVarResp = findInstanceStepsWithHttpInfo(instanceId, query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize);
+    public InstanceStepsPage findInstanceSteps(String instanceId, String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize) throws ApiException {
+        ApiResponse<InstanceStepsPage> localVarResp = findInstanceStepsWithHttpInfo(instanceId, query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize);
         return localVarResp.getData();
     }
 
@@ -335,6 +359,10 @@ public class InstanceStepsApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
      * @return ApiResponse&lt;InstanceStepsPage&gt;
@@ -346,8 +374,8 @@ public class InstanceStepsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<InstanceStepsPage> findInstanceStepsWithHttpInfo(String instanceId, String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize) throws ApiException {
-        okhttp3.Call localVarCall = findInstanceStepsValidateBeforeCall(instanceId, query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize, null);
+    public ApiResponse<InstanceStepsPage> findInstanceStepsWithHttpInfo(String instanceId, String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize) throws ApiException {
+        okhttp3.Call localVarCall = findInstanceStepsValidateBeforeCall(instanceId, query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize, null);
         Type localVarReturnType = new TypeToken<InstanceStepsPage>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -363,6 +391,10 @@ public class InstanceStepsApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
      * @param _callback The callback to be executed when the API call finishes
@@ -375,9 +407,9 @@ public class InstanceStepsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findInstanceStepsAsync(String instanceId, String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize, final ApiCallback<InstanceStepsPage> _callback) throws ApiException {
+    public okhttp3.Call findInstanceStepsAsync(String instanceId, String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize, final ApiCallback<InstanceStepsPage> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = findInstanceStepsValidateBeforeCall(instanceId, query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize, _callback);
+        okhttp3.Call localVarCall = findInstanceStepsValidateBeforeCall(instanceId, query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize, _callback);
         Type localVarReturnType = new TypeToken<InstanceStepsPage>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;

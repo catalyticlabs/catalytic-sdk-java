@@ -64,7 +64,7 @@ public class UsersTests {
 
     @Test(expected = UnauthorizedException.class)
     public void findUsers_itShouldReturnUnauthorizedException() throws Exception {
-        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null))
+        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
         Users usersClient = new Users(usersApi);
@@ -73,7 +73,7 @@ public class UsersTests {
 
     @Test(expected = InternalErrorException.class)
     public void findUsers_itShouldReturnInternalErrorException() throws Exception {
-        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null))
+        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
         Users usersClient = new Users(usersApi);
@@ -88,7 +88,7 @@ public class UsersTests {
         usersPage.setUsers(Arrays.asList(alice));
         usersPage.setCount(Arrays.asList(alice).size());
         usersPage.setNextPageToken(null);
-        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null))
+        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(usersPage);
 
         Users usersClient = new Users(usersApi);
@@ -106,7 +106,7 @@ public class UsersTests {
         usersPage.setUsers(Arrays.asList(alice));
         usersPage.setCount(Arrays.asList(alice).size());
         usersPage.setNextPageToken(null);
-        when(usersApi.findUsers(null, null, null, null, null, null, null, "25", null))
+        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(usersPage);
 
         Users usersClient = new Users(usersApi);
@@ -124,7 +124,7 @@ public class UsersTests {
         usersPage.setUsers(Arrays.asList(alice));
         usersPage.setCount(Arrays.asList(alice).size());
         usersPage.setNextPageToken(null);
-        when(usersApi.findUsers("alice@example.com", null, null, null, null, null, null, null, null))
+        when(usersApi.findUsers("alice@example.com", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(usersPage);
 
         Users usersClient = new Users(usersApi);
@@ -143,7 +143,7 @@ public class UsersTests {
         usersPage.setUsers(Arrays.asList(alice));
         usersPage.setCount(Arrays.asList(alice).size());
         usersPage.setNextPageToken(null);
-        when(usersApi.findUsers("alice@example.com", null, null, null, null, null, null, "25", null))
+        when(usersApi.findUsers("alice@example.com", null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(usersPage);
 
         Users usersClient = new Users(usersApi);

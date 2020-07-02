@@ -73,7 +73,7 @@ public class InstancesTests {
 
     @Test(expected = UnauthorizedException.class)
     public void findInstances_itShouldReturnUnauthorizedException() throws Exception {
-        when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null))
+        when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -82,7 +82,7 @@ public class InstancesTests {
 
     @Test(expected = InternalErrorException.class)
     public void findInstances_itShouldReturnInternalErrorException() throws Exception {
-        when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null))
+        when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -97,7 +97,7 @@ public class InstancesTests {
         instancesPage.setInstances(Arrays.asList(myInstance));
         instancesPage.setCount(Arrays.asList(myInstance).size());
         instancesPage.setNextPageToken(null);
-        when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null))
+        when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instancesPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -115,7 +115,7 @@ public class InstancesTests {
         instancesPage.setInstances(Arrays.asList(myInstance));
         instancesPage.setCount(Arrays.asList(myInstance).size());
         instancesPage.setNextPageToken(null);
-        when(instancesApi.findInstances(null, null, null, null, null, null, null, "25", null))
+        when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(instancesPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -133,7 +133,7 @@ public class InstancesTests {
         instancesPage.setInstances(Arrays.asList(myInstance));
         instancesPage.setCount(Arrays.asList(myInstance).size());
         instancesPage.setNextPageToken(null);
-        when(instancesApi.findInstances("My Instance", null, null, null, null, null, null, null, null))
+        when(instancesApi.findInstances("My Instance", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instancesPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -152,7 +152,7 @@ public class InstancesTests {
         instancesPage.setInstances(Arrays.asList(myInstance));
         instancesPage.setCount(Arrays.asList(myInstance).size());
         instancesPage.setNextPageToken(null);
-        when(instancesApi.findInstances(null, null, null, null, "alice@example.com", null, null, null, null))
+        when(instancesApi.findInstances(null, null, null, null, "alice@example.com", null, null, null, null, null, null, null, null))
                 .thenReturn(instancesPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -171,7 +171,7 @@ public class InstancesTests {
         instancesPage.setInstances(Arrays.asList(myInstance));
         instancesPage.setCount(Arrays.asList(myInstance).size());
         instancesPage.setNextPageToken(null);
-        when(instancesApi.findInstances(null, InstanceStatus.RUNNING.getValue(), null, null, null, null, null, null, null))
+        when(instancesApi.findInstances(null, InstanceStatus.RUNNING.getValue(), null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instancesPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -190,7 +190,7 @@ public class InstancesTests {
         instancesPage.setInstances(Arrays.asList(myInstance));
         instancesPage.setCount(Arrays.asList(myInstance).size());
         instancesPage.setNextPageToken(null);
-        when(instancesApi.findInstances(null, null, "b7b99c88-3ab6-4c92-bfce-bf3ff7d78026", null, null, null, null, null, null))
+        when(instancesApi.findInstances(null, null, "b7b99c88-3ab6-4c92-bfce-bf3ff7d78026", null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instancesPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -209,7 +209,7 @@ public class InstancesTests {
         instancesPage.setInstances(Arrays.asList(myInstance));
         instancesPage.setCount(Arrays.asList(myInstance).size());
         instancesPage.setNextPageToken(null);
-        when(instancesApi.findInstances("My Instance", null, null, null, null, null, null, "25", null))
+        when(instancesApi.findInstances("My Instance", null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(instancesPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -335,7 +335,7 @@ public class InstancesTests {
 
     @Test(expected = UnauthorizedException.class)
     public void getInstanceSteps_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
-        when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null))
+        when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -344,7 +344,7 @@ public class InstancesTests {
 
     @Test(expected = InternalErrorException.class)
     public void getInstanceSteps_itShouldThrowInternalErrorException() throws Exception {
-        when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null))
+        when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -360,7 +360,7 @@ public class InstancesTests {
         instanceStepsPage.setSteps(Arrays.asList(internalStep));
         instanceStepsPage.setCount(Arrays.asList(internalStep).size());
         instanceStepsPage.setNextPageToken(null);
-        when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null))
+        when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instanceStepsPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -373,7 +373,7 @@ public class InstancesTests {
 
     @Test(expected = UnauthorizedException.class)
     public void findSteps_itShouldReturnUnauthorizedException() throws Exception {
-        when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, null, "25", null))
+        when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenThrow(new ApiException(401, null));
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -382,7 +382,7 @@ public class InstancesTests {
 
     @Test(expected = InternalErrorException.class)
     public void findSteps_itShouldReturnInternalErrorException() throws Exception {
-        when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, null, "25", null))
+        when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenThrow(new ApiException(500, null));
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -397,7 +397,7 @@ public class InstancesTests {
         instanceStepsPage.setSteps(Arrays.asList(instanceStep));
         instanceStepsPage.setCount(Arrays.asList(instanceStep).size());
         instanceStepsPage.setNextPageToken(null);
-        when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, null, "25", null))
+        when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(instanceStepsPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -415,7 +415,7 @@ public class InstancesTests {
         instanceStepsPage.setSteps(Arrays.asList(instanceStep));
         instanceStepsPage.setCount(Arrays.asList(instanceStep).size());
         instanceStepsPage.setNextPageToken(null);
-        when(instanceStepsApi.findInstanceSteps("-", "My InstanceStep", null, null, null, null, null, null, null, null))
+        when(instanceStepsApi.findInstanceSteps("-", "My InstanceStep", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instanceStepsPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -434,7 +434,7 @@ public class InstancesTests {
         instanceStepsPage.setSteps(Arrays.asList(instanceStep));
         instanceStepsPage.setCount(Arrays.asList(instanceStep).size());
         instanceStepsPage.setNextPageToken(null);
-        when(instanceStepsApi.findInstanceSteps("-", null, null, "b7b99c88-3ab6-4c92-bfce-bf3ff7d78026", null, null, null, null, null, null))
+        when(instanceStepsApi.findInstanceSteps("-", null, null, "b7b99c88-3ab6-4c92-bfce-bf3ff7d78026", null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instanceStepsPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -453,7 +453,7 @@ public class InstancesTests {
         instanceStepsPage.setSteps(Arrays.asList(instanceStep));
         instanceStepsPage.setCount(Arrays.asList(instanceStep).size());
         instanceStepsPage.setNextPageToken(null);
-        when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, "alice@example.com", null, null))
+        when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, "alice@example.com", null, null, null, null, null, null))
                 .thenReturn(instanceStepsPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
@@ -472,7 +472,7 @@ public class InstancesTests {
         instanceStepsPage.setSteps(Arrays.asList(instanceStep));
         instanceStepsPage.setCount(Arrays.asList(instanceStep).size());
         instanceStepsPage.setNextPageToken(null);
-        when(instanceStepsApi.findInstanceSteps("-", "My InstanceStep", null, null, null, null, null, null, "25",  null))
+        when(instanceStepsApi.findInstanceSteps("-", "My InstanceStep", null, null, null, null, null, null, null,  null, null, null, "25", null))
                 .thenReturn(instanceStepsPage);
 
         Instances instancesClient = new Instances(instancesApi, instanceStepsApi);

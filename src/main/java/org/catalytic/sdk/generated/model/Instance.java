@@ -23,6 +23,7 @@ import com.google.gson.stream.JsonWriter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -81,6 +82,14 @@ public class Instance {
   public static final String SERIALIZED_NAME_STATUS = "status";
   @SerializedName(SERIALIZED_NAME_STATUS)
   private InstanceStatus status;
+
+  public static final String SERIALIZED_NAME_START_DATE = "startDate";
+  @SerializedName(SERIALIZED_NAME_START_DATE)
+  private OffsetDateTime startDate;
+
+  public static final String SERIALIZED_NAME_END_DATE = "endDate";
+  @SerializedName(SERIALIZED_NAME_END_DATE)
+  private OffsetDateTime endDate;
 
   public static final String SERIALIZED_NAME_FIELD_VISIBILITY = "fieldVisibility";
   @SerializedName(SERIALIZED_NAME_FIELD_VISIBILITY)
@@ -362,6 +371,52 @@ public class Instance {
   }
 
 
+  public Instance startDate(OffsetDateTime startDate) {
+    
+    this.startDate = startDate;
+    return this;
+  }
+
+   /**
+   * The start date of the instance
+   * @return startDate
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "The start date of the instance")
+
+  public OffsetDateTime getStartDate() {
+    return startDate;
+  }
+
+
+  public void setStartDate(OffsetDateTime startDate) {
+    this.startDate = startDate;
+  }
+
+
+  public Instance endDate(OffsetDateTime endDate) {
+    
+    this.endDate = endDate;
+    return this;
+  }
+
+   /**
+   * The end date of the instance, or null if the step has not started
+   * @return endDate
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "The end date of the instance, or null if the step has not started")
+
+  public OffsetDateTime getEndDate() {
+    return endDate;
+  }
+
+
+  public void setEndDate(OffsetDateTime endDate) {
+    this.endDate = endDate;
+  }
+
+
   public Instance fieldVisibility(FieldVisibility fieldVisibility) {
     
     this.fieldVisibility = fieldVisibility;
@@ -459,6 +514,8 @@ public class Instance {
         Objects.equals(this.steps, instance.steps) &&
         Objects.equals(this.fields, instance.fields) &&
         Objects.equals(this.status, instance.status) &&
+        Objects.equals(this.startDate, instance.startDate) &&
+        Objects.equals(this.endDate, instance.endDate) &&
         Objects.equals(this.fieldVisibility, instance.fieldVisibility) &&
         Objects.equals(this.visibility, instance.visibility) &&
         Objects.equals(this.visibleToUsers, instance.visibleToUsers);
@@ -466,7 +523,7 @@ public class Instance {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, workflowId, name, teamName, description, category, owner, createdBy, steps, fields, status, fieldVisibility, visibility, visibleToUsers);
+    return Objects.hash(id, workflowId, name, teamName, description, category, owner, createdBy, steps, fields, status, startDate, endDate, fieldVisibility, visibility, visibleToUsers);
   }
 
 
@@ -485,6 +542,8 @@ public class Instance {
     sb.append("    steps: ").append(toIndentedString(steps)).append("\n");
     sb.append("    fields: ").append(toIndentedString(fields)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");
+    sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
     sb.append("    fieldVisibility: ").append(toIndentedString(fieldVisibility)).append("\n");
     sb.append("    visibility: ").append(toIndentedString(visibility)).append("\n");
     sb.append("    visibleToUsers: ").append(toIndentedString(visibleToUsers)).append("\n");

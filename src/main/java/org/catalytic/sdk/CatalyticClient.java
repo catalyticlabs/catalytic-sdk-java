@@ -1,7 +1,7 @@
 package org.catalytic.sdk;
 
 import org.catalytic.sdk.clients.*;
-import org.catalytic.sdk.exceptions.CredentialsNotFoundException;
+import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 
 import java.io.IOException;
 
@@ -15,15 +15,15 @@ public class CatalyticClient {
     private Users users;
     private Files files;
     private DataTables dataTables;
-    private org.catalytic.sdk.clients.Credentials credentials;
+    private AccessTokens accessTokens;
 
     /**
      * Syntactic sugar for `new Client(null)`
      *
-     * @throws CredentialsNotFoundException If no token can be found
+     * @throws AccessTokenNotFoundException If no token can be found
      * @throws IOException                  If any errors reading a file
      */
-    public CatalyticClient() throws CredentialsNotFoundException, IOException {
+    public CatalyticClient() throws AccessTokenNotFoundException, IOException {
         this(null);
     }
 
@@ -32,10 +32,10 @@ public class CatalyticClient {
      *
      * @param tokenOrFile                   The token/name/path of a file to fetch
      *                                      a token to use for making API requests
-     * @throws CredentialsNotFoundException If no token can be found
+     * @throws AccessTokenNotFoundException If no token can be found
      * @throws IOException                  If any errors reading a file
      */
-    public CatalyticClient(String tokenOrFile) throws CredentialsNotFoundException, IOException {
+    public CatalyticClient(String tokenOrFile) throws AccessTokenNotFoundException, IOException {
         Credentials credentials = new Credentials();
         String token = credentials.fetchToken(tokenOrFile);
         this.workflows = new Workflows(token);
@@ -43,7 +43,7 @@ public class CatalyticClient {
         this.users = new Users(token);
         this.files = new Files(token);
         this.dataTables = new DataTables(token);
-        this.credentials = new org.catalytic.sdk.clients.Credentials(token);
+        this.accessTokens = new AccessTokens(token);
     }
 
     public Workflows workflows() {
@@ -66,7 +66,7 @@ public class CatalyticClient {
         return dataTables;
     }
 
-    public org.catalytic.sdk.clients.Credentials credentials() {
-        return credentials;
+    public AccessTokens credentials() {
+        return accessTokens;
     }
 }

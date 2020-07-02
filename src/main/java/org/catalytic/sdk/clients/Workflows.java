@@ -153,7 +153,7 @@ public class Workflows extends BaseClient {
 
         try {
             log.debug("Finding workflows with text: {} owner: {} category: {}", text, owner, category);
-            results = this.workflowsApi.findWorkflows(text, null, null, null, owner, category, null, pageToken, pageSize);
+            results = this.workflowsApi.findWorkflows(text, null, null, null, owner, category, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();

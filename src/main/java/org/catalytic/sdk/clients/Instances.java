@@ -147,7 +147,7 @@ public class Instances extends BaseClient {
         org.catalytic.sdk.generated.model.InstancesPage internalInstances = null;
         try {
             log.debug("Finding instances with text: {}, owner: {}, status: {}, workflowId: {}", text, owner, status, workflowId);
-            internalInstances = this.instancesApi.findInstances(text, status, workflowId, null, owner, null, null, pageToken, pageSize);
+            internalInstances = this.instancesApi.findInstances(text, status, workflowId, null, owner, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
@@ -272,7 +272,7 @@ public class Instances extends BaseClient {
         org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceSteps;
         try {
             log.debug("Getting all the steps for instance {}", () -> instanceId);
-            internalInstanceSteps = this.instanceStepsApi.findInstanceSteps(instanceId, null, null, null, null, null, null, null, null, null);
+            internalInstanceSteps = this.instanceStepsApi.findInstanceSteps(instanceId, null, null, null, null, null, null, null, null, null, null, null, null, null);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
@@ -355,7 +355,7 @@ public class Instances extends BaseClient {
         org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceStepsPage;
         try {
             log.debug("Finding steps with text: {}, workflowId: {}, assignee: {}", text, workflowId, assignee);
-            internalInstanceStepsPage = this.instanceStepsApi.findInstanceSteps(wildcardInstanceId, text, null, workflowId, null, null, null, assignee, pageToken, pageSize);
+            internalInstanceStepsPage = this.instanceStepsApi.findInstanceSteps(wildcardInstanceId, text, null, workflowId, null, null, null, assignee, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();

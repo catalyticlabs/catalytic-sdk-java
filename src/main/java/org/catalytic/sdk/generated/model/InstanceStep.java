@@ -23,6 +23,7 @@ import com.google.gson.stream.JsonWriter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -70,6 +71,26 @@ public class InstanceStep {
   public static final String SERIALIZED_NAME_ASSIGNED_TO = "assignedTo";
   @SerializedName(SERIALIZED_NAME_ASSIGNED_TO)
   private String assignedTo;
+
+  public static final String SERIALIZED_NAME_ACTION_TYPE_ID = "actionTypeId";
+  @SerializedName(SERIALIZED_NAME_ACTION_TYPE_ID)
+  private String actionTypeId;
+
+  public static final String SERIALIZED_NAME_IS_AUTOMATED = "isAutomated";
+  @SerializedName(SERIALIZED_NAME_IS_AUTOMATED)
+  private Boolean isAutomated;
+
+  public static final String SERIALIZED_NAME_IS_MANUAL = "isManual";
+  @SerializedName(SERIALIZED_NAME_IS_MANUAL)
+  private Boolean isManual;
+
+  public static final String SERIALIZED_NAME_START_DATE = "startDate";
+  @SerializedName(SERIALIZED_NAME_START_DATE)
+  private OffsetDateTime startDate;
+
+  public static final String SERIALIZED_NAME_END_DATE = "endDate";
+  @SerializedName(SERIALIZED_NAME_END_DATE)
+  private OffsetDateTime endDate;
 
   public static final String SERIALIZED_NAME_OUTPUT_FIELDS = "outputFields";
   @SerializedName(SERIALIZED_NAME_OUTPUT_FIELDS)
@@ -280,6 +301,121 @@ public class InstanceStep {
   }
 
 
+  public InstanceStep actionTypeId(String actionTypeId) {
+    
+    this.actionTypeId = actionTypeId;
+    return this;
+  }
+
+   /**
+   * The ID of this action type of this step
+   * @return actionTypeId
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "The ID of this action type of this step")
+
+  public String getActionTypeId() {
+    return actionTypeId;
+  }
+
+
+  public void setActionTypeId(String actionTypeId) {
+    this.actionTypeId = actionTypeId;
+  }
+
+
+  public InstanceStep isAutomated(Boolean isAutomated) {
+    
+    this.isAutomated = isAutomated;
+    return this;
+  }
+
+   /**
+   * Indicates whether or not this step is an automated action that will be completed without manual intervention.
+   * @return isAutomated
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "Indicates whether or not this step is an automated action that will be completed without manual intervention.")
+
+  public Boolean getIsAutomated() {
+    return isAutomated;
+  }
+
+
+  public void setIsAutomated(Boolean isAutomated) {
+    this.isAutomated = isAutomated;
+  }
+
+
+  public InstanceStep isManual(Boolean isManual) {
+    
+    this.isManual = isManual;
+    return this;
+  }
+
+   /**
+   * Indicates whether or not this step is manual, to be completed by a person.  This is a convinience property that gets/sets the inverse of Catalytic.Sdk.Entities.InstanceStep.IsAutomated.
+   * @return isManual
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "Indicates whether or not this step is manual, to be completed by a person.  This is a convinience property that gets/sets the inverse of Catalytic.Sdk.Entities.InstanceStep.IsAutomated.")
+
+  public Boolean getIsManual() {
+    return isManual;
+  }
+
+
+  public void setIsManual(Boolean isManual) {
+    this.isManual = isManual;
+  }
+
+
+  public InstanceStep startDate(OffsetDateTime startDate) {
+    
+    this.startDate = startDate;
+    return this;
+  }
+
+   /**
+   * The start date of the step, or null if the step has not started
+   * @return startDate
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "The start date of the step, or null if the step has not started")
+
+  public OffsetDateTime getStartDate() {
+    return startDate;
+  }
+
+
+  public void setStartDate(OffsetDateTime startDate) {
+    this.startDate = startDate;
+  }
+
+
+  public InstanceStep endDate(OffsetDateTime endDate) {
+    
+    this.endDate = endDate;
+    return this;
+  }
+
+   /**
+   * The end date of the step, or null if the step has not started
+   * @return endDate
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "The end date of the step, or null if the step has not started")
+
+  public OffsetDateTime getEndDate() {
+    return endDate;
+  }
+
+
+  public void setEndDate(OffsetDateTime endDate) {
+    this.endDate = endDate;
+  }
+
+
   public InstanceStep outputFields(List<Field> outputFields) {
     
     this.outputFields = outputFields;
@@ -329,12 +465,17 @@ public class InstanceStep {
         Objects.equals(this.description, instanceStep.description) &&
         Objects.equals(this.status, instanceStep.status) &&
         Objects.equals(this.assignedTo, instanceStep.assignedTo) &&
+        Objects.equals(this.actionTypeId, instanceStep.actionTypeId) &&
+        Objects.equals(this.isAutomated, instanceStep.isAutomated) &&
+        Objects.equals(this.isManual, instanceStep.isManual) &&
+        Objects.equals(this.startDate, instanceStep.startDate) &&
+        Objects.equals(this.endDate, instanceStep.endDate) &&
         Objects.equals(this.outputFields, instanceStep.outputFields);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, instanceId, workflowId, name, teamName, position, description, status, assignedTo, outputFields);
+    return Objects.hash(id, instanceId, workflowId, name, teamName, position, description, status, assignedTo, actionTypeId, isAutomated, isManual, startDate, endDate, outputFields);
   }
 
 
@@ -351,6 +492,11 @@ public class InstanceStep {
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    assignedTo: ").append(toIndentedString(assignedTo)).append("\n");
+    sb.append("    actionTypeId: ").append(toIndentedString(actionTypeId)).append("\n");
+    sb.append("    isAutomated: ").append(toIndentedString(isAutomated)).append("\n");
+    sb.append("    isManual: ").append(toIndentedString(isManual)).append("\n");
+    sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");
+    sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
     sb.append("    outputFields: ").append(toIndentedString(outputFields)).append("\n");
     sb.append("}");
     return sb.toString();

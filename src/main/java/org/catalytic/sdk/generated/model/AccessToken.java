@@ -24,14 +24,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 import java.util.UUID;
-import org.catalytic.sdk.generated.model.CredentialType;
+import org.catalytic.sdk.generated.model.TokenType;
 
 /**
- * A set of Credentials used for authentication via the SDK
+ * An AccessToken used for authentication via the SDK
  */
-@ApiModel(description = "A set of Credentials used for authentication via the SDK")
+@ApiModel(description = "An AccessToken used for authentication via the SDK")
 
-public class Credentials {
+public class AccessToken {
   public static final String SERIALIZED_NAME_ID = "id";
   @SerializedName(SERIALIZED_NAME_ID)
   private UUID id;
@@ -46,7 +46,7 @@ public class Credentials {
 
   public static final String SERIALIZED_NAME_TYPE = "type";
   @SerializedName(SERIALIZED_NAME_TYPE)
-  private CredentialType type;
+  private TokenType type;
 
   public static final String SERIALIZED_NAME_TOKEN = "token";
   @SerializedName(SERIALIZED_NAME_TOKEN)
@@ -65,17 +65,17 @@ public class Credentials {
   private String owner;
 
 
-  public Credentials id(UUID id) {
+  public AccessToken id(UUID id) {
     
     this.id = id;
     return this;
   }
 
    /**
-   * The public Id of the Credentials
+   * The public Id of the AccessToken
    * @return id
   **/
-  @ApiModelProperty(required = true, value = "The public Id of the Credentials")
+  @ApiModelProperty(required = true, value = "The public Id of the AccessToken")
 
   public UUID getId() {
     return id;
@@ -87,18 +87,18 @@ public class Credentials {
   }
 
 
-  public Credentials domain(String domain) {
+  public AccessToken domain(String domain) {
     
     this.domain = domain;
     return this;
   }
 
    /**
-   * The Domain of the Catalytic team with which these Credentials are associated
+   * The Domain of the Catalytic team with which these AccessToken are associated
    * @return domain
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "The Domain of the Catalytic team with which these Credentials are associated")
+  @ApiModelProperty(required = true, value = "The Domain of the Catalytic team with which these AccessToken are associated")
 
   public String getDomain() {
     return domain;
@@ -110,18 +110,18 @@ public class Credentials {
   }
 
 
-  public Credentials name(String name) {
+  public AccessToken name(String name) {
     
     this.name = name;
     return this;
   }
 
    /**
-   * The name associated with the Credentials
+   * The name associated with the AccessToken
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "The name associated with the Credentials")
+  @ApiModelProperty(value = "The name associated with the AccessToken")
 
   public String getName() {
     return name;
@@ -133,7 +133,7 @@ public class Credentials {
   }
 
 
-  public Credentials type(CredentialType type) {
+  public AccessToken type(TokenType type) {
     
     this.type = type;
     return this;
@@ -146,28 +146,28 @@ public class Credentials {
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public CredentialType getType() {
+  public TokenType getType() {
     return type;
   }
 
 
-  public void setType(CredentialType type) {
+  public void setType(TokenType type) {
     this.type = type;
   }
 
 
-  public Credentials token(String token) {
+  public AccessToken token(String token) {
     
     this.token = token;
     return this;
   }
 
    /**
-   * The serialized Credentials Token
+   * The serialized AccessToken Token
    * @return token
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "The serialized Credentials Token")
+  @ApiModelProperty(value = "The serialized AccessToken Token")
 
   public String getToken() {
     return token;
@@ -179,18 +179,18 @@ public class Credentials {
   }
 
 
-  public Credentials secret(String secret) {
+  public AccessToken secret(String secret) {
     
     this.secret = secret;
     return this;
   }
 
    /**
-   * The confidential Secret of the Credentials
+   * The confidential Secret of the AccessToken
    * @return secret
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "The confidential Secret of the Credentials")
+  @ApiModelProperty(value = "The confidential Secret of the AccessToken")
 
   public String getSecret() {
     return secret;
@@ -202,18 +202,18 @@ public class Credentials {
   }
 
 
-  public Credentials environment(String environment) {
+  public AccessToken environment(String environment) {
     
     this.environment = environment;
     return this;
   }
 
    /**
-   * The environment of the Catalytic team associated with the Credentials
+   * The environment of the Catalytic team associated with the AccessToken
    * @return environment
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "The environment of the Catalytic team associated with the Credentials")
+  @ApiModelProperty(value = "The environment of the Catalytic team associated with the AccessToken")
 
   public String getEnvironment() {
     return environment;
@@ -225,18 +225,18 @@ public class Credentials {
   }
 
 
-  public Credentials owner(String owner) {
+  public AccessToken owner(String owner) {
     
     this.owner = owner;
     return this;
   }
 
    /**
-   * The email address of the user who these Credentials belong to
+   * The email address of the user who these AccessToken belong to
    * @return owner
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "The email address of the user who these Credentials belong to")
+  @ApiModelProperty(value = "The email address of the user who these AccessToken belong to")
 
   public String getOwner() {
     return owner;
@@ -256,15 +256,15 @@ public class Credentials {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Credentials credentials = (Credentials) o;
-    return Objects.equals(this.id, credentials.id) &&
-        Objects.equals(this.domain, credentials.domain) &&
-        Objects.equals(this.name, credentials.name) &&
-        Objects.equals(this.type, credentials.type) &&
-        Objects.equals(this.token, credentials.token) &&
-        Objects.equals(this.secret, credentials.secret) &&
-        Objects.equals(this.environment, credentials.environment) &&
-        Objects.equals(this.owner, credentials.owner);
+    AccessToken accessToken = (AccessToken) o;
+    return Objects.equals(this.id, accessToken.id) &&
+        Objects.equals(this.domain, accessToken.domain) &&
+        Objects.equals(this.name, accessToken.name) &&
+        Objects.equals(this.type, accessToken.type) &&
+        Objects.equals(this.token, accessToken.token) &&
+        Objects.equals(this.secret, accessToken.secret) &&
+        Objects.equals(this.environment, accessToken.environment) &&
+        Objects.equals(this.owner, accessToken.owner);
   }
 
   @Override
@@ -276,7 +276,7 @@ public class Credentials {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Credentials {\n");
+    sb.append("class AccessToken {\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    domain: ").append(toIndentedString(domain)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");

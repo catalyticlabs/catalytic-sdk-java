@@ -3,16 +3,17 @@ package org.catalytic.sdk.clients;
 import org.apache.logging.log4j.Logger;
 import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
-import org.catalytic.sdk.entities.CredentialsPage;
-import org.catalytic.sdk.exceptions.CredentialsNotFoundException;
+import org.catalytic.sdk.entities.AccessToken;
+import org.catalytic.sdk.entities.AccessTokensPage;
+import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
 import org.catalytic.sdk.generated.ApiClient;
 import org.catalytic.sdk.generated.ApiException;
+import org.catalytic.sdk.generated.api.AccessTokensApi;
 import org.catalytic.sdk.generated.api.AuthenticationApi;
-import org.catalytic.sdk.generated.api.UserCredentialsApi;
-import org.catalytic.sdk.generated.model.CredentialsCreationRequest;
-import org.catalytic.sdk.generated.model.CredentialsCreationWithEmailAndPasswordRequest;
+import org.catalytic.sdk.generated.model.AccessTokenCreationRequest;
+import org.catalytic.sdk.generated.model.AccessTokenCreationWithEmailAndPasswordRequest;
 import org.catalytic.sdk.search.Filter;
 import org.catalytic.sdk.search.SearchUtils;
 
@@ -24,15 +25,15 @@ import java.util.List;
 /**
  * Credentials client
  */
-public class Credentials {
+public class AccessTokens {
 
-    private static final Logger log = CatalyticLogger.getLogger(Credentials.class);
-    private UserCredentialsApi userCredentialsApi;
+    private static final Logger log = CatalyticLogger.getLogger(AccessTokens.class);
+    private AccessTokensApi accessTokensApi;
     private AuthenticationApi authenticationApi;
 
-    public Credentials(String secret) {
+    public AccessTokens(String secret) {
         ApiClient apiClient = ConfigurationUtils.getApiClient(secret);
-        this.userCredentialsApi = new UserCredentialsApi(apiClient);
+        this.accessTokensApi = new AccessTokensApi(apiClient);
         this.authenticationApi = new AuthenticationApi(apiClient);
     }
 
@@ -41,11 +42,11 @@ public class Credentials {
      *
      * Allows you to pass in a mock UserCredentialsApi
      *
-     * @param userCredentialsApi    The mocked UserCredentialsApi
+     * @param accessTokensApi    The mocked UserCredentialsApi
      * @param authenticationApi     The mocked AuthenticationApi
      */
-    public Credentials(UserCredentialsApi userCredentialsApi, AuthenticationApi authenticationApi) {
-        this.userCredentialsApi = userCredentialsApi;
+    public AccessTokens(AccessTokensApi accessTokensApi, AuthenticationApi authenticationApi) {
+        this.accessTokensApi = accessTokensApi;
         this.authenticationApi = authenticationApi;
     }
 
@@ -55,24 +56,24 @@ public class Credentials {
      * @param id                            The id of the credentials to get
      * @return Credentials                  The Credentials object
      * @throws InternalErrorException       If error fetching credentials
-     * @throws CredentialsNotFoundException If credentials with id do not exist
+     * @throws AccessTokenNotFoundException If credentials with id do not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public org.catalytic.sdk.entities.Credentials get(String id) throws InternalErrorException, CredentialsNotFoundException, UnauthorizedException {
-        org.catalytic.sdk.generated.model.Credentials internalCredentials;
+    public AccessToken get(String id) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.AccessToken internalAccessToken;
         try {
-            log.debug("Getting Credentials with id {}", () -> id);
-            internalCredentials = this.userCredentialsApi.getCredentials(id);
+            log.debug("Getting Access Token with id {}", () -> id);
+            internalAccessToken = this.accessTokensApi.getAccessToken(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();
             } else if (e.getCode() == 404) {
-                throw new CredentialsNotFoundException("Credentials with id " + id + " not found", e);
+                throw new AccessTokenNotFoundException("Credentials with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to get Credentials", e);
         }
-        org.catalytic.sdk.entities.Credentials credentials = createCredentials(internalCredentials);
-        return credentials;
+        AccessToken accessToken = createAccessToken(internalAccessToken);
+        return accessToken;
     }
 
     /**
@@ -82,7 +83,7 @@ public class Credentials {
      * @throws InternalErrorException   If any error finding users
      * @throws UnauthorizedException    If unauthorized
      */
-    public CredentialsPage find() throws InternalErrorException, UnauthorizedException {
+    public AccessTokensPage find() throws InternalErrorException, UnauthorizedException {
         return find(null, null, null);
     }
 
@@ -94,7 +95,7 @@ public class Credentials {
      * @throws InternalErrorException   If any error finding users
      * @throws UnauthorizedException    If unauthorized
      */
-    public CredentialsPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
+    public AccessTokensPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
         return this.find(null, pageToken, null);
     }
 
@@ -106,7 +107,7 @@ public class Credentials {
      * @throws InternalErrorException   If any error finding users
      * @throws UnauthorizedException    If unauthorized
      */
-    public CredentialsPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
+    public AccessTokensPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
         return find(filter, null, null);
     }
 
@@ -119,7 +120,7 @@ public class Credentials {
      * @throws InternalErrorException   If any error finding users
      * @throws UnauthorizedException    If unauthorized
      */
-    public CredentialsPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
+    public AccessTokensPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
         return find(filter, pageToken, null);
     }
 
@@ -133,9 +134,9 @@ public class Credentials {
      * @throws InternalErrorException   If any error finding users
      * @throws UnauthorizedException    If unauthorized
      */
-    public CredentialsPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
-        org.catalytic.sdk.generated.model.CredentialsPage results;
-        List<org.catalytic.sdk.entities.Credentials> allCredentials = new ArrayList<>();
+    public AccessTokensPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
+        org.catalytic.sdk.generated.model.AccessTokensPage results;
+        List<AccessToken> allCredentials = new ArrayList<>();
         String text = null;
 
         if (filter != null) {
@@ -144,7 +145,7 @@ public class Credentials {
 
         try {
             log.debug("Finding users with text: {}", text);
-            results = this.userCredentialsApi.findCredentials(text, null, null, null, null, null, null, pageToken, pageSize);
+            results = this.accessTokensApi.findAccessTokens(text, null, null, null, null, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
@@ -152,13 +153,13 @@ public class Credentials {
             throw new InternalErrorException("Unable to find users", e);
         }
 
-        for (org.catalytic.sdk.generated.model.Credentials internalCredentials : results.getCredentials()) {
-            org.catalytic.sdk.entities.Credentials credentials = createCredentials(internalCredentials);
-            allCredentials.add(credentials);
+        for (org.catalytic.sdk.generated.model.AccessToken internalCredentials : results.getAccessTokens()) {
+            AccessToken accessToken = createAccessToken(internalCredentials);
+            allCredentials.add(accessToken);
         }
 
-        CredentialsPage credentialsPage = new CredentialsPage(allCredentials, results.getCount(), results.getNextPageToken());
-        return credentialsPage;
+        AccessTokensPage accessTokensPage = new AccessTokensPage(allCredentials, results.getCount(), results.getNextPageToken());
+        return accessTokensPage;
     }
 
     /**
@@ -171,7 +172,7 @@ public class Credentials {
      * @throws UnauthorizedException    If unauthorized
      * @throws InternalErrorException   If any errors creating the Credentials
      */
-    public org.catalytic.sdk.entities.Credentials create(String teamName, String email, String password) throws UnauthorizedException, InternalErrorException {
+    public AccessToken create(String teamName, String email, String password) throws UnauthorizedException, InternalErrorException {
         return create(teamName, email, password, null);
     }
 
@@ -186,17 +187,17 @@ public class Credentials {
      * @throws UnauthorizedException    If unauthorized
      * @throws InternalErrorException   If any errors creating the Credentials
      */
-    public org.catalytic.sdk.entities.Credentials create(String teamName, String email, String password, String name) throws UnauthorizedException, InternalErrorException {
-        org.catalytic.sdk.generated.model.Credentials internalCredentials;
+    public AccessToken create(String teamName, String email, String password, String name) throws UnauthorizedException, InternalErrorException {
+        org.catalytic.sdk.generated.model.AccessToken internalCredentials;
         String domain = getDomainFromTeamName(teamName);
-        CredentialsCreationWithEmailAndPasswordRequest request = new CredentialsCreationWithEmailAndPasswordRequest();
+        AccessTokenCreationWithEmailAndPasswordRequest request = new AccessTokenCreationWithEmailAndPasswordRequest();
         request.setDomain(domain);
         request.setEmail(email);
         request.setPassword(password);
         request.setName(name);
         try {
             log.debug("Creating Credentials with email {}, teamName {}, and name {}", teamName, email, name);
-            internalCredentials = this.authenticationApi.createAndApproveCredentials(request);
+            internalCredentials = this.authenticationApi.createAndApproveAccessToken(request);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
@@ -204,8 +205,8 @@ public class Credentials {
             throw new InternalErrorException("Unable to create Credentials");
         }
 
-        org.catalytic.sdk.entities.Credentials credentials = createCredentials(internalCredentials);
-        return credentials;
+        AccessToken accessToken = createAccessToken(internalCredentials);
+        return accessToken;
     }
 
     /**
@@ -218,7 +219,7 @@ public class Credentials {
      * @throws UnauthorizedException    If unauthorized
      * @throws InternalErrorException   If any errors creating the Credentials
      */
-    public org.catalytic.sdk.entities.Credentials createWithWebApprovalFlow(String teamName) throws UnauthorizedException, InternalErrorException {
+    public AccessToken createWithWebApprovalFlow(String teamName) throws UnauthorizedException, InternalErrorException {
         return createWithWebApprovalFlow(teamName, null);
     }
 
@@ -233,15 +234,15 @@ public class Credentials {
      * @throws UnauthorizedException    If unauthorized
      * @throws InternalErrorException   If any errors creating the Credentials
      */
-    public org.catalytic.sdk.entities.Credentials createWithWebApprovalFlow(String teamName, String name) throws UnauthorizedException, InternalErrorException {
-        org.catalytic.sdk.generated.model.Credentials internalCredentials;
+    public AccessToken createWithWebApprovalFlow(String teamName, String name) throws UnauthorizedException, InternalErrorException {
+        org.catalytic.sdk.generated.model.AccessToken internalAccessToken;
         String domain = getDomainFromTeamName(teamName);
-        CredentialsCreationRequest request = new CredentialsCreationRequest();
+        AccessTokenCreationRequest request = new AccessTokenCreationRequest();
         request.setDomain(domain);
         request.setName(name);
         try {
             log.debug("Creating Credentials with teamName {} and name {}", teamName, name);
-            internalCredentials = this.authenticationApi.createCredentials(request);
+            internalAccessToken = this.authenticationApi.createAccessToken(request);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
@@ -249,32 +250,32 @@ public class Credentials {
             throw new InternalErrorException("Unable to create Credentials");
         }
 
-        org.catalytic.sdk.entities.Credentials credentials = createCredentials(internalCredentials);
-        return credentials;
+        AccessToken accessToken = createAccessToken(internalAccessToken);
+        return accessToken;
     }
 
     /**
      * Gets the url that the user must visit to approve Credentials created with createWithWebApprovalFlow
      *
-     * @param credentials       The Credentials to get the approval url from
+     * @param accessToken       The Credentials to get the approval url from
      * @return                  The url a user must visit to approve the created Credentials
      * @throws InternalErrorException
      */
-    public String getApprovalUrl(org.catalytic.sdk.entities.Credentials credentials) throws InternalErrorException {
-        return getApprovalUrl(credentials, "Catalytic SDK");
+    public String getApprovalUrl(AccessToken accessToken) throws InternalErrorException {
+        return getApprovalUrl(accessToken, "Catalytic SDK");
     }
 
     /**
      * Gets the url that the user must visit to approve Credentials created with createWithWebApprovalFlow
      *
-     * @param credentials       The Credentials to get the approval url from
+     * @param accessToken       The Credentials to get the approval url from
      * @param applicationName   The name of the application to label the token with
      * @return                  The url a user must visit to approve the created Credentials
      * @throws InternalErrorException
      */
-    public String getApprovalUrl(org.catalytic.sdk.entities.Credentials credentials, String applicationName) throws InternalErrorException {
+    public String getApprovalUrl(AccessToken accessToken, String applicationName) throws InternalErrorException {
         try {
-            return "https://" + credentials.getDomain() + "/credentials/approve?userTokenID=" + credentials.getId() + "&application=" + URLEncoder.encode(applicationName, "UTF-8");
+            return "https://" + accessToken.getDomain() + "/credentials/approve?userTokenID=" + accessToken.getId() + "&application=" + URLEncoder.encode(applicationName, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new InternalErrorException("Unable to generate approval url");
         }
@@ -286,25 +287,25 @@ public class Credentials {
      * @param id                            The id of the Credentials to revoke
      * @return Credentials                  The Credentials that were revoked
      * @throws InternalErrorException       If error fetching Credentials
-     * @throws CredentialsNotFoundException If credentials with id do not exist
+     * @throws AccessTokenNotFoundException If credentials with id do not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public org.catalytic.sdk.entities.Credentials revoke(String id) throws UnauthorizedException, CredentialsNotFoundException, InternalErrorException {
-        org.catalytic.sdk.generated.model.Credentials internalCredentials;
+    public AccessToken revoke(String id) throws UnauthorizedException, AccessTokenNotFoundException, InternalErrorException {
+        org.catalytic.sdk.generated.model.AccessToken internalAccessToken;
         try {
             log.debug("Revoking Credentials with id {}", () -> id);
-            internalCredentials = this.userCredentialsApi.revokeCredentials(id);
+            internalAccessToken = this.accessTokensApi.revokeAccessToken(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
-                throw new CredentialsNotFoundException("Credentials with id " + id + " not found", e);
+                throw new AccessTokenNotFoundException("Credentials with id " + id + " not found", e);
             }
             throw new InternalErrorException("Unable to revoke Credentials", e);
         }
 
-        org.catalytic.sdk.entities.Credentials credentials = createCredentials(internalCredentials);
-        return credentials;
+        AccessToken accessToken = createAccessToken(internalAccessToken);
+        return accessToken;
     }
 
     /**
@@ -313,8 +314,8 @@ public class Credentials {
      * @param internalCredentials   The internal credentials to create a Credentials object from
      * @return                      The created Credentials object
      */
-    private org.catalytic.sdk.entities.Credentials createCredentials(org.catalytic.sdk.generated.model.Credentials internalCredentials) {
-        org.catalytic.sdk.entities.Credentials credentials = new org.catalytic.sdk.entities.Credentials(
+    private AccessToken createAccessToken(org.catalytic.sdk.generated.model.AccessToken internalCredentials) {
+        AccessToken accessToken = new AccessToken(
                 internalCredentials.getId(),
                 internalCredentials.getDomain(),
                 internalCredentials.getType().getValue(),
@@ -324,7 +325,7 @@ public class Credentials {
                 internalCredentials.getEnvironment(),
                 internalCredentials.getOwner()
         );
-        return credentials;
+        return accessToken;
     }
 
     /**
@@ -355,9 +356,6 @@ public class Credentials {
      * @throws IllegalArgumentException If the teamName is not valid
      */
     private void validateTeamName(String teamName) {
-//        Pattern validTeamNameRegex = Pattern.compile("^[a-z0-9][a-z0-9-_]+$");
-//        Matcher matcher = validTeamNameRegex.matcher(teamName);
-//        if (!matcher.find()) {
         String validTeamNameRegex = "^[a-z0-9][a-z0-9-_]+$";
         if (!teamName.matches(validTeamNameRegex)) {
             throw new IllegalArgumentException("Invalid teamName");

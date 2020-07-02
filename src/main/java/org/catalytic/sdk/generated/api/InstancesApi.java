@@ -66,6 +66,10 @@ public class InstancesApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
      * @param _callback Callback for upload/download progress
@@ -78,7 +82,7 @@ public class InstancesApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findInstancesCall(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call findInstancesCall(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -114,6 +118,22 @@ public class InstancesApi {
             localVarQueryParams.addAll(localVarApiClient.parameterToPair("participating_users", participatingUsers));
         }
 
+        if (startedBefore != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("started_before", startedBefore));
+        }
+
+        if (startedAfter != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("started_after", startedAfter));
+        }
+
+        if (endedBefore != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("ended_before", endedBefore));
+        }
+
+        if (endedAfter != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("ended_after", endedAfter));
+        }
+
         if (pageToken != null) {
             localVarQueryParams.addAll(localVarApiClient.parameterToPair("page_token", pageToken));
         }
@@ -144,10 +164,10 @@ public class InstancesApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call findInstancesValidateBeforeCall(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call findInstancesValidateBeforeCall(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
         
 
-        okhttp3.Call localVarCall = findInstancesCall(query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize, _callback);
+        okhttp3.Call localVarCall = findInstancesCall(query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize, _callback);
         return localVarCall;
 
     }
@@ -162,6 +182,10 @@ public class InstancesApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
      * @return InstancesPage
@@ -173,8 +197,8 @@ public class InstancesApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public InstancesPage findInstances(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize) throws ApiException {
-        ApiResponse<InstancesPage> localVarResp = findInstancesWithHttpInfo(query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize);
+    public InstancesPage findInstances(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize) throws ApiException {
+        ApiResponse<InstancesPage> localVarResp = findInstancesWithHttpInfo(query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize);
         return localVarResp.getData();
     }
 
@@ -188,6 +212,10 @@ public class InstancesApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
      * @return ApiResponse&lt;InstancesPage&gt;
@@ -199,8 +227,8 @@ public class InstancesApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<InstancesPage> findInstancesWithHttpInfo(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize) throws ApiException {
-        okhttp3.Call localVarCall = findInstancesValidateBeforeCall(query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize, null);
+    public ApiResponse<InstancesPage> findInstancesWithHttpInfo(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize) throws ApiException {
+        okhttp3.Call localVarCall = findInstancesValidateBeforeCall(query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize, null);
         Type localVarReturnType = new TypeToken<InstancesPage>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -215,6 +243,10 @@ public class InstancesApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
      * @param _callback The callback to be executed when the API call finishes
@@ -227,9 +259,9 @@ public class InstancesApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findInstancesAsync(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize, final ApiCallback<InstancesPage> _callback) throws ApiException {
+    public okhttp3.Call findInstancesAsync(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize, final ApiCallback<InstancesPage> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = findInstancesValidateBeforeCall(query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize, _callback);
+        okhttp3.Call localVarCall = findInstancesValidateBeforeCall(query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize, _callback);
         Type localVarReturnType = new TypeToken<InstancesPage>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;

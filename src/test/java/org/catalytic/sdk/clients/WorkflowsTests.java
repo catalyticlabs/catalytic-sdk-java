@@ -73,7 +73,7 @@ public class WorkflowsTests {
 
     @Test(expected = UnauthorizedException.class)
     public void findWorkflows_itShouldReturnUnauthorizedException() throws Exception {
-        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null))
+        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
         Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
@@ -82,7 +82,7 @@ public class WorkflowsTests {
 
     @Test(expected = InternalErrorException.class)
     public void findWorkflows_itShouldReturnInternalErrorException() throws Exception {
-        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null))
+        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
         Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
@@ -97,7 +97,7 @@ public class WorkflowsTests {
         workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
         workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null))
+        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(workflowsPage);
 
         Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
@@ -115,7 +115,7 @@ public class WorkflowsTests {
         workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
         workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, "25", null))
+        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(workflowsPage);
 
         Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
@@ -133,7 +133,7 @@ public class WorkflowsTests {
         workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
         workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows("My Workflow", null, null, null, null, null, null, null, null))
+        when(workflowsApi.findWorkflows("My Workflow", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(workflowsPage);
 
         Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
@@ -152,7 +152,7 @@ public class WorkflowsTests {
         workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
         workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows(null, null, null, null, "alice@example.com", null, null, null, null))
+        when(workflowsApi.findWorkflows(null, null, null, null, "alice@example.com", null, null, null, null, null, null, null, null))
                 .thenReturn(workflowsPage);
 
         Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
@@ -171,7 +171,7 @@ public class WorkflowsTests {
         workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
         workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows(null, null, null, null, null, "general", null, null, null))
+        when(workflowsApi.findWorkflows(null, null, null, null, null, "general", null, null, null, null, null, null, null))
                 .thenReturn(workflowsPage);
 
         Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
@@ -190,7 +190,7 @@ public class WorkflowsTests {
         workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
         workflowsPage.setCount(Arrays.asList(myWorkflow).size());
         workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows("My Workflow", null, null, null, null, null, null, "25", null))
+        when(workflowsApi.findWorkflows("My Workflow", null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(workflowsPage);
 
         Workflows workflowsClient = new Workflows(workflowsApi, filesClient);

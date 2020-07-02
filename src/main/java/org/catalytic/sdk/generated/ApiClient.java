@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
 
 public class ApiClient {
 
-    private String basePath = "https://sdk.catalytic.com/v1.0.1-pre-33";
+    private String basePath = "https://sdk.catalytic.com/v1.0.1-pre-34";
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
     private Map<String, String> defaultCookieMap = new HashMap<String, String>();
@@ -123,7 +123,7 @@ public class ApiClient {
     /**
      * Set base path
      *
-     * @param basePath Base path of the URL (e.g https://sdk.catalytic.com/v1.0.1-pre-33
+     * @param basePath Base path of the URL (e.g https://sdk.catalytic.com/v1.0.1-pre-34
      * @return An instance of OkHttpClient
      */
     public ApiClient setBasePath(String basePath) {

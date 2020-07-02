@@ -147,7 +147,7 @@ public class DataTables {
         org.catalytic.sdk.generated.model.DataTablesPage internalDataTables = null;
         try {
             log.debug("Finding dataTables with text {}", text);
-            internalDataTables = this.dataTablesApi.findDataTables(text, null, null, null, null, null, null, pageToken, pageSize);
+            internalDataTables = this.dataTablesApi.findDataTables(text, null, null, null, null, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();

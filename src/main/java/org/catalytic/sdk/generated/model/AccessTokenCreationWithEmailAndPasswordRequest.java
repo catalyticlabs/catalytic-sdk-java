@@ -25,11 +25,11 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * Represents a request to create and approve new Credentials for authentication into a Catalytic team  with passed username and password
+ * Represents a request to create and approve new AccessToken for authentication into a Catalytic team  with passed username and password
  */
-@ApiModel(description = "Represents a request to create and approve new Credentials for authentication into a Catalytic team  with passed username and password")
+@ApiModel(description = "Represents a request to create and approve new AccessToken for authentication into a Catalytic team  with passed username and password")
 
-public class CredentialsCreationWithEmailAndPasswordRequest {
+public class AccessTokenCreationWithEmailAndPasswordRequest {
   public static final String SERIALIZED_NAME_EMAIL = "email";
   @SerializedName(SERIALIZED_NAME_EMAIL)
   private String email;
@@ -47,18 +47,18 @@ public class CredentialsCreationWithEmailAndPasswordRequest {
   private String name;
 
 
-  public CredentialsCreationWithEmailAndPasswordRequest email(String email) {
+  public AccessTokenCreationWithEmailAndPasswordRequest email(String email) {
     
     this.email = email;
     return this;
   }
 
    /**
-   * Optional email address of the Catalytic user for whom the Credentials should be created
+   * Optional email address of the Catalytic user for whom the AccessToken should be created
    * @return email
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "Optional email address of the Catalytic user for whom the Credentials should be created")
+  @ApiModelProperty(required = true, value = "Optional email address of the Catalytic user for whom the AccessToken should be created")
 
   public String getEmail() {
     return email;
@@ -70,18 +70,18 @@ public class CredentialsCreationWithEmailAndPasswordRequest {
   }
 
 
-  public CredentialsCreationWithEmailAndPasswordRequest password(String password) {
+  public AccessTokenCreationWithEmailAndPasswordRequest password(String password) {
     
     this.password = password;
     return this;
   }
 
    /**
-   * Optional password of the Catalytic user for whom the Credentials should be created
+   * Optional password of the Catalytic user for whom the AccessToken should be created
    * @return password
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(required = true, value = "Optional password of the Catalytic user for whom the Credentials should be created")
+  @ApiModelProperty(required = true, value = "Optional password of the Catalytic user for whom the AccessToken should be created")
 
   public String getPassword() {
     return password;
@@ -93,7 +93,7 @@ public class CredentialsCreationWithEmailAndPasswordRequest {
   }
 
 
-  public CredentialsCreationWithEmailAndPasswordRequest domain(String domain) {
+  public AccessTokenCreationWithEmailAndPasswordRequest domain(String domain) {
     
     this.domain = domain;
     return this;
@@ -116,18 +116,18 @@ public class CredentialsCreationWithEmailAndPasswordRequest {
   }
 
 
-  public CredentialsCreationWithEmailAndPasswordRequest name(String name) {
+  public AccessTokenCreationWithEmailAndPasswordRequest name(String name) {
     
     this.name = name;
     return this;
   }
 
    /**
-   * Optional Name to assign to Credentials; visible in Catalytic UI
+   * Optional Name to assign to AccessToken; visible in Catalytic UI
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "Optional Name to assign to Credentials; visible in Catalytic UI")
+  @ApiModelProperty(value = "Optional Name to assign to AccessToken; visible in Catalytic UI")
 
   public String getName() {
     return name;
@@ -147,11 +147,11 @@ public class CredentialsCreationWithEmailAndPasswordRequest {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    CredentialsCreationWithEmailAndPasswordRequest credentialsCreationWithEmailAndPasswordRequest = (CredentialsCreationWithEmailAndPasswordRequest) o;
-    return Objects.equals(this.email, credentialsCreationWithEmailAndPasswordRequest.email) &&
-        Objects.equals(this.password, credentialsCreationWithEmailAndPasswordRequest.password) &&
-        Objects.equals(this.domain, credentialsCreationWithEmailAndPasswordRequest.domain) &&
-        Objects.equals(this.name, credentialsCreationWithEmailAndPasswordRequest.name);
+    AccessTokenCreationWithEmailAndPasswordRequest accessTokenCreationWithEmailAndPasswordRequest = (AccessTokenCreationWithEmailAndPasswordRequest) o;
+    return Objects.equals(this.email, accessTokenCreationWithEmailAndPasswordRequest.email) &&
+        Objects.equals(this.password, accessTokenCreationWithEmailAndPasswordRequest.password) &&
+        Objects.equals(this.domain, accessTokenCreationWithEmailAndPasswordRequest.domain) &&
+        Objects.equals(this.name, accessTokenCreationWithEmailAndPasswordRequest.name);
   }
 
   @Override
@@ -163,7 +163,7 @@ public class CredentialsCreationWithEmailAndPasswordRequest {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class CredentialsCreationWithEmailAndPasswordRequest {\n");
+    sb.append("class AccessTokenCreationWithEmailAndPasswordRequest {\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    domain: ").append(toIndentedString(domain)).append("\n");

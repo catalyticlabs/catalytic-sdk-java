@@ -37,7 +37,7 @@ repositories {
 Add the Catalytic SDK dependency
 
 ```groovy
-compile 'com.github.catalyticlabs:catalytic-sdk-java:0.0.1'
+compile 'com.github.catalyticlabs:catalytic-sdk-java:0.0.2'
 ```
 
 ### Maven
@@ -55,7 +55,7 @@ Add the [Jitpack](https://jitpack.io) repository
 <dependency>
   <groupId>com.github.catalyticlabs</groupId>
   <artifactId>catalytic-sdk-java</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <scope>compile</scope>
 </dependency>
 ```

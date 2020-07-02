@@ -66,7 +66,7 @@ public class DataTablesTests {
 
     @Test(expected = UnauthorizedException.class)
     public void findDataTables_itShouldReturnUnauthorizedException() throws Exception {
-        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null))
+        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
         DataTables dataTablesClient = new DataTables(dataTablesApi);
@@ -75,7 +75,7 @@ public class DataTablesTests {
 
     @Test(expected = InternalErrorException.class)
     public void findDataTables_itShouldReturnInternalErrorException() throws Exception {
-        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null))
+        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
         DataTables dataTablesClient = new DataTables(dataTablesApi);
@@ -90,7 +90,7 @@ public class DataTablesTests {
         dataTablesPage.setDataTables(Arrays.asList(internalDataTable));
         dataTablesPage.setCount(Arrays.asList(internalDataTable).size());
         dataTablesPage.setNextPageToken(null);
-        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null))
+        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(dataTablesPage);
 
         DataTables dataTablesClient = new DataTables(dataTablesApi);
@@ -108,7 +108,7 @@ public class DataTablesTests {
         dataTablesPage.setDataTables(Arrays.asList(internalDataTable));
         dataTablesPage.setCount(Arrays.asList(internalDataTable).size());
         dataTablesPage.setNextPageToken(null);
-        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, "25", null))
+        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(dataTablesPage);
 
         DataTables dataTablesClient = new DataTables(dataTablesApi);
@@ -127,7 +127,7 @@ public class DataTablesTests {
         dataTablesPage.setDataTables(Arrays.asList(internalDataTable));
         dataTablesPage.setCount(Arrays.asList(internalDataTable).size());
         dataTablesPage.setNextPageToken(null);
-        when(dataTablesApi.findDataTables("example", null, null, null, null, null, null, null, null))
+        when(dataTablesApi.findDataTables("example", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(dataTablesPage);
 
         DataTables dataTablesClient = new DataTables(dataTablesApi);
@@ -146,7 +146,7 @@ public class DataTablesTests {
         dataTablesPage.setDataTables(Arrays.asList(internalDataTable));
         dataTablesPage.setCount(Arrays.asList(internalDataTable).size());
         dataTablesPage.setNextPageToken(null);
-        when(dataTablesApi.findDataTables("example", null, null, null, null, null, null, "25", null))
+        when(dataTablesApi.findDataTables("example", null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(dataTablesPage);
 
         DataTables dataTablesClient = new DataTables(dataTablesApi);

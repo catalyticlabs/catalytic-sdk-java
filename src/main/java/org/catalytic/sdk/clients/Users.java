@@ -136,7 +136,7 @@ public class Users {
 
         try {
             log.debug("Finding users with text: {}", text);
-            results = this.usersApi.findUsers(text, null, null, null, null, null, null, pageToken, pageSize);
+            results = this.usersApi.findUsers(text, null, null, null, null, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException();

@@ -1,13 +1,13 @@
 package org.catalytic.sdk.entities;
 
-public enum CredentialType {
+public enum TokenType {
 
     USER("user"),
     ACTIONWORKER("actionWorker");
 
     private String value;
 
-    CredentialType(String value) {
+    TokenType(String value) {
         this.value = value;
     }
 

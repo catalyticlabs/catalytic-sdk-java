@@ -25,10 +25,10 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * Represents the type of the entity associated with the Credentials
+ * Represents the type of the entity associated with the AccessToken
  */
-@JsonAdapter(CredentialType.Adapter.class)
-public enum CredentialType {
+@JsonAdapter(TokenType.Adapter.class)
+public enum TokenType {
   
   USER("user"),
   
@@ -36,7 +36,7 @@ public enum CredentialType {
 
   private String value;
 
-  CredentialType(String value) {
+  TokenType(String value) {
     this.value = value;
   }
 
@@ -49,8 +49,8 @@ public enum CredentialType {
     return String.valueOf(value);
   }
 
-  public static CredentialType fromValue(String value) {
-    for (CredentialType b : CredentialType.values()) {
+  public static TokenType fromValue(String value) {
+    for (TokenType b : TokenType.values()) {
       if (b.value.equals(value)) {
         return b;
       }
@@ -58,16 +58,16 @@ public enum CredentialType {
     throw new IllegalArgumentException("Unexpected value '" + value + "'");
   }
 
-  public static class Adapter extends TypeAdapter<CredentialType> {
+  public static class Adapter extends TypeAdapter<TokenType> {
     @Override
-    public void write(final JsonWriter jsonWriter, final CredentialType enumeration) throws IOException {
+    public void write(final JsonWriter jsonWriter, final TokenType enumeration) throws IOException {
       jsonWriter.value(enumeration.getValue());
     }
 
     @Override
-    public CredentialType read(final JsonReader jsonReader) throws IOException {
+    public TokenType read(final JsonReader jsonReader) throws IOException {
       String value = jsonReader.nextString();
-      return CredentialType.fromValue(value);
+      return TokenType.fromValue(value);
     }
   }
 }

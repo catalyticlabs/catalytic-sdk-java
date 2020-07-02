@@ -27,8 +27,8 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 
-import org.catalytic.sdk.generated.model.Credentials;
-import org.catalytic.sdk.generated.model.CredentialsPage;
+import org.catalytic.sdk.generated.model.AccessToken;
+import org.catalytic.sdk.generated.model.AccessTokensPage;
 import org.catalytic.sdk.generated.model.ProblemDetails;
 
 import java.lang.reflect.Type;
@@ -37,14 +37,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UserCredentialsApi {
+public class AccessTokensApi {
     private ApiClient localVarApiClient;
 
-    public UserCredentialsApi() {
+    public AccessTokensApi() {
         this(Configuration.getDefaultApiClient());
     }
 
-    public UserCredentialsApi(ApiClient apiClient) {
+    public AccessTokensApi(ApiClient apiClient) {
         this.localVarApiClient = apiClient;
     }
 
@@ -57,7 +57,7 @@ public class UserCredentialsApi {
     }
 
     /**
-     * Build call for findCredentials
+     * Build call for findAccessTokens
      * @param query Free text query terms to search all attributes for (optional)
      * @param status Run or task status to search for (optional)
      * @param processId Process ID (aka Pushbot ID or Workflow ID) to search for (optional)
@@ -65,6 +65,10 @@ public class UserCredentialsApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
      * @param _callback Callback for upload/download progress
@@ -79,11 +83,11 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findCredentialsCall(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call findAccessTokensCall(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/credentials";
+        String localVarPath = "/api/access-tokens";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -113,6 +117,22 @@ public class UserCredentialsApi {
 
         if (participatingUsers != null) {
             localVarQueryParams.addAll(localVarApiClient.parameterToPair("participating_users", participatingUsers));
+        }
+
+        if (startedBefore != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("started_before", startedBefore));
+        }
+
+        if (startedAfter != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("started_after", startedAfter));
+        }
+
+        if (endedBefore != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("ended_before", endedBefore));
+        }
+
+        if (endedAfter != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("ended_after", endedAfter));
         }
 
         if (pageToken != null) {
@@ -145,16 +165,16 @@ public class UserCredentialsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call findCredentialsValidateBeforeCall(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call findAccessTokensValidateBeforeCall(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize, final ApiCallback _callback) throws ApiException {
         
 
-        okhttp3.Call localVarCall = findCredentialsCall(query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize, _callback);
+        okhttp3.Call localVarCall = findAccessTokensCall(query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize, _callback);
         return localVarCall;
 
     }
 
     /**
-     * Find User Tokens
+     * Find Access Tokens
      * 
      * @param query Free text query terms to search all attributes for (optional)
      * @param status Run or task status to search for (optional)
@@ -163,9 +183,13 @@ public class UserCredentialsApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
-     * @return CredentialsPage
+     * @return AccessTokensPage
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
@@ -176,13 +200,13 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public CredentialsPage findCredentials(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize) throws ApiException {
-        ApiResponse<CredentialsPage> localVarResp = findCredentialsWithHttpInfo(query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize);
+    public AccessTokensPage findAccessTokens(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize) throws ApiException {
+        ApiResponse<AccessTokensPage> localVarResp = findAccessTokensWithHttpInfo(query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize);
         return localVarResp.getData();
     }
 
     /**
-     * Find User Tokens
+     * Find Access Tokens
      * 
      * @param query Free text query terms to search all attributes for (optional)
      * @param status Run or task status to search for (optional)
@@ -191,9 +215,13 @@ public class UserCredentialsApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
-     * @return ApiResponse&lt;CredentialsPage&gt;
+     * @return ApiResponse&lt;AccessTokensPage&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
@@ -204,14 +232,14 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<CredentialsPage> findCredentialsWithHttpInfo(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize) throws ApiException {
-        okhttp3.Call localVarCall = findCredentialsValidateBeforeCall(query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize, null);
-        Type localVarReturnType = new TypeToken<CredentialsPage>(){}.getType();
+    public ApiResponse<AccessTokensPage> findAccessTokensWithHttpInfo(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize) throws ApiException {
+        okhttp3.Call localVarCall = findAccessTokensValidateBeforeCall(query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize, null);
+        Type localVarReturnType = new TypeToken<AccessTokensPage>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
     /**
-     * Find User Tokens (asynchronously)
+     * Find Access Tokens (asynchronously)
      * 
      * @param query Free text query terms to search all attributes for (optional)
      * @param status Run or task status to search for (optional)
@@ -220,6 +248,10 @@ public class UserCredentialsApi {
      * @param owner Run or task owner to search for (optional)
      * @param category Category of process or run to search for (optional)
      * @param participatingUsers Task assignee to search for (optional)
+     * @param startedBefore Latest start date of the task or run to search for (optional)
+     * @param startedAfter Earliest start date of the task or run to search for (optional)
+     * @param endedBefore Latest end date of the task or run to search for (optional)
+     * @param endedAfter Earliest end date of the task or run to search for (optional)
      * @param pageToken The token representing the result page to get (optional)
      * @param pageSize The page size requested (optional)
      * @param _callback The callback to be executed when the API call finishes
@@ -234,15 +266,15 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findCredentialsAsync(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String pageToken, Integer pageSize, final ApiCallback<CredentialsPage> _callback) throws ApiException {
+    public okhttp3.Call findAccessTokensAsync(String query, String status, String processId, String runId, String owner, String category, String participatingUsers, String startedBefore, String startedAfter, String endedBefore, String endedAfter, String pageToken, Integer pageSize, final ApiCallback<AccessTokensPage> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = findCredentialsValidateBeforeCall(query, status, processId, runId, owner, category, participatingUsers, pageToken, pageSize, _callback);
-        Type localVarReturnType = new TypeToken<CredentialsPage>(){}.getType();
+        okhttp3.Call localVarCall = findAccessTokensValidateBeforeCall(query, status, processId, runId, owner, category, participatingUsers, startedBefore, startedAfter, endedBefore, endedAfter, pageToken, pageSize, _callback);
+        Type localVarReturnType = new TypeToken<AccessTokensPage>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
-     * Build call for getCredentials
+     * Build call for getAccessToken
      * @param id  (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -256,11 +288,11 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getCredentialsCall(String id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getAccessTokenCall(String id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/credentials/{id}"
+        String localVarPath = "/api/access-tokens/{id}"
             .replaceAll("\\{" + "id" + "\\}", localVarApiClient.escapeString(id.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -287,15 +319,15 @@ public class UserCredentialsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getCredentialsValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getAccessTokenValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling getCredentials(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling getAccessToken(Async)");
         }
         
 
-        okhttp3.Call localVarCall = getCredentialsCall(id, _callback);
+        okhttp3.Call localVarCall = getAccessTokenCall(id, _callback);
         return localVarCall;
 
     }
@@ -304,7 +336,7 @@ public class UserCredentialsApi {
      * 
      * 
      * @param id  (required)
-     * @return Credentials
+     * @return AccessToken
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
@@ -315,8 +347,8 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public Credentials getCredentials(String id) throws ApiException {
-        ApiResponse<Credentials> localVarResp = getCredentialsWithHttpInfo(id);
+    public AccessToken getAccessToken(String id) throws ApiException {
+        ApiResponse<AccessToken> localVarResp = getAccessTokenWithHttpInfo(id);
         return localVarResp.getData();
     }
 
@@ -324,7 +356,7 @@ public class UserCredentialsApi {
      * 
      * 
      * @param id  (required)
-     * @return ApiResponse&lt;Credentials&gt;
+     * @return ApiResponse&lt;AccessToken&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
@@ -335,9 +367,9 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Credentials> getCredentialsWithHttpInfo(String id) throws ApiException {
-        okhttp3.Call localVarCall = getCredentialsValidateBeforeCall(id, null);
-        Type localVarReturnType = new TypeToken<Credentials>(){}.getType();
+    public ApiResponse<AccessToken> getAccessTokenWithHttpInfo(String id) throws ApiException {
+        okhttp3.Call localVarCall = getAccessTokenValidateBeforeCall(id, null);
+        Type localVarReturnType = new TypeToken<AccessToken>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
@@ -357,16 +389,16 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getCredentialsAsync(String id, final ApiCallback<Credentials> _callback) throws ApiException {
+    public okhttp3.Call getAccessTokenAsync(String id, final ApiCallback<AccessToken> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = getCredentialsValidateBeforeCall(id, _callback);
-        Type localVarReturnType = new TypeToken<Credentials>(){}.getType();
+        okhttp3.Call localVarCall = getAccessTokenValidateBeforeCall(id, _callback);
+        Type localVarReturnType = new TypeToken<AccessToken>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
-     * Build call for revokeCredentials
-     * @param id The public Access Identifier of the Credentials (required)
+     * Build call for revokeAccessToken
+     * @param id The public Id of the AccessToken (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
@@ -379,11 +411,11 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call revokeCredentialsCall(String id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call revokeAccessTokenCall(String id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/credentials/{id}:revoke"
+        String localVarPath = "/api/access-tokens/{id}:revoke"
             .replaceAll("\\{" + "id" + "\\}", localVarApiClient.escapeString(id.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -410,24 +442,24 @@ public class UserCredentialsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call revokeCredentialsValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call revokeAccessTokenValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling revokeCredentials(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling revokeAccessToken(Async)");
         }
         
 
-        okhttp3.Call localVarCall = revokeCredentialsCall(id, _callback);
+        okhttp3.Call localVarCall = revokeAccessTokenCall(id, _callback);
         return localVarCall;
 
     }
 
     /**
-     * Revoke User Token
+     * Revoke Access Token
      * 
-     * @param id The public Access Identifier of the Credentials (required)
-     * @return Credentials
+     * @param id The public Id of the AccessToken (required)
+     * @return AccessToken
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
@@ -438,16 +470,16 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public Credentials revokeCredentials(String id) throws ApiException {
-        ApiResponse<Credentials> localVarResp = revokeCredentialsWithHttpInfo(id);
+    public AccessToken revokeAccessToken(String id) throws ApiException {
+        ApiResponse<AccessToken> localVarResp = revokeAccessTokenWithHttpInfo(id);
         return localVarResp.getData();
     }
 
     /**
-     * Revoke User Token
+     * Revoke Access Token
      * 
-     * @param id The public Access Identifier of the Credentials (required)
-     * @return ApiResponse&lt;Credentials&gt;
+     * @param id The public Id of the AccessToken (required)
+     * @return ApiResponse&lt;AccessToken&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
@@ -458,16 +490,16 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Credentials> revokeCredentialsWithHttpInfo(String id) throws ApiException {
-        okhttp3.Call localVarCall = revokeCredentialsValidateBeforeCall(id, null);
-        Type localVarReturnType = new TypeToken<Credentials>(){}.getType();
+    public ApiResponse<AccessToken> revokeAccessTokenWithHttpInfo(String id) throws ApiException {
+        okhttp3.Call localVarCall = revokeAccessTokenValidateBeforeCall(id, null);
+        Type localVarReturnType = new TypeToken<AccessToken>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
     /**
-     * Revoke User Token (asynchronously)
+     * Revoke Access Token (asynchronously)
      * 
-     * @param id The public Access Identifier of the Credentials (required)
+     * @param id The public Id of the AccessToken (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -480,10 +512,10 @@ public class UserCredentialsApi {
         <tr><td> 200 </td><td> Success </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call revokeCredentialsAsync(String id, final ApiCallback<Credentials> _callback) throws ApiException {
+    public okhttp3.Call revokeAccessTokenAsync(String id, final ApiCallback<AccessToken> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = revokeCredentialsValidateBeforeCall(id, _callback);
-        Type localVarReturnType = new TypeToken<Credentials>(){}.getType();
+        okhttp3.Call localVarCall = revokeAccessTokenValidateBeforeCall(id, _callback);
+        Type localVarReturnType = new TypeToken<AccessToken>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }

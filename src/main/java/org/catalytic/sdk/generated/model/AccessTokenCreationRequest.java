@@ -25,11 +25,11 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * Represents a request to generate new Credentials for authentication into a Catalytic team
+ * Represents a request to generate new AccessToken for authentication into a Catalytic team
  */
-@ApiModel(description = "Represents a request to generate new Credentials for authentication into a Catalytic team")
+@ApiModel(description = "Represents a request to generate new AccessToken for authentication into a Catalytic team")
 
-public class CredentialsCreationRequest {
+public class AccessTokenCreationRequest {
   public static final String SERIALIZED_NAME_DOMAIN = "domain";
   @SerializedName(SERIALIZED_NAME_DOMAIN)
   private String domain;
@@ -39,7 +39,7 @@ public class CredentialsCreationRequest {
   private String name;
 
 
-  public CredentialsCreationRequest domain(String domain) {
+  public AccessTokenCreationRequest domain(String domain) {
     
     this.domain = domain;
     return this;
@@ -62,18 +62,18 @@ public class CredentialsCreationRequest {
   }
 
 
-  public CredentialsCreationRequest name(String name) {
+  public AccessTokenCreationRequest name(String name) {
     
     this.name = name;
     return this;
   }
 
    /**
-   * Optional Name to assign to Credentials; visible in Catalytic UI
+   * Optional Name to assign to AccessToken; visible in Catalytic UI
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "Optional Name to assign to Credentials; visible in Catalytic UI")
+  @ApiModelProperty(value = "Optional Name to assign to AccessToken; visible in Catalytic UI")
 
   public String getName() {
     return name;
@@ -93,9 +93,9 @@ public class CredentialsCreationRequest {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    CredentialsCreationRequest credentialsCreationRequest = (CredentialsCreationRequest) o;
-    return Objects.equals(this.domain, credentialsCreationRequest.domain) &&
-        Objects.equals(this.name, credentialsCreationRequest.name);
+    AccessTokenCreationRequest accessTokenCreationRequest = (AccessTokenCreationRequest) o;
+    return Objects.equals(this.domain, accessTokenCreationRequest.domain) &&
+        Objects.equals(this.name, accessTokenCreationRequest.name);
   }
 
   @Override
@@ -107,7 +107,7 @@ public class CredentialsCreationRequest {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class CredentialsCreationRequest {\n");
+    sb.append("class AccessTokenCreationRequest {\n");
     sb.append("    domain: ").append(toIndentedString(domain)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("}");

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Regenerate from the openapi spec and dump to dir /new
-openapi-generator generate -i https://sdk.catalytic.com/v1.0.1-pre-33/swagger/v1/swagger.json \
+openapi-generator generate -i https://sdk.catalytic.com/v1.0.1-pre-34/swagger/v1/swagger.json \
     -g java \
     -o new \
     --additional-properties=apiPackage=org.catalytic.sdk.generated.api,modelPackage=org.catalytic.sdk.generated.model,dateLibrary=java8,groupId=org.catalytic,invokerPackage=org.catalytic.sdk.generated,java8=true,hideGenerationTimestamp=true;

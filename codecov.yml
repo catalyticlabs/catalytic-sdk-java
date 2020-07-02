@@ -1,0 +1,8 @@
+# Fix path issues
+#fixes:
+#  - "::src/main/java/"
+
+# Ignore generated code
+ignore:
+  - "src/main/java/org/catalytic/sdk/generated/**/*"
+  - "src/main/java/org/catalytic/sdk/generated/*"

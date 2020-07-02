@@ -3,9 +3,9 @@ package org.catalytic.sdk.entities;
 import java.util.UUID;
 
 /**
- * A Credentials object
+ * An Access Token object
  */
-public class Credentials {
+public class AccessToken {
 
     private UUID id;
     private String domain;
@@ -16,7 +16,7 @@ public class Credentials {
     private String environment;
     private String owner;
 
-    public Credentials(UUID id, String domain, String type, String name, String token, String secret, String environment, String owner) {
+    public AccessToken(UUID id, String domain, String type, String name, String token, String secret, String environment, String owner) {
         this.id = id;
         this.domain = domain;
         this.name = name;
