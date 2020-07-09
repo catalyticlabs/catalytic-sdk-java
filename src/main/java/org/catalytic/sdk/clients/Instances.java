@@ -24,12 +24,14 @@ import java.util.UUID;
  */
 public class Instances extends BaseClient {
 
+    private String token;
     private static final Logger log = CatalyticLogger.getLogger(Instances.class);
     private InstancesApi instancesApi;
     private InstanceStepsApi instanceStepsApi;
 
-    public Instances(String secret) {
-        ApiClient apiClient = ConfigurationUtils.getApiClient(secret);
+    public Instances(String token) {
+        this.token = token;
+        ApiClient apiClient = ConfigurationUtils.getApiClient(token);
         this.instancesApi = new InstancesApi(apiClient);
         this.instanceStepsApi = new InstanceStepsApi(apiClient);
     }
@@ -39,10 +41,12 @@ public class Instances extends BaseClient {
      *
      * Allows you to pass in mocks for InstancesApi and InstanceStepsApi
      *
+     * @param token             The token to be used
      * @param instancesApi      The mocked InstancesApi
      * @param instanceStepsApi  The mocked InstanceStepsApi
      */
-    public Instances(InstancesApi instancesApi, InstanceStepsApi instanceStepsApi) {
+    public Instances(String token, InstancesApi instancesApi, InstanceStepsApi instanceStepsApi) {
+        this.token = token;
         this.instancesApi = instancesApi;
         this.instanceStepsApi = instanceStepsApi;
     }
@@ -52,11 +56,14 @@ public class Instances extends BaseClient {
      *
      * @param id                            The id of the workflow instance to get
      * @return                              The Instance object
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any error getting workflow
      * @throws InstanceNotFoundException    If instance with id does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public Instance get(String id) throws Exception {
+    public Instance get(String id) throws AccessTokenNotFoundException, UnauthorizedException, InstanceNotFoundException, InternalErrorException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.Instance internalInstance = null;
         try {
             log.debug("Getting instance with id {}", () -> id);
@@ -76,62 +83,69 @@ public class Instances extends BaseClient {
     /**
      * Find all instances
      *
-     * @return                          An InstancesPage which contains the results
-     * @throws InternalErrorException   If any error finding workflows
-     * @throws UnauthorizedException    If unauthorized
+     * @return                              An InstancesPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding workflows
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstancesPage find() throws InternalErrorException, UnauthorizedException {
+    public InstancesPage find() throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(null, null, null);
     }
 
     /**
      * Find all instances
      *
-     * @param pageToken                 The token of the page to fetch
-     * @return                          An InstancesPage which contains the results
-     * @throws InternalErrorException   If any error finding workflows
-     * @throws UnauthorizedException    If unauthorized
+     * @param pageToken                     The token of the page to fetch
+     * @return                              An InstancesPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding workflows
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstancesPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
+    public InstancesPage find(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(null, pageToken, null);
     }
 
     /**
      * Find instances by a variety of criteria
      *
-     * @param filter                    The filter criteria to search instances by
-     * @return                          An InstancesPage which contains the results
-     * @throws InternalErrorException   If any error finding workflows
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter criteria to search instances by
+     * @return                              An InstancesPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding workflows
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstancesPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
+    public InstancesPage find(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(filter, null, null);
     }
 
     /**
      * Find instances by a variety of criteria
      *
-     * @param filter                    The filter criteria to search instances by
-     * @param pageToken                 The token of the page to fetch
-     * @return                          An InstancesPage which contains the results
-     * @throws InternalErrorException   If any error finding workflows
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter criteria to search instances by
+     * @param pageToken                     The token of the page to fetch
+     * @return                              An InstancesPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding workflows
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstancesPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
+    public InstancesPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(filter, pageToken, null);
     }
 
     /**
      * Find instances by a variety of criteria
      *
-     * @param filter                    The filter criteria to search instances by
-     * @param pageToken                 The token of the page to fetch
-     * @param pageSize                  The number of workflows per page to fetch
-     * @return                          An InstancesPage which contains the results
-     * @throws InternalErrorException   If any error finding workflows
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter criteria to search instances by
+     * @param pageToken                     The token of the page to fetch
+     * @param pageSize                      The number of workflows per page to fetch
+     * @return                              An InstancesPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding workflows
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstancesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
+    public InstancesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         String text = null;
         String owner = null;
         String status = null;
@@ -170,11 +184,12 @@ public class Instances extends BaseClient {
      *
      * @param workflowId                    The id of the workflow to start an instance
      * @return                              The newly created instance
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any errors starting an instance
      * @throws WorkflowNotFoundException    If workflow with workflowId does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public Instance start(String workflowId) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+    public Instance start(String workflowId) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
         return this.start(workflowId, null, null, null);
     }
 
@@ -186,11 +201,14 @@ public class Instances extends BaseClient {
      * @param description                   The description to give to the instance
      * @param fields                        The input fields to use when starting this instance
      * @return                              The newly created instance
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any errors starting an instance
      * @throws WorkflowNotFoundException    If workflow with workflowId does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public Instance start(String workflowId, String name, String description, List<Field> fields) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+    public Instance start(String workflowId, String name, String description, List<Field> fields) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         StartInstanceRequest startInstanceRequest = createStartInstanceRequest(UUID.fromString(workflowId), name, description, fields);
         org.catalytic.sdk.generated.model.Instance internalInstance = null;
         try {
@@ -213,11 +231,14 @@ public class Instances extends BaseClient {
      *
      * @param id                            The id of the instance to stop
      * @return                              The Instance that was stopped
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any errors stopping the instance
      * @throws InstanceNotFoundException    If instance with id does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public Instance stop(String id) throws InstanceNotFoundException, InternalErrorException, UnauthorizedException {
+    public Instance stop(String id) throws InstanceNotFoundException, InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.Instance internalInstance;
         try {
             log.debug("Stopping instance with id {}", () -> id);
@@ -239,11 +260,14 @@ public class Instances extends BaseClient {
      *
      * @param id                                The id of the step to get
      * @return                                  The InstanceStep object
+     * @throws AccessTokenNotFoundException     If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException           If any errors getting the step
      * @throws InstanceStepNotFoundException    If instance with id does not exist
      * @throws UnauthorizedException            If unauthorized
      */
-    public InstanceStep getStep(String id) throws InternalErrorException, InstanceStepNotFoundException, UnauthorizedException {
+    public InstanceStep getStep(String id) throws InternalErrorException, InstanceStepNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.InstanceStep internalStep;
         try {
             log.debug("Getting step with id {}", () -> id);
@@ -263,12 +287,15 @@ public class Instances extends BaseClient {
     /**
      * Gets all the steps for a specific instance id
      *
-     * @param instanceId                The id of the instances to get steps for
-     * @return                          The InstanceStepsPage which contains the results
-     * @throws InternalErrorException   If any errors getting steps
-     * @throws UnauthorizedException    If unauthorized
+     * @param instanceId                    The id of the instances to get steps for
+     * @return                              The InstanceStepsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors getting steps
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstanceStepsPage getSteps(String instanceId) throws InternalErrorException, UnauthorizedException {
+    public InstanceStepsPage getSteps(String instanceId) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceSteps;
         try {
             log.debug("Getting all the steps for instance {}", () -> instanceId);
@@ -294,51 +321,57 @@ public class Instances extends BaseClient {
     /**
      * Search for steps
      *
-     * @param pageToken                 The token of the page to fetch
-     * @return                          An InstanceStepsPage which contains the results
-     * @throws InternalErrorException   If any errors finding steps
-     * @throws UnauthorizedException    If unauthorized
+     * @param pageToken                     The token of the page to fetch
+     * @return                              An InstanceStepsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors finding steps
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstanceStepsPage findSteps(String pageToken) throws InternalErrorException, UnauthorizedException {
+    public InstanceStepsPage findSteps(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.findSteps(null, pageToken, null);
     }
 
     /**
      * Search for steps
      *
-     * @param filter                    The filter criteria to search instance steps by
-     * @return                          An InstanceStepsPage which contains the results
-     * @throws InternalErrorException   If any errors finding steps
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter criteria to search instance steps by
+     * @return                              An InstanceStepsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors finding steps
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstanceStepsPage findSteps(Filter filter) throws InternalErrorException, UnauthorizedException {
+    public InstanceStepsPage findSteps(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.findSteps(filter, null, null);
     }
 
     /**
      * Search for steps
      *
-     * @param filter                    The filter criteria to search instance steps by
-     * @param pageToken                 The token of the page to fetch
-     * @return                          An InstanceStepsPage which contains the results
-     * @throws InternalErrorException   If any errors finding steps
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter criteria to search instance steps by
+     * @param pageToken                     The token of the page to fetch
+     * @return                              An InstanceStepsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors finding steps
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstanceStepsPage findSteps(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
+    public InstanceStepsPage findSteps(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.findSteps(filter, pageToken, null);
     }
 
     /**
      * Search for steps
      *
-     * @param filter                    The filter criteria to search instance steps by
-     * @param pageToken                 The token of the page to fetch
-     * @param pageSize                  The number of instance steps per page to fetch
-     * @return                          An InstanceStepsPage which contains the results
-     * @throws InternalErrorException   If any errors finding steps
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter criteria to search instance steps by
+     * @param pageToken                     The token of the page to fetch
+     * @param pageSize                      The number of instance steps per page to fetch
+     * @return                              An InstanceStepsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors finding steps
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstanceStepsPage findSteps(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
+    public InstanceStepsPage findSteps(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         // The REST api supports wildcard instance id when searching for instance steps
         // https://cloud.google.com/apis/design/design_patterns#list_sub-collections
         String wildcardInstanceId = "-";
@@ -376,13 +409,16 @@ public class Instances extends BaseClient {
     /**
      * Completes a specific step
      *
-     * @param id                        The id of the step to complete
-     * @param fields                    Fields and the values to use when completing a step
-     * @return                          The completed InstanceStep
-     * @throws InternalErrorException   If any errors completing the step
-     * @throws UnauthorizedException    If unauthorized
+     * @param id                            The id of the step to complete
+     * @param fields                        Fields and the values to use when completing a step
+     * @return                              The completed InstanceStep
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors completing the step
+     * @throws UnauthorizedException        If unauthorized
      */
-    public InstanceStep completeStep(String id, List<Field> fields) throws InternalErrorException, UnauthorizedException, InstanceStepNotFoundException {
+    public InstanceStep completeStep(String id, List<Field> fields) throws InternalErrorException, UnauthorizedException, InstanceStepNotFoundException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         List<FieldUpdateRequest> fieldUpdateRequests = createFieldUpdateRequests(fields);
         CompleteStepRequest completeStepRequest = new CompleteStepRequest();
         completeStepRequest.setId(UUID.fromString(id));

@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - AccessTokens.waitForApproval method
 
+### Changed
+- Allow instantiating CatalyticClient without it finding a token
+
+### Fixed
+- Passing in a token directly not working
+
 ## [0.0.2]
 ### Added
 - CatalyticLogger and log statements

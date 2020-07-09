@@ -7,6 +7,7 @@ import org.catalytic.sdk.entities.DataTable;
 import org.catalytic.sdk.entities.DataTableColumn;
 import org.catalytic.sdk.entities.DataTablesPage;
 import org.catalytic.sdk.entities.FieldRestrictions;
+import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.DataTableNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
@@ -31,13 +32,20 @@ import java.util.List;
  */
 public class DataTables {
 
+    private String token;
     private static final Logger log = CatalyticLogger.getLogger(DataTables.class);
     private DataTablesApi dataTablesApi;
     private Files files;
 
-    public DataTables(String secret) {
-        ApiClient apiClient = ConfigurationUtils.getApiClient(secret);
-        this.files = new Files(secret.trim());
+    public DataTables(String token) {
+        this.token = token;
+        ApiClient apiClient = ConfigurationUtils.getApiClient(token);
+
+        if (token != null) {
+            token = token.trim();
+        }
+
+        this.files = new Files(token);
         this.dataTablesApi = new DataTablesApi(apiClient);
     }
 
@@ -46,9 +54,11 @@ public class DataTables {
      *
      * Allows you to pass in a mock DataTablesApi
      *
+     * @param token         The token to be used
      * @param dataTablesApi The mocked DataTablesApi
      */
-    public DataTables(DataTablesApi dataTablesApi) {
+    public DataTables(String token, DataTablesApi dataTablesApi) {
+        this.token = token;
         this.dataTablesApi = dataTablesApi;
     }
 
@@ -57,11 +67,13 @@ public class DataTables {
      *
      * @param id                            The id of the dataTable to get
      * @return                              The DataTable object
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any errors fetching the dataTable
      * @throws DataTableNotFoundException   If user with id doesn't exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable get(String id) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
+    public DataTable get(String id) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
         org.catalytic.sdk.generated.model.DataTable internalDataTable;
         try {
             log.debug("Getting dataTable with id {}", () -> id);
@@ -82,62 +94,69 @@ public class DataTables {
     /**
      * Find all dataTables
      *
-     * @return                          A DataTablesPage object which contains the results
-     * @throws InternalErrorException   If any errors finding tables
-     * @throws UnauthorizedException    If unauthorized
+     * @return                              A DataTablesPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors finding tables
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTablesPage find() throws InternalErrorException, UnauthorizedException {
+    public DataTablesPage find() throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(null, null, null);
     }
 
     /**
      * Finds dataTables by a variety of filters
      *
-     * @param filter                    The filter to search dataTables by
-     * @return                          A DataTablesPage object which contains the results
-     * @throws InternalErrorException   If any errors finding tables
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter to search dataTables by
+     * @return                              A DataTablesPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors finding tables
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTablesPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
+    public DataTablesPage find(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(filter, null, null);
     }
 
     /**
      * Finds dataTables by a variety of filters
      *
-     * @param pageToken                 The token of the page to fetch
-     * @return                          A DataTablesPage object which contains the results
-     * @throws InternalErrorException   If any errors finding tables
-     * @throws UnauthorizedException    If unauthorized
+     * @param pageToken                     The token of the page to fetch
+     * @return                              A DataTablesPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors finding tables
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTablesPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
+    public DataTablesPage find(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(null, pageToken, null);
     }
 
     /**
      * Finds dataTables by a variety of filters
      *
-     * @param filter                    The filter to search dataTables by
-     * @param pageToken                 The token of the page to fetch
-     * @return                          A DataTablesPage object which contains the results
-     * @throws InternalErrorException   If any errors finding tables
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter to search dataTables by
+     * @param pageToken                     The token of the page to fetch
+     * @return                              A DataTablesPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors finding tables
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTablesPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
+    public DataTablesPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(filter, pageToken, null);
     }
 
     /**
      * Finds dataTables by a variety of filters
      *
-     * @param filter                    The filter to search dataTables by
-     * @param pageToken                 The token of the page to fetch
-     * @param pageSize                  The number of dataTables per page to fetch
-     * @return                          A DataTablesPage object which contains the results
-     * @throws InternalErrorException   If any errors finding tables
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter to search dataTables by
+     * @param pageToken                     The token of the page to fetch
+     * @param pageSize                      The number of dataTables per page to fetch
+     * @return                              A DataTablesPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors finding tables
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTablesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
+    public DataTablesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         String text = null;
 
         if (filter != null) {
@@ -170,12 +189,13 @@ public class DataTables {
      *
      * @param id                            The id of the dataTable to download
      * @return                              An object containing the dataTable file info
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any errors downloading and saving the file
      * @throws IOException                  If any errors saving the file to the temp dir
      * @throws DataTableNotFoundException   If dataTable with id does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public File download(String id) throws InternalErrorException, IOException, DataTableNotFoundException, UnauthorizedException {
+    public File download(String id) throws InternalErrorException, IOException, DataTableNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
         return this.download(id, null, null);
     }
 
@@ -185,12 +205,13 @@ public class DataTables {
      * @param id                            The id of the dataTable to download
      * @param format                        The format of the dataTable to download
      * @return                              An object containing the dataTable file info
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any errors downloading
      * @throws IOException                  If any errors saving the file to the temp dir
      * @throws DataTableNotFoundException   If dataTable with id does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public File download(String id, String format) throws InternalErrorException, IOException, DataTableNotFoundException, UnauthorizedException {
+    public File download(String id, String format) throws InternalErrorException, IOException, DataTableNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
         return this.download(id, format, null);
     }
 
@@ -201,12 +222,15 @@ public class DataTables {
      * @param format                        The format of the dataTable to download
      * @param directory                     The dir to download the dataTable to
      * @return                              An object containing the dataTable file info
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any errors downloading
      * @throws IOException                  If any errors saving the file to directory param
      * @throws DataTableNotFoundException   If dataTable with id does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public File download(String id, String format, String directory) throws InternalErrorException, IOException, DataTableNotFoundException, UnauthorizedException {
+    public File download(String id, String format, String directory) throws InternalErrorException, IOException, DataTableNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         File file;
         DataTableExportFormat downloadFormat = null;
 
@@ -249,28 +273,32 @@ public class DataTables {
     /**
      * Uploads the passed in file as a dataTable
      *
-     * @param fileToUpload              The file to upload as a dataTable
-     * @param tableName                 A name to give to the table
-     * @return                          The DataTable that was uploaded
-     * @throws InternalErrorException   If any errors uploading the dataTable
-     * @throws UnauthorizedException    If unauthorized
+     * @param fileToUpload                  The file to upload as a dataTable
+     * @param tableName                     A name to give to the table
+     * @return                              The DataTable that was uploaded
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors uploading the dataTable
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable upload(File fileToUpload, String tableName) throws InternalErrorException, UnauthorizedException {
+    public DataTable upload(File fileToUpload, String tableName) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.upload(fileToUpload, tableName, null, null);
     }
 
     /**
      * Uploads the passed in file as a dataTable
      *
-     * @param fileToUpload              The file to upload as a dataTable
-     * @param tableName                 A name to give to the table
-     * @param headerRow                 The header row
-     * @param sheetNumber               The sheet number of an excel file to use
-     * @return                          The DataTable that was uploaded
-     * @throws InternalErrorException   If any errors uploading the dataTable
-     * @throws UnauthorizedException    If unauthorized
+     * @param fileToUpload                  The file to upload as a dataTable
+     * @param tableName                     A name to give to the table
+     * @param headerRow                     The header row
+     * @param sheetNumber                   The sheet number of an excel file to use
+     * @return                              The DataTable that was uploaded
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors uploading the dataTable
+     * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable upload(File fileToUpload, String tableName, Integer headerRow, Integer sheetNumber) throws InternalErrorException, UnauthorizedException {
+    public DataTable upload(File fileToUpload, String tableName, Integer headerRow, Integer sheetNumber) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.DataTable internalDataTable;
 
         try {
@@ -293,11 +321,12 @@ public class DataTables {
      * @param id                            The id of the dataTable to replace
      * @param fileToUpload                  The dataTable to replace with
      * @return                              The newly replaced DataTable
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any errors replacing the dataTable
      * @throws DataTableNotFoundException   If dataTable with id does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable replace(String id, File fileToUpload) throws DataTableNotFoundException, InternalErrorException, UnauthorizedException {
+    public DataTable replace(String id, File fileToUpload) throws DataTableNotFoundException, InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.replace(id, fileToUpload, null, null);
     }
 
@@ -309,11 +338,14 @@ public class DataTables {
      * @param headerRow                     The header row
      * @param sheetNumber                   The sheet number of an excel file to use
      * @return                              The newly replaced DataTable
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any errors replacing the dataTable
      * @throws DataTableNotFoundException   If dataTable with id does not exist
      * @throws UnauthorizedException        If unauthorized
      */
-    public DataTable replace(String id, File fileToUpload, Integer headerRow, Integer sheetNumber) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException {
+    public DataTable replace(String id, File fileToUpload, Integer headerRow, Integer sheetNumber) throws InternalErrorException, DataTableNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.DataTable internalDataTable;
         try {
             log.debug("Replacing dataTable with id {}", () -> id);

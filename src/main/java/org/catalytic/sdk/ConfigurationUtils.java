@@ -17,14 +17,17 @@ public class ConfigurationUtils {
     /**
      * Creates a Configuration if one doesn't exist and returns it
      *
-     * @param secret    The secret to set on the configuration
-     * @return          The Configuration object
+     * @param token The secret to set on the configuration
+     * @return      The Configuration object
      */
-    public static ApiClient getApiClient(String secret) {
+    public static ApiClient getApiClient(String token) {
         if (apiClient == null) {
             apiClient = new ApiClient();
             apiClient.setUserAgent("Catalytic Java SDK/" + getVersion());
-            apiClient.setBearerToken(secret.trim());
+
+            if (token != null) {
+                apiClient.setBearerToken(token.trim());
+            }
         }
 
         return apiClient;

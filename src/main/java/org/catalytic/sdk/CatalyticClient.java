@@ -10,6 +10,7 @@ import java.io.IOException;
  */
 public class CatalyticClient {
 
+    private String token;
     private Workflows workflows;
     private Instances instances;
     private Users users;
@@ -18,7 +19,7 @@ public class CatalyticClient {
     private AccessTokens accessTokens;
 
     /**
-     * Syntactic sugar for `new Client(null)`
+     * Instantiate this instance of CatalyticClient
      *
      * @throws AccessTokenNotFoundException If no token can be found
      * @throws IOException                  If any errors reading a file
@@ -28,22 +29,17 @@ public class CatalyticClient {
     }
 
     /**
-     * Instantiate the individual clients
+     * Instantiate this instance of CatalyticClient
      *
-     * @param tokenOrFile                   The token/name/path of a file to fetch
+     * @param tokenOrFile                   The token, name or a file, or path of a file to fetch
      *                                      a token to use for making API requests
      * @throws AccessTokenNotFoundException If no token can be found
      * @throws IOException                  If any errors reading a file
      */
     public CatalyticClient(String tokenOrFile) throws AccessTokenNotFoundException, IOException {
         Credentials credentials = new Credentials();
-        String token = credentials.fetchToken(tokenOrFile);
-        this.workflows = new Workflows(token);
-        this.instances = new Instances(token);
-        this.users = new Users(token);
-        this.files = new Files(token);
-        this.dataTables = new DataTables(token);
-        this.accessTokens = new AccessTokens(token);
+        this.token = credentials.fetchToken(tokenOrFile);
+        initialize();
     }
 
     public Workflows workflows() {
@@ -68,5 +64,36 @@ public class CatalyticClient {
 
     public AccessTokens credentials() {
         return accessTokens;
+    }
+
+    /**
+     * Get the AccessToken used to instantiate this instance of CatalyticClient
+     *
+     * @return  The Access Token used to instantiate this instance of CatalyticClient
+     */
+    public String getAccessToken() {
+        return this.token;
+    }
+
+    /**
+     * Sets the AccessToken and initializes this instance of CatalyticClient
+     *
+     * @param token The token to initialize this instance of CatalyticClient with
+     */
+    public void setAccessToken(String token) {
+        this.token = token;
+        initialize();
+    }
+
+    /**
+     * Initialize all the clients
+     */
+    private void initialize() {
+        this.workflows = new Workflows(this.token);
+        this.instances = new Instances(this.token);
+        this.users = new Users(this.token);
+        this.files = new Files(this.token);
+        this.dataTables = new DataTables(this.token);
+        this.accessTokens = new AccessTokens(this.token);
     }
 }

@@ -1,6 +1,7 @@
 package org.catalytic.sdk.clients;
 
 import org.catalytic.sdk.entities.File;
+import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.FileNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
@@ -26,23 +27,18 @@ public class FilesTests {
         filesApi = mock(FilesApi.class);
     }
 
-    @Test
-    public void getFile_itShouldGetAFile() throws Exception {
-        org.catalytic.sdk.generated.model.FileMetadata internalFile = new org.catalytic.sdk.generated.model.FileMetadata();
-        internalFile.setId(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
-        when(filesApi.getFile("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenReturn(internalFile);
-
-        Files filesClient = new Files(filesApi);
-        File file = filesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
-        assertThat(file).isNotNull();
-        assertThat(file.getId()).isEqualTo(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void getFile_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        String nullString = null;
+        Files filesClient = new Files(nullString);
+        filesClient.get("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void getFile_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(filesApi.getFile("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenThrow(new ApiException(401, null));
 
-        Files filesClient = new Files(filesApi);
+        Files filesClient = new Files("1234", filesApi);
         filesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
     }
 
@@ -50,7 +46,7 @@ public class FilesTests {
     public void getFile_itShouldThrowFileNotFoundExceptionIfFileDoesNotExist() throws Exception {
         when(filesApi.getFile("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenThrow(new ApiException(404, null));
 
-        Files filesClient = new Files(filesApi);
+        Files filesClient = new Files("1234", filesApi);
         filesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
     }
 
@@ -58,15 +54,34 @@ public class FilesTests {
     public void getFile_itShouldThrowInternalErrorException() throws Exception {
         when(filesApi.getFile("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenThrow(new ApiException(500, null));
 
-        Files filesClient = new Files(filesApi);
+        Files filesClient = new Files("1234", filesApi);
         filesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
+    }
+
+    @Test
+    public void getFile_itShouldGetAFile() throws Exception {
+        org.catalytic.sdk.generated.model.FileMetadata internalFile = new org.catalytic.sdk.generated.model.FileMetadata();
+        internalFile.setId(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
+        when(filesApi.getFile("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenReturn(internalFile);
+
+        Files filesClient = new Files("1234", filesApi);
+        File file = filesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
+        assertThat(file).isNotNull();
+        assertThat(file.getId()).isEqualTo(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void downloadFile_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        String nullString = null;
+        Files filesClient = new Files(nullString);
+        filesClient.download("1234");
     }
     
     @Test(expected = UnauthorizedException.class)
     public void downloadFile_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(filesApi.downloadFile("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenThrow(new ApiException(401, null));
 
-        Files filesClient = new Files(filesApi);
+        Files filesClient = new Files("1234", filesApi);
         filesClient.download("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
     }
 
@@ -74,7 +89,7 @@ public class FilesTests {
     public void downloadFile_itShouldThrowFileNotFoundExceptionIfFileDoesNotExist() throws Exception {
         when(filesApi.downloadFile("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenThrow(new ApiException(404, null));
 
-        Files filesClient = new Files(filesApi);
+        Files filesClient = new Files("1234", filesApi);
         filesClient.download("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
     }
 
@@ -82,7 +97,7 @@ public class FilesTests {
     public void downloadFile_itShouldThrowInternalErrorException() throws Exception {
         when(filesApi.downloadFile("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenThrow(new ApiException(500, null));
 
-        Files filesClient = new Files(filesApi);
+        Files filesClient = new Files("1234", filesApi);
         filesClient.download("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
     }
 
@@ -91,9 +106,16 @@ public class FilesTests {
         java.io.File internalFile = new java.io.File("foobar");
         when(filesApi.downloadFile("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenReturn(internalFile);
 
-        Files filesClient = new Files(filesApi);
+        Files filesClient = new Files("1234", filesApi);
         java.io.File file = filesClient.download("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
         assertThat(file).isNotNull();
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void uploadFile_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        String nullString = null;
+        Files filesClient = new Files(nullString);
+        filesClient.upload(null);
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -101,7 +123,7 @@ public class FilesTests {
         java.io.File file = new java.io.File("foobar");
         when(filesApi.uploadFiles(Arrays.asList(file))).thenThrow(new ApiException(401, null));
 
-        Files filesClient = new Files(filesApi);
+        Files filesClient = new Files("1234", filesApi);
         filesClient.upload(file);
     }
 
@@ -110,7 +132,7 @@ public class FilesTests {
         java.io.File file = new java.io.File("foobar");
         when(filesApi.uploadFiles(Arrays.asList(file))).thenThrow(new ApiException(500, null));
 
-        Files filesClient = new Files(filesApi);
+        Files filesClient = new Files("1234", filesApi);
         filesClient.upload(file);
     }
 
@@ -123,7 +145,7 @@ public class FilesTests {
         internalFile.setFiles(Arrays.asList(fileMetadata));
         when(filesApi.uploadFiles(Arrays.asList(fileToUpload))).thenReturn(internalFile);
 
-        Files filesClient = new Files(filesApi);
+        Files filesClient = new Files("1234", filesApi);
         File file = filesClient.upload(fileToUpload);
         assertThat(file.getName()).isEqualTo("My Table");
     }

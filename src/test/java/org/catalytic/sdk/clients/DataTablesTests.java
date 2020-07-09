@@ -2,6 +2,7 @@ package org.catalytic.sdk.clients;
 
 import org.catalytic.sdk.entities.DataTable;
 import org.catalytic.sdk.entities.DataTablesPage;
+import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.DataTableNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
@@ -28,23 +29,18 @@ public class DataTablesTests {
         dataTablesApi = mock(DataTablesApi.class);
     }
 
-    @Test
-    public void getDataTable_itShouldGetADataTable() throws Exception {
-        org.catalytic.sdk.generated.model.DataTable internalDataTable = new org.catalytic.sdk.generated.model.DataTable();
-        internalDataTable.setId(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
-        when(dataTablesApi.getDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenReturn(internalDataTable);
-
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
-        DataTable dataTable = dataTablesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
-        assertThat(dataTable).isNotNull();
-        assertThat(dataTable.getId()).isEqualTo(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void getDataTable_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        String nullString = null;
+        DataTables dataTablesClient = new DataTables(nullString);
+        dataTablesClient.get("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void getDataTable_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(dataTablesApi.getDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenThrow(new ApiException(401, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
     }
 
@@ -52,7 +48,7 @@ public class DataTablesTests {
     public void getDataTable_itShouldThrowDataTableNotFoundExceptionIfDataTableDoesNotExist() throws Exception {
         when(dataTablesApi.getDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenThrow(new ApiException(404, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
     }
 
@@ -60,8 +56,27 @@ public class DataTablesTests {
     public void getDataTable_itShouldThrowInternalErrorException() throws Exception {
         when(dataTablesApi.getDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenThrow(new ApiException(500, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
+    }
+
+    @Test
+    public void getDataTable_itShouldGetADataTable() throws Exception {
+        org.catalytic.sdk.generated.model.DataTable internalDataTable = new org.catalytic.sdk.generated.model.DataTable();
+        internalDataTable.setId(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
+        when(dataTablesApi.getDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd")).thenReturn(internalDataTable);
+
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
+        DataTable dataTable = dataTablesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
+        assertThat(dataTable).isNotNull();
+        assertThat(dataTable.getId()).isEqualTo(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void findDataTables_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        String nullString = null;
+        DataTables dataTablesClient = new DataTables(nullString);
+        dataTablesClient.find();
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -69,7 +84,7 @@ public class DataTablesTests {
         when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.find();
     }
 
@@ -78,7 +93,7 @@ public class DataTablesTests {
         when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.find();
     }
 
@@ -93,7 +108,7 @@ public class DataTablesTests {
         when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(dataTablesPage);
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         DataTablesPage results = dataTablesClient.find();
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -111,7 +126,7 @@ public class DataTablesTests {
         when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(dataTablesPage);
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         DataTablesPage results = dataTablesClient.find("25");
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -130,7 +145,7 @@ public class DataTablesTests {
         when(dataTablesApi.findDataTables("example", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(dataTablesPage);
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         Where where = new Where();
         DataTablesPage results = dataTablesClient.find(where.text().is("example"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -149,7 +164,7 @@ public class DataTablesTests {
         when(dataTablesApi.findDataTables("example", null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(dataTablesPage);
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         Where where = new Where();
         DataTablesPage results = dataTablesClient.find(where.text().is("example"), "25");
         assertThat(results.getCount()).isEqualTo(1);
@@ -157,11 +172,18 @@ public class DataTablesTests {
         assertThat(results.getDataTables().get(0).getId()).isEqualTo(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
     }
 
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void downloadDataTable_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        String nullString = null;
+        DataTables dataTablesClient = new DataTables(nullString);
+        dataTablesClient.download("1234");
+    }
+
     @Test(expected = UnauthorizedException.class)
     public void downloadDataTable_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(dataTablesApi.downloadDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd", null)).thenThrow(new ApiException(401, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.download("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
     }
 
@@ -169,7 +191,7 @@ public class DataTablesTests {
     public void downloadDataTable_itShouldThrowDataTableNotFoundExceptionIfDataTableDoesNotExist() throws Exception {
         when(dataTablesApi.downloadDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd", null)).thenThrow(new ApiException(404, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.download("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
     }
 
@@ -177,7 +199,7 @@ public class DataTablesTests {
     public void downloadDataTable_itShouldThrowInternalErrorException() throws Exception {
         when(dataTablesApi.downloadDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd", null)).thenThrow(new ApiException(500, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.download("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
     }
 
@@ -186,7 +208,7 @@ public class DataTablesTests {
         java.io.File internalFile = new java.io.File("foobar");
         when(dataTablesApi.downloadDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd", null)).thenReturn(internalFile);
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         File file = dataTablesClient.download("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
         assertThat(file).isNotNull();
     }
@@ -196,7 +218,7 @@ public class DataTablesTests {
         java.io.File file = new java.io.File("foobar.xlsx");
         when(dataTablesApi.downloadDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd", null)).thenReturn(file);
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.download("f98b3a70-a461-46b1-b43a-3eb1cced3efd", "xlsx");
         assertThat(file).isNotNull();
         assertThat(file.getName()).endsWith(".xlsx");
@@ -212,12 +234,19 @@ public class DataTablesTests {
 //        assertThat(file).isNotNull();
 //    }
 
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void uploadDataTable_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        String nullString = null;
+        DataTables dataTablesClient = new DataTables(nullString);
+        dataTablesClient.upload(null, null);
+    }
+
     @Test(expected = UnauthorizedException.class)
     public void uploadDataTable_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         java.io.File file = new java.io.File("foobar");
         when(dataTablesApi.uploadDataTable(null, null, null, Arrays.asList(file))).thenThrow(new ApiException(401, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.upload(file, null);
     }
 
@@ -226,7 +255,7 @@ public class DataTablesTests {
         java.io.File file = new java.io.File("foobar");
         when(dataTablesApi.uploadDataTable(null, null, null, Arrays.asList(file))).thenThrow(new ApiException(500, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.upload(file, null);
     }
 
@@ -237,9 +266,16 @@ public class DataTablesTests {
         internalDataTable.setName("My Table");
         when(dataTablesApi.uploadDataTable(null, null, null, Arrays.asList(file))).thenReturn(internalDataTable);
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         DataTable dataTable = dataTablesClient.upload(file, null);
         assertThat(dataTable.getName()).isEqualTo("My Table");
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void replaceDataTable_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        String nullString = null;
+        DataTables dataTablesClient = new DataTables(nullString);
+        dataTablesClient.replace("1234", null);
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -247,7 +283,7 @@ public class DataTablesTests {
         java.io.File file = new java.io.File("foobar");
         when(dataTablesApi.replaceDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd", null, null, Arrays.asList(file))).thenThrow(new ApiException(401, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.replace("f98b3a70-a461-46b1-b43a-3eb1cced3efd", file);
     }
 
@@ -256,7 +292,7 @@ public class DataTablesTests {
         java.io.File file = new java.io.File("foobar");
         when(dataTablesApi.replaceDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd", null, null, Arrays.asList(file))).thenThrow(new ApiException(404, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.replace("f98b3a70-a461-46b1-b43a-3eb1cced3efd", file);
     }
 
@@ -265,7 +301,7 @@ public class DataTablesTests {
         java.io.File file = new java.io.File("foobar");
         when(dataTablesApi.replaceDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd", null, null, Arrays.asList(file))).thenThrow(new ApiException(500, null));
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         dataTablesClient.replace("f98b3a70-a461-46b1-b43a-3eb1cced3efd", file);
     }
 
@@ -276,7 +312,7 @@ public class DataTablesTests {
         internalDataTable.setName("My New Table");
         when(dataTablesApi.replaceDataTable("f98b3a70-a461-46b1-b43a-3eb1cced3efd", null, null, Arrays.asList(file))).thenReturn(internalDataTable);
 
-        DataTables dataTablesClient = new DataTables(dataTablesApi);
+        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
         DataTable dataTable = dataTablesClient.replace("f98b3a70-a461-46b1-b43a-3eb1cced3efd", file);
         assertThat(dataTable.getName()).isEqualTo("My New Table");
     }

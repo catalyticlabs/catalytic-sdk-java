@@ -1,5 +1,6 @@
-package org.catalytic.sdk;
+package org.catalytic.sdk.unit;
 
+import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.generated.ApiClient;
 import org.junit.Test;
 

@@ -33,41 +33,53 @@ public class AccessTokensTests {
         authenticationApi = mock(AuthenticationApi.class);
     }
 
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void getAccessToken_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        AccessTokens accessTokensClient = new AccessTokens(null);
+        accessTokensClient.get("1234");
+    }
+
+    @Test(expected = UnauthorizedException.class)
+    public void getAccessToken_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
+        when(credentialsApi.getAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenThrow(new ApiException(401, null));
+
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
+        accessTokensClient.get("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void getAccessToken_itShouldThrowUserNotFoundExceptionIfUserDoesNotExist() throws Exception {
+        when(credentialsApi.getAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenThrow(new ApiException(404, null));
+
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
+        accessTokensClient.get("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
+    }
+
+    @Test(expected = InternalErrorException.class)
+    public void getAccessToken_itShouldThrowInternalErrorException() throws Exception {
+        when(credentialsApi.getAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenThrow(new ApiException(500, null));
+
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
+        accessTokensClient.get("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
+    }
+
     @Test
-    public void getAccessTokens_itShouldGetAccessTokens() throws Exception {
+    public void getAccessToken_itShouldGetAccessTokens() throws Exception {
         org.catalytic.sdk.generated.model.AccessToken creds = new org.catalytic.sdk.generated.model.AccessToken();
         creds.setId(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"));
         creds.setType(TokenType.USER);
         when(credentialsApi.getAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenReturn(creds);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessToken accessToken = accessTokensClient.get("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
         assertThat(accessToken).isNotNull();
         assertThat(accessToken.getId()).isEqualTo(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"));
     }
 
-    @Test(expected = UnauthorizedException.class)
-    public void getAccessTokens_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
-        when(credentialsApi.getAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenThrow(new ApiException(401, null));
-
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
-        accessTokensClient.get("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
-    }
-
     @Test(expected = AccessTokenNotFoundException.class)
-    public void getAccessTokens_itShouldThrowUserNotFoundExceptionIfUserDoesNotExist() throws Exception {
-        when(credentialsApi.getAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenThrow(new ApiException(404, null));
-
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
-        accessTokensClient.get("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
-    }
-
-    @Test(expected = InternalErrorException.class)
-    public void getAccessTokens_itShouldThrowInternalErrorException() throws Exception {
-        when(credentialsApi.getAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenThrow(new ApiException(500, null));
-
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
-        accessTokensClient.get("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
+    public void findAccessTokens_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        AccessTokens accessTokensClient = new AccessTokens(null);
+        accessTokensClient.find();
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -75,7 +87,7 @@ public class AccessTokensTests {
         when(credentialsApi.findAccessTokens(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         accessTokensClient.find();
     }
 
@@ -84,7 +96,7 @@ public class AccessTokensTests {
         when(credentialsApi.findAccessTokens(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         accessTokensClient.find();
     }
 
@@ -100,7 +112,7 @@ public class AccessTokensTests {
         when(credentialsApi.findAccessTokens(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(credentialsPage);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessTokensPage results = accessTokensClient.find();
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -119,7 +131,7 @@ public class AccessTokensTests {
         when(credentialsApi.findAccessTokens(null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(credentialsPage);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessTokensPage results = accessTokensClient.find("25");
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -138,7 +150,7 @@ public class AccessTokensTests {
         when(credentialsApi.findAccessTokens("alice@example.com", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(credentialsPage);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         Where where = new Where();
         AccessTokensPage results = accessTokensClient.find(where.text().is("alice@example.com"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -158,12 +170,18 @@ public class AccessTokensTests {
         when(credentialsApi.findAccessTokens("alice@example.com", null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(credentialsPage);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         Where where = new Where();
         AccessTokensPage results = accessTokensClient.find(where.text().is("alice@example.com"), "25");
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
         assertThat(results.getAccessTokens().get(0).getId()).isEqualTo(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"));
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void revokeAccessToken_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        AccessTokens accessTokensClient = new AccessTokens(null);
+        accessTokensClient.revoke("1234");
     }
 
     @Test
@@ -173,7 +191,7 @@ public class AccessTokensTests {
         creds.setType(TokenType.USER);
         when(credentialsApi.revokeAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenReturn(creds);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessToken accessToken = accessTokensClient.revoke("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
         assertThat(accessToken).isNotNull();
         assertThat(accessToken.getId()).isEqualTo(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"));
@@ -183,7 +201,7 @@ public class AccessTokensTests {
     public void revokeAccessTokens_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(credentialsApi.revokeAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenThrow(new ApiException(401, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         accessTokensClient.revoke("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
     }
 
@@ -191,7 +209,7 @@ public class AccessTokensTests {
     public void revokeAccessTokens_itShouldThrowUserNotFoundExceptionIfUserDoesNotExist() throws Exception {
         when(credentialsApi.revokeAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenThrow(new ApiException(404, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         accessTokensClient.revoke("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
     }
 
@@ -199,7 +217,7 @@ public class AccessTokensTests {
     public void revokeAccessTokens_itShouldThrowInternalErrorException() throws Exception {
         when(credentialsApi.revokeAccessToken("114c0d7d-c291-4ad2-a10d-68c5dd532af3")).thenThrow(new ApiException(500, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         accessTokensClient.revoke("114c0d7d-c291-4ad2-a10d-68c5dd532af3");
     }
 
@@ -211,7 +229,7 @@ public class AccessTokensTests {
         request.setPassword("mypassword");
         when(authenticationApi.createAndApproveAccessToken(request)).thenThrow(new ApiException(401, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         accessTokensClient.create("example", "alice@example.com", "mypassword");
     }
 
@@ -223,7 +241,7 @@ public class AccessTokensTests {
         request.setPassword("mypassword");
         when(authenticationApi.createAndApproveAccessToken(request)).thenThrow(new ApiException(500, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         accessTokensClient.create("example", "alice@example.com", "mypassword");
     }
 
@@ -238,7 +256,7 @@ public class AccessTokensTests {
         creds.setType(TokenType.USER);
         when(authenticationApi.createAndApproveAccessToken(request)).thenReturn(creds);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         accessTokensClient.create("!@#$", "alice@example.com", "mypassword");
     }
 
@@ -253,7 +271,7 @@ public class AccessTokensTests {
         creds.setType(TokenType.USER);
         when(authenticationApi.createAndApproveAccessToken(request)).thenReturn(creds);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessToken accessToken = accessTokensClient.create("example", "alice@example.com", "mypassword");
         assertThat(accessToken).isNotNull();
         assertThat(accessToken.getId()).isEqualTo(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"));
@@ -270,7 +288,7 @@ public class AccessTokensTests {
         creds.setType(TokenType.USER);
         when(authenticationApi.createAndApproveAccessToken(request)).thenReturn(creds);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessToken accessToken = accessTokensClient.create("example.pushbot.com", "alice@example.com", "mypassword");
         assertThat(accessToken).isNotNull();
         assertThat(accessToken.getId()).isEqualTo(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"));
@@ -289,7 +307,7 @@ public class AccessTokensTests {
         creds.setName("My AccessTokens");
         when(authenticationApi.createAndApproveAccessToken(request)).thenReturn(creds);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessToken accessToken = accessTokensClient.create("example", "alice@example.com", "mypassword", "My AccessTokens");
         assertThat(accessToken).isNotNull();
         assertThat(accessToken.getId()).isEqualTo(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"));
@@ -302,7 +320,7 @@ public class AccessTokensTests {
         request.setDomain("example.pushbot.com");
         when(authenticationApi.createAccessToken(request)).thenThrow(new ApiException(401, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         accessTokensClient.createWithWebApprovalFlow("example");
     }
 
@@ -312,7 +330,7 @@ public class AccessTokensTests {
         request.setDomain("example.pushbot.com");
         when(authenticationApi.createAccessToken(request)).thenThrow(new ApiException(500, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         accessTokensClient.createWithWebApprovalFlow("example");
     }
 
@@ -325,7 +343,7 @@ public class AccessTokensTests {
         creds.setType(TokenType.USER);
         when(authenticationApi.createAccessToken(request)).thenReturn(creds);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessToken accessToken = accessTokensClient.createWithWebApprovalFlow("example");
         assertThat(accessToken).isNotNull();
         assertThat(accessToken.getId()).isEqualTo(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"));
@@ -342,7 +360,7 @@ public class AccessTokensTests {
         creds.setName("My AccessTokens");
         when(authenticationApi.createAccessToken(request)).thenReturn(creds);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessToken accessToken = accessTokensClient.createWithWebApprovalFlow("example", "My AccessTokens");
         assertThat(accessToken).isNotNull();
         assertThat(accessToken.getId()).isEqualTo(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"));
@@ -351,7 +369,7 @@ public class AccessTokensTests {
 
     @Test
     public void getApprovalUrl_itShouldReturnApprovalUrl() throws InternalErrorException {
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
 
         AccessToken accessToken = new AccessToken(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"), "example.com", null, null, null, null, null, null);
         String url = accessTokensClient.getApprovalUrl(accessToken);
@@ -360,7 +378,7 @@ public class AccessTokensTests {
 
     @Test
     public void getApprovalUrl_itShouldReturnApprovalUrlWithName() throws InternalErrorException {
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
 
         AccessToken accessToken = new AccessToken(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"), "example.com", null, "Example App", null, null, null, null);
         String url = accessTokensClient.getApprovalUrl(accessToken, "Example App");
@@ -374,7 +392,7 @@ public class AccessTokensTests {
         request.setWaitTimeMillis(100);
         when(authenticationApi.waitForAccessTokenApproval(request)).thenThrow(new ApiException(401, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessToken accessToken = new AccessToken(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"), "example", "user", "my token", "1234", "my-secret", "prod", "alice");
         accessTokensClient.waitForApproval(accessToken, 100);
     }
@@ -386,7 +404,7 @@ public class AccessTokensTests {
         request.setWaitTimeMillis(100);
         when(authenticationApi.waitForAccessTokenApproval(request)).thenThrow(new ApiException(500, null));
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessToken accessToken = new AccessToken(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"), "example", "user", "my token", "1234", "my-secret", "prod", "alice");
         accessTokensClient.waitForApproval(accessToken, 100);
     }
@@ -398,7 +416,7 @@ public class AccessTokensTests {
         request.setWaitTimeMillis(100);
         when(authenticationApi.waitForAccessTokenApproval(request)).thenReturn(null);
 
-        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessTokens accessTokensClient = new AccessTokens("1234", credentialsApi, authenticationApi);
         AccessToken accessToken = new AccessToken(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"), "example", "user", "my token", "1234", "my-secret", "prod", "alice");
         accessTokensClient.waitForApproval(accessToken, 100);
     }

@@ -5,6 +5,7 @@ import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -40,7 +41,14 @@ public class Credentials {
         if (tokenOrFile == null) {
             return fromDefault();
         } else {
-            return fromFile(tokenOrFile);
+            String token = fromFile(tokenOrFile);
+
+            // If a token was not found in a file, then a token was passed in so use it
+            if (token == null) {
+                return tokenOrFile;
+            }
+
+            return token;
         }
     }
 
@@ -64,10 +72,10 @@ public class Credentials {
             token = fetchTokenFromFile(null);
         }
 
-        // If it wasn't found, throw an exception
+        // If it wasn't found, return null
         if (token == null) {
             String home = System.getProperty("user.home");
-            throw new AccessTokenNotFoundException("Cannot find Access Token in $CATALYTIC_TOKEN " +
+            log.debug("Cannot find Access Token in $CATALYTIC_TOKEN " +
                     "environment variable or in " + home + "/.catalytic/tokens/default");
         }
 
@@ -89,7 +97,8 @@ public class Credentials {
         // If it wasn't found, throw an exception
         if (token == null) {
             String home = System.getProperty("user.home");
-            throw new AccessTokenNotFoundException("Cannot find Access Token in " + home + "/.catalytic/tokens/" + fileName + " or " + fileName);
+            log.debug("Cannot find Access Token in " + home + "/.catalytic/tokens/" + fileName + " or " + fileName);
+            return null;
         }
 
         return token;
@@ -120,7 +129,7 @@ public class Credentials {
         // If it's a path to a file
         if (fileName != null) {
             Path fullPath = Paths.get(fileName);
-            token = new String(Files.readAllBytes(fullPath));
+            token = getTokenFromFile(fullPath);
             return token;
         }
 
@@ -135,7 +144,26 @@ public class Credentials {
 
         log.debug("Looking for tokens file " + path);
         Path fullPath = Paths.get(path);
-        token = new String(Files.readAllBytes(fullPath));
+        token = getTokenFromFile(fullPath);
+
+        return token;
+    }
+
+    /**
+     * Tries to get a token from the passed in path
+     *
+     * @param path          The path to try and get a token from
+     * @return              The token if the path was found and readable
+     * @throws IOException
+     */
+    private String getTokenFromFile(Path path) throws IOException {
+        String token = null;
+        try {
+            token = new String(Files.readAllBytes(path));
+        } catch (NoSuchFileException e) {
+            log.debug("Cannot find Access Token in " + path);
+        }
+
         return token;
     }
 }

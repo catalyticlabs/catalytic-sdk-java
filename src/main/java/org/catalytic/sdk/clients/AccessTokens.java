@@ -28,12 +28,14 @@ import java.util.List;
  */
 public class AccessTokens {
 
+    private String token;
     private static final Logger log = CatalyticLogger.getLogger(AccessTokens.class);
     private AccessTokensApi accessTokensApi;
     private AuthenticationApi authenticationApi;
 
-    public AccessTokens(String secret) {
-        ApiClient apiClient = ConfigurationUtils.getApiClient(secret);
+    public AccessTokens(String token) {
+        this.token = token;
+        ApiClient apiClient = ConfigurationUtils.getApiClient(token);
         this.accessTokensApi = new AccessTokensApi(apiClient);
         this.authenticationApi = new AuthenticationApi(apiClient);
     }
@@ -43,10 +45,12 @@ public class AccessTokens {
      *
      * Allows you to pass in a mock UserCredentialsApi
      *
-     * @param accessTokensApi    The mocked UserCredentialsApi
-     * @param authenticationApi     The mocked AuthenticationApi
+     * @param token             The token to be used
+     * @param accessTokensApi   The mocked UserCredentialsApi
+     * @param authenticationApi The mocked AuthenticationApi
      */
-    public AccessTokens(AccessTokensApi accessTokensApi, AuthenticationApi authenticationApi) {
+    public AccessTokens(String token, AccessTokensApi accessTokensApi, AuthenticationApi authenticationApi) {
+        this.token = token;
         this.accessTokensApi = accessTokensApi;
         this.authenticationApi = authenticationApi;
     }
@@ -61,6 +65,8 @@ public class AccessTokens {
      * @throws UnauthorizedException        If unauthorized
      */
     public AccessToken get(String id) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.AccessToken internalAccessToken;
         try {
             log.debug("Getting Access Token with id {}", () -> id);
@@ -80,62 +86,69 @@ public class AccessTokens {
     /**
      * Finds all Credentials
      *
-     * @return                          A CredentialsPage object which contains the results
-     * @throws InternalErrorException   If any error finding users
-     * @throws UnauthorizedException    If unauthorized
+     * @return                              A CredentialsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
      */
-    public AccessTokensPage find() throws InternalErrorException, UnauthorizedException {
+    public AccessTokensPage find() throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return find(null, null, null);
     }
 
     /**
      * Finds Credentials by a variety of filters
      *
-     * @param pageToken                 The token of the page to fetch
-     * @return                          A CredentialsPage object which contains the results
-     * @throws InternalErrorException   If any error finding users
-     * @throws UnauthorizedException    If unauthorized
+     * @param pageToken                     The token of the page to fetch
+     * @return                              A CredentialsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
      */
-    public AccessTokensPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
+    public AccessTokensPage find(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(null, pageToken, null);
     }
 
     /**
      * Finds Credentials by a variety of filters
      *
-     * @param filter                    The filter to search users by
-     * @return                          A CredentialsPage object which contains the results
-     * @throws InternalErrorException   If any error finding users
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter to search users by
+     * @return                              A CredentialsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
      */
-    public AccessTokensPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
+    public AccessTokensPage find(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return find(filter, null, null);
     }
 
     /**
      * Finds Credentials by a variety of filters
      *
-     * @param filter                    The filter to search users by
-     * @param pageToken                 The token of the page to fetch
-     * @return                          A CredentialsPage object which contains the results
-     * @throws InternalErrorException   If any error finding users
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter to search users by
+     * @param pageToken                     The token of the page to fetch
+     * @return                              A CredentialsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
      */
-    public AccessTokensPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
+    public AccessTokensPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return find(filter, pageToken, null);
     }
 
     /**
      * Finds Credentials by a variety of filters
      *
-     * @param filter                    The filter to search users by
-     * @param pageToken                 The token of the page to fetch
-     * @param pageSize                  The number of users per page to fetch
-     * @return                          A CredentialsPage object which contains the results
-     * @throws InternalErrorException   If any error finding users
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter to search users by
+     * @param pageToken                     The token of the page to fetch
+     * @param pageSize                      The number of users per page to fetch
+     * @return                              A CredentialsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
      */
-    public AccessTokensPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
+    public AccessTokensPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.AccessTokensPage results;
         List<AccessToken> allCredentials = new ArrayList<>();
         String text = null;
@@ -309,11 +322,14 @@ public class AccessTokens {
      *
      * @param id                            The id of the Credentials to revoke
      * @return Credentials                  The Credentials that were revoked
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If error fetching Credentials
      * @throws AccessTokenNotFoundException If credentials with id do not exist
      * @throws UnauthorizedException        If unauthorized
      */
     public AccessToken revoke(String id) throws UnauthorizedException, AccessTokenNotFoundException, InternalErrorException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.AccessToken internalAccessToken;
         try {
             log.debug("Revoking Credentials with id {}", () -> id);

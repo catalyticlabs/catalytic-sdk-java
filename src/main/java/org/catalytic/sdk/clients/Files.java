@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.File;
+import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.FileNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
@@ -23,11 +24,13 @@ import java.util.Arrays;
  */
 public class Files {
 
+    private String token;
     private static final Logger log = CatalyticLogger.getLogger(Files.class);
     private FilesApi filesApi;
 
-    public Files(String secret) {
-        ApiClient apiClient = ConfigurationUtils.getApiClient(secret);
+    public Files(String token) {
+        this.token = token;
+        ApiClient apiClient = ConfigurationUtils.getApiClient(token);
         this.filesApi = new FilesApi(apiClient);
     }
 
@@ -36,22 +39,27 @@ public class Files {
      *
      * Allows you to pass in a mock FilesApi
      *
+     * @param token     The token to be used
      * @param filesApi  The mocked FilesApi
      */
-    public Files(FilesApi filesApi) {
+    public Files(String token, FilesApi filesApi) {
+        this.token = token;
         this.filesApi = filesApi;
     }
 
     /**
      * Get a file by id
      *
-     * @param id                        The id of the file to get
-     * @return                          The File object
-     * @throws InternalErrorException   If any errors fetching the file
-     * @throws FileNotFoundException    If file with id does not exist
-     * @throws UnauthorizedException    If unauthorized
+     * @param id                            The id of the file to get
+     * @return                              The File object
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors fetching the file
+     * @throws FileNotFoundException        If file with id does not exist
+     * @throws UnauthorizedException        If unauthorized
      */
-    public File get(String id) throws InternalErrorException, FileNotFoundException, UnauthorizedException {
+    public File get(String id) throws InternalErrorException, FileNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         FileMetadata internalFile;
         try {
             log.debug("Getting file with id {}", () -> id);
@@ -76,29 +84,33 @@ public class Files {
     /**
      * Downloads a file to the users temp dir
      *
-     * @param id                        The id of the file to download
-     * @return                          An object containing the file info
-     * @throws InternalErrorException   If any errors downloading the file
-     * @throws FileNotFoundException    If file with id does not exist
-     * @throws IOException              If any errors saving the file to temp dir
-     * @throws UnauthorizedException    If unauthorized
+     * @param id                            The id of the file to download
+     * @return                              An object containing the file info
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors downloading the file
+     * @throws FileNotFoundException        If file with id does not exist
+     * @throws IOException                  If any errors saving the file to temp dir
+     * @throws UnauthorizedException        If unauthorized
      */
-    public java.io.File download(String id) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException {
+    public java.io.File download(String id) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException, AccessTokenNotFoundException {
         return this.download(id, null);
     }
 
     /**
      * Downloads a file to the users temp dir or a specified dir if passed in
      *
-     * @param id                        The id of the file to download
-     * @param directory                 The dir to download the file to
-     * @return                          An object containing the file info
-     * @throws InternalErrorException   If any errors downloading the file
-     * @throws FileNotFoundException    If file with id does not exist
-     * @throws IOException              If any errors saving the file to directory param
-     * @throws UnauthorizedException    If unauthorized
+     * @param id                            The id of the file to download
+     * @param directory                     The dir to download the file to
+     * @return                              An object containing the file info
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors downloading the file
+     * @throws FileNotFoundException        If file with id does not exist
+     * @throws IOException                  If any errors saving the file to directory param
+     * @throws UnauthorizedException        If unauthorized
      */
-    public java.io.File download(String id, String directory) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException {
+    public java.io.File download(String id, String directory) throws InternalErrorException, FileNotFoundException, IOException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         java.io.File file;
 
         try {
@@ -136,12 +148,15 @@ public class Files {
     /**
      * Uploads the passed in file
      *
-     * @param fileToUpload              The file to upload
-     * @return                          The meta data of the file that was uploaded
-     * @throws InternalErrorException   If any errors uploading the file
-     * @throws UnauthorizedException    If unauthorized
+     * @param fileToUpload                  The file to upload
+     * @return                              The meta data of the file that was uploaded
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors uploading the file
+     * @throws UnauthorizedException        If unauthorized
      */
-    public File upload(java.io.File fileToUpload) throws UnauthorizedException, InternalErrorException {
+    public File upload(java.io.File fileToUpload) throws UnauthorizedException, InternalErrorException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.FileMetadataPage results;
         try {
             log.debug("Uploading file");

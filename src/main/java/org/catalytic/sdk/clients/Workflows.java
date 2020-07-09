@@ -8,10 +8,7 @@ import org.catalytic.sdk.entities.Field;
 import org.catalytic.sdk.entities.File;
 import org.catalytic.sdk.entities.Workflow;
 import org.catalytic.sdk.entities.WorkflowsPage;
-import org.catalytic.sdk.exceptions.FileNotFoundException;
-import org.catalytic.sdk.exceptions.InternalErrorException;
-import org.catalytic.sdk.exceptions.UnauthorizedException;
-import org.catalytic.sdk.exceptions.WorkflowNotFoundException;
+import org.catalytic.sdk.exceptions.*;
 import org.catalytic.sdk.generated.ApiClient;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.WorkflowsApi;
@@ -30,14 +27,15 @@ import java.util.UUID;
  */
 public class Workflows extends BaseClient {
 
+    private String token;
     private static final Logger log = CatalyticLogger.getLogger(Workflows.class);
     private WorkflowsApi workflowsApi;
     private Files filesClient;
 
-    public Workflows(String secret) {
-        ApiClient apiClient = ConfigurationUtils.getApiClient(secret);
+    public Workflows(String token) {
+        ApiClient apiClient = ConfigurationUtils.getApiClient(token);
         this.workflowsApi = new WorkflowsApi(apiClient);
-        this.filesClient = new Files(secret);
+        this.filesClient = new Files(token);
     }
 
     /**
@@ -45,10 +43,12 @@ public class Workflows extends BaseClient {
      *
      * Allows you to pass in mocks for WorkflowsApi and Files
      *
+     * @param token         The token to be used
      * @param workflowsApi  The mocked WorkflowsApi
      * @param filesClient   The mocked Files client
      */
-    public Workflows(WorkflowsApi workflowsApi, Files filesClient) {
+    public Workflows(String token, WorkflowsApi workflowsApi, Files filesClient) {
+        this.token = token;
         this.workflowsApi = workflowsApi;
         this.filesClient = filesClient;
     }
@@ -58,11 +58,14 @@ public class Workflows extends BaseClient {
      *
      * @param id                            The id of the workflow to get
      * @return                              The Workflow object
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws WorkflowNotFoundException    If workflow not found
      * @throws InternalErrorException       If any error getting a workflow
      * @throws UnauthorizedException        If unauthorized
      */
-    public Workflow get(String id) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+    public Workflow get(String id) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.Workflow internalWorkflow;
         try {
             log.debug("Getting workflow with id {}", () -> id);
@@ -82,62 +85,69 @@ public class Workflows extends BaseClient {
     /**
      * Find all workflows
      *
-     * @return                          A WorkflowsPage which contains the results
-     * @throws InternalErrorException   If any error finding workflows
-     * @throws UnauthorizedException    If unauthorized
+     * @return                              A WorkflowsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding workflows
+     * @throws UnauthorizedException        If unauthorized
      */
-    public WorkflowsPage find() throws InternalErrorException, UnauthorizedException {
+    public WorkflowsPage find() throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(null, null, null);
     }
 
     /**
      * Find all workflows
      *
-     * @param pageToken                 The token of the page to fetch
-     * @return                          A WorkflowsPage which contains the results
-     * @throws InternalErrorException   If any error finding workflows
-     * @throws UnauthorizedException    If unauthorized
+     * @param pageToken                     The token of the page to fetch
+     * @return                              A WorkflowsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding workflows
+     * @throws UnauthorizedException        If unauthorized
      */
-    public WorkflowsPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
+    public WorkflowsPage find(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(null, pageToken, null);
     }
 
     /**
      * Find workflows by a variety of filters
      *
-     * @param filter                    The filter criteria to search workflows by
-     * @return                          A WorkflowsPage which contains the results
-     * @throws InternalErrorException   If any error finding workflows
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter criteria to search workflows by
+     * @return                              A WorkflowsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding workflows
+     * @throws UnauthorizedException        If unauthorized
      */
-    public WorkflowsPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
+    public WorkflowsPage find(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(filter, null, null);
     }
 
     /**
      * Find workflows by a variety of filters
      *
-     * @param filter                    The filter criteria to search workflows by
-     * @param pageToken                 The token of the page to fetch
-     * @return                          A WorkflowsPage which contains the results
-     * @throws InternalErrorException   If any error finding workflows
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter criteria to search workflows by
+     * @param pageToken                     The token of the page to fetch
+     * @return                              A WorkflowsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding workflows
+     * @throws UnauthorizedException        If unauthorized
      */
-    public WorkflowsPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
+    public WorkflowsPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(filter, pageToken, null);
     }
 
     /**
      * Find workflows by a variety of filters
      *
-     * @param filter                    The filter criteria to search workflows by
-     * @param pageToken                 The token of the page to fetch
-     * @param pageSize                  The number of workflows per page to fetch
-     * @return                          A WorkflowsPage which contains the results
-     * @throws InternalErrorException   If any error finding workflows
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter criteria to search workflows by
+     * @param pageToken                     The token of the page to fetch
+     * @param pageSize                      The number of workflows per page to fetch
+     * @return                              A WorkflowsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding workflows
+     * @throws UnauthorizedException        If unauthorized
      */
-    public WorkflowsPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
+    public WorkflowsPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         String text = null;
         String owner = null;
         String category = null;
@@ -175,11 +185,12 @@ public class Workflows extends BaseClient {
      *
      * @param id                            The id of the workflow to export
      * @return                              The exported workflow object
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws WorkflowNotFoundException    If Workflow not found
      * @throws InternalErrorException       If any error exporting the workflow
      * @throws UnauthorizedException        If unauthorized
      */
-    public File export(String id) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+    public File export(String id) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
         return this.export(id, null);
     }
 
@@ -189,11 +200,14 @@ public class Workflows extends BaseClient {
      * @param id                            The id of the workflow to export
      * @param password                      The password for the workflow
      * @return                              The exported workflow object
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws WorkflowNotFoundException    If Workflow not found
      * @throws InternalErrorException       If any error exporting the workflow
      * @throws UnauthorizedException        If unauthorized
      */
-    public File export(String id, String password) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+    public File export(String id, String password) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         File file;
         WorkflowExportRequest workflowExportRequest = new WorkflowExportRequest();
         workflowExportRequest.setWorkflowId(UUID.fromString(id));
@@ -244,11 +258,12 @@ public class Workflows extends BaseClient {
      *
      * @param importFile                    The file to import
      * @return                              The imported Workflow object
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws WorkflowNotFoundException    If Workflow not found
      * @throws InternalErrorException       If any errors importing the workflow
      * @throws UnauthorizedException        If unauthorized
      */
-    public Workflow importWorkflow(java.io.File importFile) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+    public Workflow importWorkflow(java.io.File importFile) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
         return this.importWorkflow(importFile, null);
     }
 
@@ -258,11 +273,14 @@ public class Workflows extends BaseClient {
      * @param importFile                    The file to import
      * @param password                      The password for the workflow
      * @return                              The imported Workflow object
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws WorkflowNotFoundException    If Workflow not found
      * @throws InternalErrorException       If any errors importing the workflow
      * @throws UnauthorizedException        If unauthorized
      */
-    public Workflow importWorkflow(java.io.File importFile, String password) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException {
+    public Workflow importWorkflow(java.io.File importFile, String password) throws InternalErrorException, WorkflowNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         File file = this.filesClient.upload(importFile);
 
         WorkflowImportRequest workflowImportRequest = new WorkflowImportRequest();

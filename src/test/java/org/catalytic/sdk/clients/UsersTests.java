@@ -2,6 +2,7 @@ package org.catalytic.sdk.clients;
 
 import org.catalytic.sdk.entities.User;
 import org.catalytic.sdk.entities.UsersPage;
+import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
 import org.catalytic.sdk.exceptions.UserNotFoundException;
@@ -26,23 +27,18 @@ public class UsersTests {
         usersApi = mock(UsersApi.class);
     }
 
-    @Test
-    public void getUser_itShouldGetAUser() throws Exception {
-        org.catalytic.sdk.generated.model.User alice = new org.catalytic.sdk.generated.model.User();
-        alice.setEmail("alice@example.com");
-        when(usersApi.getUser("alice@example.com")).thenReturn(alice);
-
-        Users usersClient = new Users(usersApi);
-        User user = usersClient.get("alice@example.com");
-        assertThat(user).isNotNull();
-        assertThat(user.getEmail()).containsMatch("alice@example.com");
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void getUser_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        String nullString = null;
+        Users usersClient = new Users(nullString);
+        usersClient.get("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void getUser_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(usersApi.getUser("alice@example.com")).thenThrow(new ApiException(401, null));
 
-        Users usersClient = new Users(usersApi);
+        Users usersClient = new Users("1234", usersApi);
         usersClient.get("alice@example.com");
     }
 
@@ -50,7 +46,7 @@ public class UsersTests {
     public void getUser_itShouldThrowUserNotFoundExceptionIfUserDoesNotExist() throws Exception {
         when(usersApi.getUser("alice@example.com")).thenThrow(new ApiException(404, null));
 
-        Users usersClient = new Users(usersApi);
+        Users usersClient = new Users("1234", usersApi);
         usersClient.get("alice@example.com");
     }
 
@@ -58,8 +54,27 @@ public class UsersTests {
     public void getUser_itShouldThrowInternalErrorException() throws Exception {
         when(usersApi.getUser("alice@example.com")).thenThrow(new ApiException(500, null));
 
-        Users usersClient = new Users(usersApi);
+        Users usersClient = new Users("1234", usersApi);
         usersClient.get("alice@example.com");
+    }
+
+    @Test
+    public void getUser_itShouldGetAUser() throws Exception {
+        org.catalytic.sdk.generated.model.User alice = new org.catalytic.sdk.generated.model.User();
+        alice.setEmail("alice@example.com");
+        when(usersApi.getUser("alice@example.com")).thenReturn(alice);
+
+        Users usersClient = new Users("1234", usersApi);
+        User user = usersClient.get("alice@example.com");
+        assertThat(user).isNotNull();
+        assertThat(user.getEmail()).containsMatch("alice@example.com");
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void findUsers_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        String nullString = null;
+        Users usersClient = new Users(nullString);
+        usersClient.find();
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -67,7 +82,7 @@ public class UsersTests {
         when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
-        Users usersClient = new Users(usersApi);
+        Users usersClient = new Users("1234", usersApi);
         usersClient.find();
     }
 
@@ -76,7 +91,7 @@ public class UsersTests {
         when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
-        Users usersClient = new Users(usersApi);
+        Users usersClient = new Users("1234", usersApi);
         usersClient.find();
     }
 
@@ -91,7 +106,7 @@ public class UsersTests {
         when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(usersPage);
 
-        Users usersClient = new Users(usersApi);
+        Users usersClient = new Users("1234", usersApi);
         UsersPage results = usersClient.find();
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -109,7 +124,7 @@ public class UsersTests {
         when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(usersPage);
 
-        Users usersClient = new Users(usersApi);
+        Users usersClient = new Users("1234", usersApi);
         UsersPage results = usersClient.find("25");
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -127,7 +142,7 @@ public class UsersTests {
         when(usersApi.findUsers("alice@example.com", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(usersPage);
 
-        Users usersClient = new Users(usersApi);
+        Users usersClient = new Users("1234", usersApi);
         Where where = new Where();
         UsersPage results = usersClient.find(where.text().is("alice@example.com"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -146,7 +161,7 @@ public class UsersTests {
         when(usersApi.findUsers("alice@example.com", null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(usersPage);
 
-        Users usersClient = new Users(usersApi);
+        Users usersClient = new Users("1234", usersApi);
         Where where = new Where();
         UsersPage results = usersClient.find(where.text().is("alice@example.com"), "25");
         assertThat(results.getCount()).isEqualTo(1);

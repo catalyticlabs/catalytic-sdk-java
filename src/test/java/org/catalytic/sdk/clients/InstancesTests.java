@@ -35,23 +35,17 @@ public class InstancesTests {
         instanceStepsApi = mock(InstanceStepsApi.class);
     }
 
-    @Test
-    public void getInstance_itShouldGetAnInstance() throws Exception {
-        org.catalytic.sdk.generated.model.Instance sdkInstance = new org.catalytic.sdk.generated.model.Instance();
-        sdkInstance.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-        when(instancesApi.getInstance("ac14952a-a331-457c-ac7d-9a284258b65a")).thenReturn(sdkInstance);
-
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
-        Instance instance = instancesClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
-        assertThat(instance).isNotNull();
-        assertThat(instance.getId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void getInstance_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Instances instancesClient = new Instances(null);
+        instancesClient.get("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void getInstance_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(instancesApi.getInstance("ac14952a-a331-457c-ac7d-9a284258b65a")).thenThrow(new ApiException(401, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -59,7 +53,7 @@ public class InstancesTests {
     public void getInstance_itShouldThrowInstanceNotFoundExceptionIfInstanceDoesNotExist() throws Exception {
         when(instancesApi.getInstance("ac14952a-a331-457c-ac7d-9a284258b65a")).thenThrow(new ApiException(404, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -67,8 +61,26 @@ public class InstancesTests {
     public void getInstance_itShouldThrowInternalErrorException() throws Exception {
         when(instancesApi.getInstance("ac14952a-a331-457c-ac7d-9a284258b65a")).thenThrow(new ApiException(500, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
+    }
+
+    @Test
+    public void getInstance_itShouldGetAnInstance() throws Exception {
+        org.catalytic.sdk.generated.model.Instance sdkInstance = new org.catalytic.sdk.generated.model.Instance();
+        sdkInstance.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        when(instancesApi.getInstance("ac14952a-a331-457c-ac7d-9a284258b65a")).thenReturn(sdkInstance);
+
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        Instance instance = instancesClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
+        assertThat(instance).isNotNull();
+        assertThat(instance.getId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void findInstances_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Instances instancesClient = new Instances(null);
+        instancesClient.find();
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -76,7 +88,7 @@ public class InstancesTests {
         when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.find();
     }
 
@@ -85,7 +97,7 @@ public class InstancesTests {
         when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.find();
     }
 
@@ -100,7 +112,7 @@ public class InstancesTests {
         when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instancesPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         InstancesPage results = instancesClient.find();
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -118,7 +130,7 @@ public class InstancesTests {
         when(instancesApi.findInstances(null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(instancesPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         InstancesPage results = instancesClient.find("25");
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -136,7 +148,7 @@ public class InstancesTests {
         when(instancesApi.findInstances("My Instance", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instancesPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Where where = new Where();
         InstancesPage results = instancesClient.find(where.text().is("My Instance"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -155,7 +167,7 @@ public class InstancesTests {
         when(instancesApi.findInstances(null, null, null, null, "alice@example.com", null, null, null, null, null, null, null, null))
                 .thenReturn(instancesPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Where where = new Where();
         InstancesPage results = instancesClient.find(where.owner().is("alice@example.com"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -174,7 +186,7 @@ public class InstancesTests {
         when(instancesApi.findInstances(null, InstanceStatus.RUNNING.getValue(), null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instancesPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Where where = new Where();
         InstancesPage results = instancesClient.find(where.status().is(InstanceStatus.RUNNING.getValue()));
         assertThat(results.getCount()).isEqualTo(1);
@@ -193,7 +205,7 @@ public class InstancesTests {
         when(instancesApi.findInstances(null, null, "b7b99c88-3ab6-4c92-bfce-bf3ff7d78026", null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instancesPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Where where = new Where();
         InstancesPage results = instancesClient.find(where.workflowId().is("b7b99c88-3ab6-4c92-bfce-bf3ff7d78026"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -212,12 +224,18 @@ public class InstancesTests {
         when(instancesApi.findInstances("My Instance", null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(instancesPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Where where = new Where();
         InstancesPage results = instancesClient.find(where.text().is("My Instance"), "25");
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
         assertThat(results.getInstances().get(0).getName()).isEqualTo("My Instance");
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void startInstance_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Instances instancesClient = new Instances(null);
+        instancesClient.start("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -226,7 +244,7 @@ public class InstancesTests {
         startInstanceRequest.setWorkflowId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         when(instancesApi.startInstance(startInstanceRequest)).thenThrow(new ApiException(401, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.start("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -236,7 +254,7 @@ public class InstancesTests {
         startInstanceRequest.setWorkflowId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         when(instancesApi.startInstance(startInstanceRequest)).thenThrow(new ApiException(404, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.start("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -246,7 +264,7 @@ public class InstancesTests {
         startInstanceRequest.setWorkflowId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         when(instancesApi.startInstance(startInstanceRequest)).thenThrow(new ApiException(500, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.start("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -258,16 +276,22 @@ public class InstancesTests {
         startInstanceRequest.setWorkflowId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         when(instancesApi.startInstance(startInstanceRequest)).thenReturn(internalInstance);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Instance instance = instancesClient.start("ac14952a-a331-457c-ac7d-9a284258b65a");
         assertThat(instance.getWorkflowId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void stopInstance_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Instances instancesClient = new Instances(null);
+        instancesClient.stop("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void stopInstance_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(instancesApi.stopInstance("2b4362d6-5e46-494c-846f-c53184c8d124")).thenThrow(new ApiException(401, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.stop("2b4362d6-5e46-494c-846f-c53184c8d124");
     }
 
@@ -275,7 +299,7 @@ public class InstancesTests {
     public void stopInstance_itShouldThrowInstanceNotFoundException() throws Exception {
         when(instancesApi.stopInstance("2b4362d6-5e46-494c-846f-c53184c8d124")).thenThrow(new ApiException(404, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.stop("2b4362d6-5e46-494c-846f-c53184c8d124");
     }
 
@@ -283,7 +307,7 @@ public class InstancesTests {
     public void stopInstance_itShouldThrowInternalErrorException() throws Exception {
         when(instancesApi.stopInstance("2b4362d6-5e46-494c-846f-c53184c8d124")).thenThrow(new ApiException(500, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.stop("2b4362d6-5e46-494c-846f-c53184c8d124");
     }
 
@@ -293,16 +317,22 @@ public class InstancesTests {
         internalInstance.setWorkflowId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         when(instancesApi.stopInstance("2b4362d6-5e46-494c-846f-c53184c8d124")).thenReturn(internalInstance);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Instance instance = instancesClient.stop("2b4362d6-5e46-494c-846f-c53184c8d124");
         assertThat(instance.getWorkflowId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void getInstanceStep_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Instances instancesClient = new Instances(null);
+        instancesClient.getStep("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void getInstanceStep_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(instanceStepsApi.getInstanceStep("2b4362d6-5e46-494c-846f-c53184c8d124", "-")).thenThrow(new ApiException(401, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.getStep("2b4362d6-5e46-494c-846f-c53184c8d124");
     }
 
@@ -310,7 +340,7 @@ public class InstancesTests {
     public void getInstanceStep_itShouldThrowInstanceStepNotFoundException() throws Exception {
         when(instanceStepsApi.getInstanceStep("2b4362d6-5e46-494c-846f-c53184c8d124", "-")).thenThrow(new ApiException(404, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.getStep("2b4362d6-5e46-494c-846f-c53184c8d124");
     }
 
@@ -318,7 +348,7 @@ public class InstancesTests {
     public void getInstanceStep_itShouldThrowInternalErrorException() throws Exception {
         when(instanceStepsApi.getInstanceStep("2b4362d6-5e46-494c-846f-c53184c8d124", "-")).thenThrow(new ApiException(500, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.getStep("2b4362d6-5e46-494c-846f-c53184c8d124");
     }
 
@@ -328,9 +358,15 @@ public class InstancesTests {
         internalInstance.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         when(instanceStepsApi.getInstanceStep("2b4362d6-5e46-494c-846f-c53184c8d124", "-")).thenReturn(internalInstance);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         InstanceStep instanceStep = instancesClient.getStep("2b4362d6-5e46-494c-846f-c53184c8d124");
         assertThat(instanceStep.getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void getInstanceSteps_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Instances instancesClient = new Instances(null);
+        instancesClient.getSteps("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -338,7 +374,7 @@ public class InstancesTests {
         when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.getSteps("2b4362d6-5e46-494c-846f-c53184c8d124");
     }
 
@@ -347,7 +383,7 @@ public class InstancesTests {
         when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.getSteps("2b4362d6-5e46-494c-846f-c53184c8d124");
     }
 
@@ -363,7 +399,7 @@ public class InstancesTests {
         when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instanceStepsPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         InstanceStepsPage results = instancesClient.getSteps("2b4362d6-5e46-494c-846f-c53184c8d124");
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -371,12 +407,18 @@ public class InstancesTests {
         assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("2b4362d6-5e46-494c-846f-c53184c8d124"));
     }
 
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void findSteps_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Instances instancesClient = new Instances(null);
+        instancesClient.findSteps("25");
+    }
+
     @Test(expected = UnauthorizedException.class)
     public void findSteps_itShouldReturnUnauthorizedException() throws Exception {
         when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenThrow(new ApiException(401, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.findSteps("25");
     }
 
@@ -385,7 +427,7 @@ public class InstancesTests {
         when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenThrow(new ApiException(500, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.findSteps("25");
     }
 
@@ -400,7 +442,7 @@ public class InstancesTests {
         when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(instanceStepsPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         InstanceStepsPage results = instancesClient.findSteps("25");
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -418,7 +460,7 @@ public class InstancesTests {
         when(instanceStepsApi.findInstanceSteps("-", "My InstanceStep", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instanceStepsPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Where where = new Where();
         InstanceStepsPage results = instancesClient.findSteps(where.text().is("My InstanceStep"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -437,7 +479,7 @@ public class InstancesTests {
         when(instanceStepsApi.findInstanceSteps("-", null, null, "b7b99c88-3ab6-4c92-bfce-bf3ff7d78026", null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(instanceStepsPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Where where = new Where();
         InstanceStepsPage results = instancesClient.findSteps(where.workflowId().is("b7b99c88-3ab6-4c92-bfce-bf3ff7d78026"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -456,7 +498,7 @@ public class InstancesTests {
         when(instanceStepsApi.findInstanceSteps("-", null, null, null, null, null, null, "alice@example.com", null, null, null, null, null, null))
                 .thenReturn(instanceStepsPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Where where = new Where();
         InstanceStepsPage results = instancesClient.findSteps(where.assignee().is("alice@example.com"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -475,7 +517,7 @@ public class InstancesTests {
         when(instanceStepsApi.findInstanceSteps("-", "My InstanceStep", null, null, null, null, null, null, null,  null, null, null, "25", null))
                 .thenReturn(instanceStepsPage);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         Where where = new Where();
         InstanceStepsPage results = instancesClient.findSteps(where.text().is("My InstanceStep"), "25");
         assertThat(results.getCount()).isEqualTo(1);
@@ -483,8 +525,14 @@ public class InstancesTests {
         assertThat(results.getInstanceSteps().get(0).getName()).isEqualTo("My InstanceStep");
     }
 
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void completeStep_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Instances instancesClient = new Instances(null);
+        instancesClient.completeStep("1234", null);
+    }
+
     @Test
-    public void completeInstance_itShouldCompleteAnInstanceStep() throws Exception {
+    public void completeStep_itShouldCompleteAnInstanceStep() throws Exception {
         org.catalytic.sdk.generated.model.InstanceStep internalstep = new org.catalytic.sdk.generated.model.InstanceStep();
         CompleteStepRequest completeStepRequest = new CompleteStepRequest();
         completeStepRequest.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
@@ -495,7 +543,7 @@ public class InstancesTests {
         when(instanceStepsApi.completeStep("ac14952a-a331-457c-ac7d-9a284258b65a", "98950bf5-1cae-4359-b09a-1cdc13f6b1b6", completeStepRequest))
                 .thenReturn(internalstep);
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         InstanceStep instanceStep = instancesClient.completeStep("ac14952a-a331-457c-ac7d-9a284258b65a", null);
         assertThat(instanceStep).isNotNull();
         assertThat(instanceStep.getId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
@@ -505,7 +553,7 @@ public class InstancesTests {
     public void completeInstance_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(instanceStepsApi.getInstanceStep("ac14952a-a331-457c-ac7d-9a284258b65a", "-")).thenThrow(new ApiException(401, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.completeStep("ac14952a-a331-457c-ac7d-9a284258b65a", null);
     }
 
@@ -513,7 +561,7 @@ public class InstancesTests {
     public void completeInstance_itShouldThrowInstanceNotFoundExceptionIfInstanceDoesNotExist() throws Exception {
         when(instanceStepsApi.getInstanceStep("ac14952a-a331-457c-ac7d-9a284258b65a", "-")).thenThrow(new ApiException(404, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.completeStep("ac14952a-a331-457c-ac7d-9a284258b65a", null);
     }
 
@@ -521,7 +569,7 @@ public class InstancesTests {
     public void completeInstance_itShouldThrowInternalErrorException() throws Exception {
         when(instanceStepsApi.getInstanceStep("ac14952a-a331-457c-ac7d-9a284258b65a", "-")).thenThrow(new ApiException(500, null));
 
-        Instances instancesClient = new Instances(instancesApi, instanceStepsApi);
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.completeStep("ac14952a-a331-457c-ac7d-9a284258b65a", null);
     }
 }

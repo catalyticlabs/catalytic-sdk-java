@@ -5,6 +5,7 @@ import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.User;
 import org.catalytic.sdk.entities.UsersPage;
+import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
 import org.catalytic.sdk.exceptions.UserNotFoundException;
@@ -22,11 +23,13 @@ import java.util.List;
  */
 public class Users {
 
+    private String token;
     private static final Logger log = CatalyticLogger.getLogger(Users.class);
     private UsersApi usersApi;
 
-    public Users(String secret) {
-        ApiClient apiClient = ConfigurationUtils.getApiClient(secret);
+    public Users(String token) {
+        this.token = token;
+        ApiClient apiClient = ConfigurationUtils.getApiClient(token);
         this.usersApi = new UsersApi(apiClient);
     }
 
@@ -35,23 +38,28 @@ public class Users {
      *
      * Allows you to pass in a mock UsersApi
      *
-     * @param usersApi The mocked UsersApi
+     * @param token     The token to be used
+     * @param usersApi  The mocked UsersApi
      */
-    public Users(UsersApi usersApi) {
+    public Users(String token, UsersApi usersApi) {
+        this.token = token;
         this.usersApi = usersApi;
     }
 
     /**
      * Get a user by either id, email, or username
      *
-     * @param identifier                The id, email, or username of the user to get
-     * @return                          The User object
-     * @throws UserNotFoundException    If user is not found
-     * @throws InternalErrorException   If any error getting a user
-     * @throws UnauthorizedException    If unauthorized
+     * @param identifier                    The id, email, or username of the user to get
+     * @return                              The User object
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws UserNotFoundException        If user is not found
+     * @throws InternalErrorException       If any error getting a user
+     * @throws UnauthorizedException        If unauthorized
      */
-    public User get(String identifier) throws InternalErrorException, UserNotFoundException, UnauthorizedException {
-        org.catalytic.sdk.generated.model.User internalUser = null;
+    public User get(String identifier) throws InternalErrorException, UserNotFoundException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
+        org.catalytic.sdk.generated.model.User internalUser;
         try {
             log.debug("Getting user with identifier {}", () -> identifier);
             internalUser = this.usersApi.getUser(identifier);
@@ -70,62 +78,69 @@ public class Users {
     /**
      * Finds all users
      *
-     * @return                          A UsersPage object which contains the results
-     * @throws InternalErrorException   If any error finding users
-     * @throws UnauthorizedException    If unauthorized
+     * @return                              A UsersPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
      */
-    public UsersPage find() throws InternalErrorException, UnauthorizedException {
+    public UsersPage find() throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return find(null, null, null);
     }
 
     /**
      * Finds users by a variety of filters
      *
-     * @param pageToken                 The token of the page to fetch
-     * @return                          A UsersPage object which contains the results
-     * @throws InternalErrorException   If any error finding users
-     * @throws UnauthorizedException    If unauthorized
+     * @param pageToken                     The token of the page to fetch
+     * @return                              A UsersPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
      */
-    public UsersPage find(String pageToken) throws InternalErrorException, UnauthorizedException {
+    public UsersPage find(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(null, pageToken, null);
     }
 
     /**
      * Finds users by a variety of filters
      *
-     * @param filter                    The filter to search users by
-     * @return                          A UsersPage object which contains the results
-     * @throws InternalErrorException   If any error finding users
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter to search users by
+     * @return                              A UsersPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
      */
-    public UsersPage find(Filter filter) throws InternalErrorException, UnauthorizedException {
+    public UsersPage find(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return find(filter, null, null);
     }
 
     /**
      * Finds users by a variety of filters
      *
-     * @param filter                    The filter to search users by
-     * @param pageToken                 The token of the page to fetch
-     * @return                          A UsersPage object which contains the results
-     * @throws InternalErrorException   If any error finding users
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter to search users by
+     * @param pageToken                     The token of the page to fetch
+     * @return                              A UsersPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
      */
-    public UsersPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException {
+    public UsersPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return find(filter, pageToken, null);
     }
 
     /**
      * Finds users by a variety of filters
      *
-     * @param filter                    The filter to search users by
-     * @param pageToken                 The token of the page to fetch
-     * @param pageSize                  The number of users per page to fetch
-     * @return                          A UsersPage object which contains the results
-     * @throws InternalErrorException   If any error finding users
-     * @throws UnauthorizedException    If unauthorized
+     * @param filter                        The filter to search users by
+     * @param pageToken                     The token of the page to fetch
+     * @param pageSize                      The number of users per page to fetch
+     * @return                              A UsersPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
      */
-    public UsersPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException {
+    public UsersPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
         org.catalytic.sdk.generated.model.UsersPage results;
         List<User> users = new ArrayList<>();
         String text = null;

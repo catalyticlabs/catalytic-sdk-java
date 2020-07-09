@@ -1,5 +1,6 @@
-package org.catalytic.sdk;
+package org.catalytic.sdk.unit;
 
+import org.catalytic.sdk.Credentials;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;

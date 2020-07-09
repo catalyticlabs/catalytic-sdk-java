@@ -3,10 +3,7 @@ package org.catalytic.sdk.clients;
 import org.catalytic.sdk.entities.File;
 import org.catalytic.sdk.entities.Workflow;
 import org.catalytic.sdk.entities.WorkflowsPage;
-import org.catalytic.sdk.exceptions.FileNotFoundException;
-import org.catalytic.sdk.exceptions.InternalErrorException;
-import org.catalytic.sdk.exceptions.UnauthorizedException;
-import org.catalytic.sdk.exceptions.WorkflowNotFoundException;
+import org.catalytic.sdk.exceptions.*;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.WorkflowsApi;
 import org.catalytic.sdk.generated.model.WorkflowExport;
@@ -35,23 +32,17 @@ public class WorkflowsTests {
         filesClient = mock(Files.class);
     }
 
-    @Test
-    public void getWorkflow_itShouldGetAWorkflow() throws Exception {
-        org.catalytic.sdk.generated.model.Workflow sdkWorkflow = new org.catalytic.sdk.generated.model.Workflow();
-        sdkWorkflow.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-        when(workflowsApi.getWorkflow("ac14952a-a331-457c-ac7d-9a284258b65a")).thenReturn(sdkWorkflow);
-
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
-        Workflow workflow = workflowsClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
-        assertThat(workflow).isNotNull();
-        assertThat(workflow.getId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void getWorkflow_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Workflows workflowsClient = new Workflows(null);
+        workflowsClient.get("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
     public void getWorkflow_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(workflowsApi.getWorkflow("ac14952a-a331-457c-ac7d-9a284258b65a")).thenThrow(new ApiException(401, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -59,7 +50,7 @@ public class WorkflowsTests {
     public void getWorkflow_itShouldThrowWorkflowNotFoundExceptionIfWorkflowDoesNotExist() throws Exception {
         when(workflowsApi.getWorkflow("ac14952a-a331-457c-ac7d-9a284258b65a")).thenThrow(new ApiException(404, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -67,8 +58,26 @@ public class WorkflowsTests {
     public void getWorkflow_itShouldThrowInternalErrorException() throws Exception {
         when(workflowsApi.getWorkflow("ac14952a-a331-457c-ac7d-9a284258b65a")).thenThrow(new ApiException(500, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
+    }
+
+    @Test
+    public void getWorkflow_itShouldGetAWorkflow() throws Exception {
+        org.catalytic.sdk.generated.model.Workflow sdkWorkflow = new org.catalytic.sdk.generated.model.Workflow();
+        sdkWorkflow.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        when(workflowsApi.getWorkflow("ac14952a-a331-457c-ac7d-9a284258b65a")).thenReturn(sdkWorkflow);
+
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
+        Workflow workflow = workflowsClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
+        assertThat(workflow).isNotNull();
+        assertThat(workflow.getId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void findWorkflows_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Workflows workflowsClient = new Workflows(null);
+        workflowsClient.find();
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -76,7 +85,7 @@ public class WorkflowsTests {
         when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(401, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.find();
     }
 
@@ -85,7 +94,7 @@ public class WorkflowsTests {
         when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenThrow(new ApiException(500, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.find();
     }
 
@@ -100,7 +109,7 @@ public class WorkflowsTests {
         when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(workflowsPage);
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         WorkflowsPage results = workflowsClient.find();
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -118,7 +127,7 @@ public class WorkflowsTests {
         when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(workflowsPage);
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         WorkflowsPage results = workflowsClient.find("25");
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
@@ -136,7 +145,7 @@ public class WorkflowsTests {
         when(workflowsApi.findWorkflows("My Workflow", null, null, null, null, null, null, null, null, null, null, null, null))
                 .thenReturn(workflowsPage);
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         Where where = new Where();
         WorkflowsPage results = workflowsClient.find(where.text().matches("My Workflow"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -155,7 +164,7 @@ public class WorkflowsTests {
         when(workflowsApi.findWorkflows(null, null, null, null, "alice@example.com", null, null, null, null, null, null, null, null))
                 .thenReturn(workflowsPage);
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         Where where = new Where();
         WorkflowsPage results = workflowsClient.find(where.owner().is("alice@example.com"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -174,7 +183,7 @@ public class WorkflowsTests {
         when(workflowsApi.findWorkflows(null, null, null, null, null, "general", null, null, null, null, null, null, null))
                 .thenReturn(workflowsPage);
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         Where where = new Where();
         WorkflowsPage results = workflowsClient.find(where.category().is("general"));
         assertThat(results.getCount()).isEqualTo(1);
@@ -193,12 +202,18 @@ public class WorkflowsTests {
         when(workflowsApi.findWorkflows("My Workflow", null, null, null, null, null, null, null, null, null, null, "25", null))
                 .thenReturn(workflowsPage);
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         Where where = new Where();
         WorkflowsPage results = workflowsClient.find(where.text().is("My Workflow"), "25");
         assertThat(results.getCount()).isEqualTo(1);
         assertThat(results.getNextPageToken()).isNull();
         assertThat(results.getWorkflows().get(0).getName()).isEqualTo("My Workflow");
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void exportWorkflow_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Workflows workflowsClient = new Workflows(null);
+        workflowsClient.export("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -207,7 +222,7 @@ public class WorkflowsTests {
         workflowExportRequest.setWorkflowId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         when(workflowsApi.exportWorkflow("ac14952a-a331-457c-ac7d-9a284258b65a", workflowExportRequest)).thenThrow(new ApiException(401, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.export("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -217,7 +232,7 @@ public class WorkflowsTests {
         workflowExportRequest.setWorkflowId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         when(workflowsApi.exportWorkflow("ac14952a-a331-457c-ac7d-9a284258b65a", workflowExportRequest)).thenThrow(new ApiException(404, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.export("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -227,7 +242,7 @@ public class WorkflowsTests {
         workflowExportRequest.setWorkflowId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         when(workflowsApi.exportWorkflow("ac14952a-a331-457c-ac7d-9a284258b65a", workflowExportRequest)).thenThrow(new ApiException(500, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.export("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -251,7 +266,7 @@ public class WorkflowsTests {
         when(workflowsApi.exportWorkflow("ac14952a-a331-457c-ac7d-9a284258b65a", workflowExportRequest)).thenReturn(initialWorkflowExport);
         when(workflowsApi.getWorkflowExport("3e8470de-6474-44ec-b9bb-f0b5262ab9dd")).thenThrow(new ApiException(500, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.export("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -276,7 +291,7 @@ public class WorkflowsTests {
         when(workflowsApi.getWorkflowExport("3e8470de-6474-44ec-b9bb-f0b5262ab9dd")).thenReturn(subsequentWorkflowExport);
         when(filesClient.get("3e8470de-6474-44ec-b9bb-f0b5262ab9dd")).thenThrow(new FileNotFoundException());
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.export("ac14952a-a331-457c-ac7d-9a284258b65a");
     }
 
@@ -301,7 +316,7 @@ public class WorkflowsTests {
         when(workflowsApi.getWorkflowExport("3e8470de-6474-44ec-b9bb-f0b5262ab9dd")).thenReturn(subsequentWorkflowExport);
         when(filesClient.get("3e8470de-6474-44ec-b9bb-f0b5262ab9dd")).thenReturn(myFile);
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         File file = workflowsClient.export("ac14952a-a331-457c-ac7d-9a284258b65a");
         assertThat(file.getName()).isEqualTo("My Workflow");
     }
@@ -328,9 +343,15 @@ public class WorkflowsTests {
         when(workflowsApi.getWorkflowExport("3e8470de-6474-44ec-b9bb-f0b5262ab9dd")).thenReturn(subsequentWorkflowExport);
         when(filesClient.get("3e8470de-6474-44ec-b9bb-f0b5262ab9dd")).thenReturn(myFile);
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         File file = workflowsClient.export("ac14952a-a331-457c-ac7d-9a284258b65a", "my-password");
         assertThat(file.getName()).isEqualTo("My Workflow");
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void importWorkflow_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Workflows workflowsClient = new Workflows(null);
+        workflowsClient.importWorkflow(null);
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -343,7 +364,7 @@ public class WorkflowsTests {
         when(filesClient.upload(importFile)).thenReturn(file);
         when(workflowsApi.importWorkflow(workflowImportRequest)).thenThrow(new ApiException(401, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.importWorkflow(importFile);
     }
 
@@ -357,7 +378,7 @@ public class WorkflowsTests {
         when(filesClient.upload(importFile)).thenReturn(file);
         when(workflowsApi.importWorkflow(workflowImportRequest)).thenThrow(new ApiException(500, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.importWorkflow(importFile);
     }
 
@@ -384,7 +405,7 @@ public class WorkflowsTests {
         when(workflowsApi.importWorkflow(workflowImportRequest)).thenReturn(initialWorkflowImport);
         when(workflowsApi.getWorkflowImport(initialWorkflowImport.getId().toString())).thenThrow(new ApiException(500, null));
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         workflowsClient.importWorkflow(importFile);
     }
 
@@ -412,7 +433,7 @@ public class WorkflowsTests {
         when(workflowsApi.getWorkflowImport(initialWorkflowImport.getId().toString())).thenReturn(subsequentWorkflowImport);
         when(workflowsApi.getWorkflow("41669347-e810-4e08-9183-b70d001ab2f5")).thenReturn(sdkWorkflow);
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         Workflow workflow = workflowsClient.importWorkflow(importFile);
         assertThat(workflow.getId()).isEqualTo(UUID.fromString("41669347-e810-4e08-9183-b70d001ab2f5"));
     }
@@ -442,7 +463,7 @@ public class WorkflowsTests {
         when(workflowsApi.getWorkflowImport(initialWorkflowImport.getId().toString())).thenReturn(subsequentWorkflowImport);
         when(workflowsApi.getWorkflow("41669347-e810-4e08-9183-b70d001ab2f5")).thenReturn(sdkWorkflow);
 
-        Workflows workflowsClient = new Workflows(workflowsApi, filesClient);
+        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
         Workflow workflow = workflowsClient.importWorkflow(importFile, "my-password");
         assertThat(workflow.getId()).isEqualTo(UUID.fromString("41669347-e810-4e08-9183-b70d001ab2f5"));
     }
