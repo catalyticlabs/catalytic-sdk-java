@@ -14,6 +14,7 @@ import org.catalytic.sdk.generated.api.AccessTokensApi;
 import org.catalytic.sdk.generated.api.AuthenticationApi;
 import org.catalytic.sdk.generated.model.AccessTokenCreationRequest;
 import org.catalytic.sdk.generated.model.AccessTokenCreationWithEmailAndPasswordRequest;
+import org.catalytic.sdk.generated.model.WaitForAccessTokenApprovalRequest;
 import org.catalytic.sdk.search.Filter;
 import org.catalytic.sdk.search.SearchUtils;
 
@@ -278,6 +279,28 @@ public class AccessTokens {
             return "https://" + accessToken.getDomain() + "/credentials/approve?userTokenID=" + accessToken.getId() + "&application=" + URLEncoder.encode(applicationName, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new InternalErrorException("Unable to generate approval url");
+        }
+    }
+
+    /**
+     * Waits for an Access Token to be approved
+     *
+     * @param accessToken       The Access Token to wait for approval of
+     * @param waitTimeInMillis  The amount of time to wait in milliseconds before timing out
+     * @throws InternalErrorException
+     * @throws UnauthorizedException
+     */
+    public void waitForApproval(AccessToken accessToken, Integer waitTimeInMillis) throws InternalErrorException, UnauthorizedException {
+        WaitForAccessTokenApprovalRequest request = new WaitForAccessTokenApprovalRequest();
+        request.setToken(accessToken.getToken());
+        request.setWaitTimeMillis(waitTimeInMillis);
+        try {
+            this.authenticationApi.waitForAccessTokenApproval(request);
+        } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException(e);
+            }
+            throw new InternalErrorException("Unable to wait for AccessToken approval", e);
         }
     }
 

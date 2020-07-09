@@ -11,6 +11,7 @@ import org.catalytic.sdk.generated.api.AuthenticationApi;
 import org.catalytic.sdk.generated.model.AccessTokenCreationRequest;
 import org.catalytic.sdk.generated.model.AccessTokenCreationWithEmailAndPasswordRequest;
 import org.catalytic.sdk.generated.model.TokenType;
+import org.catalytic.sdk.generated.model.WaitForAccessTokenApprovalRequest;
 import org.catalytic.sdk.search.Where;
 import org.junit.Before;
 import org.junit.Test;
@@ -364,5 +365,41 @@ public class AccessTokensTests {
         AccessToken accessToken = new AccessToken(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"), "example.com", null, "Example App", null, null, null, null);
         String url = accessTokensClient.getApprovalUrl(accessToken, "Example App");
         assertThat(url).isEqualTo("https://example.com/credentials/approve?userTokenID=114c0d7d-c291-4ad2-a10d-68c5dd532af3&application=Example+App");
+    }
+
+    @Test(expected = UnauthorizedException.class)
+    public void waitForApproval_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
+        WaitForAccessTokenApprovalRequest request = new WaitForAccessTokenApprovalRequest();
+        request.setToken("1234");
+        request.setWaitTimeMillis(100);
+        when(authenticationApi.waitForAccessTokenApproval(request)).thenThrow(new ApiException(401, null));
+
+        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessToken accessToken = new AccessToken(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"), "example", "user", "my token", "1234", "my-secret", "prod", "alice");
+        accessTokensClient.waitForApproval(accessToken, 100);
+    }
+
+    @Test(expected = InternalErrorException.class)
+    public void waitForApproval_itShouldThrowInternalErrorException() throws Exception {
+        WaitForAccessTokenApprovalRequest request = new WaitForAccessTokenApprovalRequest();
+        request.setToken("1234");
+        request.setWaitTimeMillis(100);
+        when(authenticationApi.waitForAccessTokenApproval(request)).thenThrow(new ApiException(500, null));
+
+        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessToken accessToken = new AccessToken(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"), "example", "user", "my token", "1234", "my-secret", "prod", "alice");
+        accessTokensClient.waitForApproval(accessToken, 100);
+    }
+
+    @Test
+    public void waitForApproval_itShouldWaitForApproval() throws Exception {
+        WaitForAccessTokenApprovalRequest request = new WaitForAccessTokenApprovalRequest();
+        request.setToken("1234");
+        request.setWaitTimeMillis(100);
+        when(authenticationApi.waitForAccessTokenApproval(request)).thenReturn(null);
+
+        AccessTokens accessTokensClient = new AccessTokens(credentialsApi, authenticationApi);
+        AccessToken accessToken = new AccessToken(UUID.fromString("114c0d7d-c291-4ad2-a10d-68c5dd532af3"), "example", "user", "my token", "1234", "my-secret", "prod", "alice");
+        accessTokensClient.waitForApproval(accessToken, 100);
     }
 }
