@@ -39,13 +39,13 @@ public class DataTables {
 
     public DataTables(String token) {
         this.token = token;
-        ApiClient apiClient = ConfigurationUtils.getApiClient(token);
+        ApiClient apiClient = ConfigurationUtils.getApiClient(this.token);
 
-        if (token != null) {
-            token = token.trim();
+        if (this.token != null) {
+            this.token = this.token.trim();
         }
 
-        this.files = new Files(token);
+        this.files = new Files(this.token);
         this.dataTablesApi = new DataTablesApi(apiClient);
     }
 
@@ -80,7 +80,7 @@ public class DataTables {
             internalDataTable = this.dataTablesApi.getDataTable(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new DataTableNotFoundException("DataTable with id " + id + " not found", e);
             }
@@ -169,7 +169,7 @@ public class DataTables {
             internalDataTables = this.dataTablesApi.findDataTables(text, null, null, null, null, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             }
             throw new InternalErrorException("Unable to find dataTables", e);
         }
@@ -243,7 +243,7 @@ public class DataTables {
             file = this.dataTablesApi.downloadDataTable(id, downloadFormat);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new DataTableNotFoundException("DataTable with id " + id + " not found", e);
             }
@@ -306,7 +306,7 @@ public class DataTables {
             internalDataTable = this.dataTablesApi.uploadDataTable(tableName, headerRow, sheetNumber, Arrays.asList(fileToUpload));
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             }
             throw new InternalErrorException("Unable to upload dataTable", e);
         }
@@ -352,7 +352,7 @@ public class DataTables {
             internalDataTable = this.dataTablesApi.replaceDataTable(id, headerRow, sheetNumber, Arrays.asList(fileToUpload));
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new DataTableNotFoundException("DataTable with id " + id + " not found", e);
             }

@@ -73,7 +73,7 @@ public class AccessTokens {
             internalAccessToken = this.accessTokensApi.getAccessToken(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new AccessTokenNotFoundException("Credentials with id " + id + " not found", e);
             }
@@ -216,7 +216,7 @@ public class AccessTokens {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
             }
-            throw new InternalErrorException("Unable to create Credentials");
+            throw new InternalErrorException("Unable to create Credentials", e);
         }
 
         AccessToken accessToken = createAccessToken(internalCredentials);
@@ -261,7 +261,7 @@ public class AccessTokens {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
             }
-            throw new InternalErrorException("Unable to create Credentials");
+            throw new InternalErrorException("Unable to create Credentials", e);
         }
 
         AccessToken accessToken = createAccessToken(internalAccessToken);

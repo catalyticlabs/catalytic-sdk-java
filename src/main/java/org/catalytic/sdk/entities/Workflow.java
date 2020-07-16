@@ -156,4 +156,24 @@ public class Workflow {
     public void setStandardUsers(List<String> standardUsers) {
         this.standardUsers = standardUsers;
     }
+
+    @Override
+    public String toString() {
+        return "Workflow{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", teamName='" + teamName + '\'' +
+                ", description='" + description + '\'' +
+                ", category='" + category + '\'' +
+                ", owner='" + owner + '\'' +
+                ", createdBy='" + createdBy + '\'' +
+                ", inputFields=" + inputFields +
+                ", isPublished=" + isPublished +
+                ", isArchived=" + isArchived +
+                ", fieldVisibility=" + fieldVisibility +
+                ", instanceVisibility=" + instanceVisibility +
+                ", adminUsers=" + adminUsers +
+                ", standardUsers=" + standardUsers +
+                '}';
+    }
 }

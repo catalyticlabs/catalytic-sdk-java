@@ -29,7 +29,7 @@ public class Users {
 
     public Users(String token) {
         this.token = token;
-        ApiClient apiClient = ConfigurationUtils.getApiClient(token);
+        ApiClient apiClient = ConfigurationUtils.getApiClient(this.token);
         this.usersApi = new UsersApi(apiClient);
     }
 
@@ -65,7 +65,7 @@ public class Users {
             internalUser = this.usersApi.getUser(identifier);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new UserNotFoundException("User with id, email, or username " + identifier + " not found", e);
             }
@@ -154,7 +154,7 @@ public class Users {
             results = this.usersApi.findUsers(text, null, null, null, null, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             }
             throw new InternalErrorException("Unable to find users", e);
         }

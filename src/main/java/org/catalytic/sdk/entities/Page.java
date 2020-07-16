@@ -23,4 +23,12 @@ public abstract class Page {
     public void setNextPageToken(String nextPageToken) {
         this.nextPageToken = nextPageToken;
     }
+
+    @Override
+    public String toString() {
+        return "Page{" +
+                "count=" + count +
+                ", nextPageToken='" + nextPageToken + '\'' +
+                '}';
+    }
 }

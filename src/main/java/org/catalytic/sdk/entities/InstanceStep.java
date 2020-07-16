@@ -113,4 +113,20 @@ public class InstanceStep {
     public void setOutputFields(List<Field> outputFields) {
         this.outputFields = outputFields;
     }
+
+    @Override
+    public String toString() {
+        return "InstanceStep{" +
+                "id=" + id +
+                ", instanceId=" + instanceId +
+                ", workflowId=" + workflowId +
+                ", name='" + name + '\'' +
+                ", teamName='" + teamName + '\'' +
+                ", position=" + position +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", assignedTo='" + assignedTo + '\'' +
+                ", outputFields=" + outputFields +
+                '}';
+    }
 }

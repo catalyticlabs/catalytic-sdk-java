@@ -33,9 +33,10 @@ public class Workflows extends BaseClient {
     private Files filesClient;
 
     public Workflows(String token) {
+        this.token = token;
         ApiClient apiClient = ConfigurationUtils.getApiClient(token);
         this.workflowsApi = new WorkflowsApi(apiClient);
-        this.filesClient = new Files(token);
+        this.filesClient = new Files(this.token);
     }
 
     /**
@@ -72,7 +73,7 @@ public class Workflows extends BaseClient {
             internalWorkflow = this.workflowsApi.getWorkflow(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new WorkflowNotFoundException("Workflow with id " + id + " not found", e);
             }
@@ -166,7 +167,7 @@ public class Workflows extends BaseClient {
             results = this.workflowsApi.findWorkflows(text, null, null, null, owner, category, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             }
             throw new InternalErrorException("Unable to find workflows", e);
         }
@@ -220,7 +221,7 @@ public class Workflows extends BaseClient {
             internalWorkflowExport = this.workflowsApi.exportWorkflow(id, workflowExportRequest);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new WorkflowNotFoundException("Workflow with id " + id + " not found", e);
             }
@@ -294,7 +295,7 @@ public class Workflows extends BaseClient {
             internalWorkflowImport = this.workflowsApi.importWorkflow(workflowImportRequest);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             }
             throw new InternalErrorException("Unable to import workflow", e);
         }

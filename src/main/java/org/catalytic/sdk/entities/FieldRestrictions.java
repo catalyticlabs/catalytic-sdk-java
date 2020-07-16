@@ -27,4 +27,12 @@ public class FieldRestrictions {
     public void setValueRequired(Boolean valueRequired) {
         this.valueRequired = valueRequired;
     }
+
+    @Override
+    public String toString() {
+        return "FieldRestrictions{" +
+                "choices=" + choices +
+                ", valueRequired=" + valueRequired +
+                '}';
+    }
 }

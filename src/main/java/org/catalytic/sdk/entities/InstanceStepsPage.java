@@ -22,4 +22,13 @@ public class InstanceStepsPage extends Page {
     public void setInstanceSteps(List<InstanceStep> instanceSteps) {
         this.instanceSteps = instanceSteps;
     }
+
+    @Override
+    public String toString() {
+        return "InstanceStepsPage{" +
+                "instanceSteps=" + instanceSteps +
+                ", count=" + count +
+                ", nextPageToken='" + nextPageToken + '\'' +
+                '}';
+    }
 }

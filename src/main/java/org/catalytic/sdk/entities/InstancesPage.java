@@ -27,4 +27,13 @@ public class InstancesPage extends Page {
     public void setInstances(List<Instance> instances) {
         this.instances = instances;
     }
+
+    @Override
+    public String toString() {
+        return "InstancesPage{" +
+                "instances=" + instances +
+                ", count=" + count +
+                ", nextPageToken='" + nextPageToken + '\'' +
+                '}';
+    }
 }

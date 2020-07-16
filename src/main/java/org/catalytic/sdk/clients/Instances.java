@@ -31,7 +31,7 @@ public class Instances extends BaseClient {
 
     public Instances(String token) {
         this.token = token;
-        ApiClient apiClient = ConfigurationUtils.getApiClient(token);
+        ApiClient apiClient = ConfigurationUtils.getApiClient(this.token);
         this.instancesApi = new InstancesApi(apiClient);
         this.instanceStepsApi = new InstanceStepsApi(apiClient);
     }
@@ -70,7 +70,7 @@ public class Instances extends BaseClient {
             internalInstance = this.instancesApi.getInstance(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new InstanceNotFoundException("Instance with id " + id + " not found", e);
             }
@@ -164,7 +164,7 @@ public class Instances extends BaseClient {
             internalInstances = this.instancesApi.findInstances(text, status, workflowId, null, owner, null, null, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             }
             throw new InternalErrorException("Unable to find instances", e);
         }
@@ -216,7 +216,7 @@ public class Instances extends BaseClient {
             internalInstance = this.instancesApi.startInstance(startInstanceRequest);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new WorkflowNotFoundException("Workflow with id " + workflowId + " not found");
             }
@@ -245,7 +245,7 @@ public class Instances extends BaseClient {
             internalInstance = this.instancesApi.stopInstance(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new InstanceNotFoundException("Instance with id " + id + " not found");
             }
@@ -274,7 +274,7 @@ public class Instances extends BaseClient {
             internalStep = getStepById(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new InstanceStepNotFoundException("Instance step with id " + id + " not found", e);
             }
@@ -302,7 +302,7 @@ public class Instances extends BaseClient {
             internalInstanceSteps = this.instanceStepsApi.findInstanceSteps(instanceId, null, null, null, null, null, null, null, null, null, null, null, null, null);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             }
             throw new InternalErrorException("Unable to get steps for instance " + instanceId, e);
         }
@@ -391,7 +391,7 @@ public class Instances extends BaseClient {
             internalInstanceStepsPage = this.instanceStepsApi.findInstanceSteps(wildcardInstanceId, text, null, workflowId, null, null, null, assignee, null, null, null, null, pageToken, pageSize);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             }
             throw new InternalErrorException("Unable to find steps", e);
         }
@@ -430,7 +430,7 @@ public class Instances extends BaseClient {
             internalStep = this.instanceStepsApi.completeStep(id, step.getInstanceId().toString(), completeStepRequest);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new InstanceStepNotFoundException("Step with id " + id + " not found", e);
             }

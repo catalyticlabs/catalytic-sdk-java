@@ -22,4 +22,13 @@ public class FilesPage extends Page {
     public void setFiles(List<File> files) {
         this.files = files;
     }
+
+    @Override
+    public String toString() {
+        return "FilesPage{" +
+                "files=" + files +
+                ", count=" + count +
+                ", nextPageToken='" + nextPageToken + '\'' +
+                '}';
+    }
 }

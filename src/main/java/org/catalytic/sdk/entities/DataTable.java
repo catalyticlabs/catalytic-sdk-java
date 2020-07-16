@@ -141,4 +141,23 @@ public class DataTable {
     public void setCellLimit(Integer cellLimit) {
         this.cellLimit = cellLimit;
     }
+
+    @Override
+    public String toString() {
+        return "DataTable{" +
+                "id=" + id +
+                ", referenceName='" + referenceName + '\'' +
+                ", name='" + name + '\'' +
+                ", teamName='" + teamName + '\'' +
+                ", description='" + description + '\'' +
+                ", columns=" + columns +
+                ", isArchived=" + isArchived +
+                ", type='" + type + '\'' +
+                ", visibility='" + visibility + '\'' +
+                ", visibleToUsers=" + visibleToUsers +
+                ", rowLimit=" + rowLimit +
+                ", columnLimit=" + columnLimit +
+                ", cellLimit=" + cellLimit +
+                '}';
+    }
 }

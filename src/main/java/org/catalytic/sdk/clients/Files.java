@@ -30,7 +30,7 @@ public class Files {
 
     public Files(String token) {
         this.token = token;
-        ApiClient apiClient = ConfigurationUtils.getApiClient(token);
+        ApiClient apiClient = ConfigurationUtils.getApiClient(this.token);
         this.filesApi = new FilesApi(apiClient);
     }
 
@@ -66,7 +66,7 @@ public class Files {
             internalFile = this.filesApi.getFile(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new FileNotFoundException("File meta data with id " + id + " not found", e);
             }
@@ -118,7 +118,7 @@ public class Files {
             file = this.filesApi.downloadFile(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
                 throw new FileNotFoundException("File with id " + id + " not found", e);
             }
@@ -163,7 +163,7 @@ public class Files {
             results = this.filesApi.uploadFiles(Arrays.asList(fileToUpload));
         } catch (ApiException e) {
             if (e.getCode() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(e);
             }
             throw new InternalErrorException("Unable to upload file", e);
         }

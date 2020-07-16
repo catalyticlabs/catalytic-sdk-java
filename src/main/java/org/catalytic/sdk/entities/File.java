@@ -102,4 +102,19 @@ public class File {
     public void setReferenceName(String referenceName) {
         this.referenceName = referenceName;
     }
+
+    @Override
+    public String toString() {
+        return "File{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", teamName='" + teamName + '\'' +
+                ", contentType='" + contentType + '\'' +
+                ", sizeInBytes=" + sizeInBytes +
+                ", displaySize='" + displaySize + '\'' +
+                ", isPublic=" + isPublic +
+                ", md5Hash='" + md5Hash + '\'' +
+                ", referenceName='" + referenceName + '\'' +
+                '}';
+    }
 }

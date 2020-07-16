@@ -156,4 +156,24 @@ public class Instance {
     public void setVisibleToUsers(List<String> visibleToUsers) {
         this.visibleToUsers = visibleToUsers;
     }
+
+    @Override
+    public String toString() {
+        return "Instance{" +
+                "id=" + id +
+                ", workflowId=" + workflowId +
+                ", name='" + name + '\'' +
+                ", teamName='" + teamName + '\'' +
+                ", description='" + description + '\'' +
+                ", category='" + category + '\'' +
+                ", owner='" + owner + '\'' +
+                ", createdBy='" + createdBy + '\'' +
+                ", steps=" + steps +
+                ", fields=" + fields +
+                ", status='" + status + '\'' +
+                ", fieldVisibility=" + fieldVisibility +
+                ", visibility=" + visibility +
+                ", visibleToUsers=" + visibleToUsers +
+                '}';
+    }
 }

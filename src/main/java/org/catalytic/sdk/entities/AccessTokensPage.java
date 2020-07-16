@@ -27,4 +27,13 @@ public class AccessTokensPage extends Page {
     public void setAccessTokens(List<AccessToken> credentials) {
         this.credentials = credentials;
     }
+
+    @Override
+    public String toString() {
+        return "AccessTokensPage{" +
+                "credentials=" + credentials +
+                ", count=" + count +
+                ", nextPageToken='" + nextPageToken + '\'' +
+                '}';
+    }
 }

@@ -113,4 +113,19 @@ public class Field {
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
+
+    @Override
+    public String toString() {
+        return "Field{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", referenceName='" + referenceName + '\'' +
+                ", description='" + description + '\'' +
+                ", position=" + position +
+                ", restrictions=" + restrictions +
+                ", fieldType='" + fieldType + '\'' +
+                ", value='" + value + '\'' +
+                ", defaultValue='" + defaultValue + '\'' +
+                '}';
+    }
 }

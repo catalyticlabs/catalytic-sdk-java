@@ -27,4 +27,13 @@ public class WorkflowsPage extends Page {
     public void setWorkflows(List<Workflow> workflows) {
         this.workflows = workflows;
     }
+
+    @Override
+    public String toString() {
+        return "WorkflowsPage{" +
+                "workflows=" + workflows +
+                ", count=" + count +
+                ", nextPageToken='" + nextPageToken + '\'' +
+                '}';
+    }
 }

@@ -90,4 +90,18 @@ public class AccessToken {
     public void setOwner(String owner) {
         this.owner = owner;
     }
+
+    @Override
+    public String toString() {
+        return "AccessToken{" +
+                "id=" + id +
+                ", domain='" + domain + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", token='" + token + '\'' +
+                ", secret='" + secret + '\'' +
+                ", environment='" + environment + '\'' +
+                ", owner='" + owner + '\'' +
+                '}';
+    }
 }

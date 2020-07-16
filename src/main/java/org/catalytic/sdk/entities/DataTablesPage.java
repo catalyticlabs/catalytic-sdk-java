@@ -22,4 +22,13 @@ public class DataTablesPage extends Page {
     public void setDataTables(List<DataTable> dataTables) {
         this.dataTables = dataTables;
     }
+
+    @Override
+    public String toString() {
+        return "DataTablesPage{" +
+                "dataTables=" + dataTables +
+                ", count=" + count +
+                ", nextPageToken='" + nextPageToken + '\'' +
+                '}';
+    }
 }

@@ -50,4 +50,14 @@ public class WorkflowExport {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
+
+    @Override
+    public String toString() {
+        return "WorkflowExport{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", fileId=" + fileId +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
+    }
 }

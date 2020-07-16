@@ -48,4 +48,14 @@ public class DataTableColumn {
     public void setRestrictions(FieldRestrictions restrictions) {
         this.restrictions = restrictions;
     }
+
+    @Override
+    public String toString() {
+        return "DataTableColumn{" +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", referenceName='" + referenceName + '\'' +
+                ", restrictions=" + restrictions +
+                '}';
+    }
 }
