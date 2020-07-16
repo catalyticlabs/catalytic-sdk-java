@@ -62,7 +62,7 @@ public class CatalyticClient {
         return dataTables;
     }
 
-    public AccessTokens credentials() {
+    public AccessTokens accessTokens() {
         return accessTokens;
     }
 

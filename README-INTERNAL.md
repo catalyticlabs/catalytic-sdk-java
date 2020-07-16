@@ -78,5 +78,6 @@ $ ./regenerate
 ## Publishing
 
 1. Update the version in `build.gradle`
+2. Build locally (before committing) so the generated `version` file gets updated
 2. Update `CHANGELOG.md`
 3. Create a release in github or a git tag manually
