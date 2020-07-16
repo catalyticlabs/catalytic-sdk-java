@@ -1,9 +1,6 @@
 package org.catalytic.sdk.clients;
 
-import org.catalytic.sdk.entities.Instance;
-import org.catalytic.sdk.entities.InstanceStep;
-import org.catalytic.sdk.entities.InstanceStepsPage;
-import org.catalytic.sdk.entities.InstancesPage;
+import org.catalytic.sdk.entities.*;
 import org.catalytic.sdk.exceptions.*;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.InstanceStepsApi;

@@ -75,26 +75,8 @@ $ ./regenerate
     }
     ```
 
-## Installation
+## Publishing
 
-### Maven users
-
-Add this dependency to your project's POM:
-
-```xml
-<dependency>
-  <groupId>org.catalytic</groupId>
-  <artifactId>sdk</artifactId>
-  <version>0.0.2</version>
-  <scope>compile</scope>
-</dependency>
-```
-
-### Gradle users
-
-Add this dependency to your project's build fileMetadata:
-
-```groovy
-compile "org.catalytic:sdk:0.0.2"
-```
-
+1. Update the version in `src/main/java/org/catalytic/sdk/version`
+2. Update `CHANGELOG.md`
+3. Create a release in github or a git tag manually
