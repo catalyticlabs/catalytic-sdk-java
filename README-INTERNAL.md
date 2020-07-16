@@ -77,6 +77,6 @@ $ ./regenerate
 
 ## Publishing
 
-1. Update the version in `src/main/java/org/catalytic/sdk/version`
+1. Update the version in `build.gradle`
 2. Update `CHANGELOG.md`
 3. Create a release in github or a git tag manually

@@ -2,10 +2,10 @@ package org.catalytic.sdk;
 
 import org.catalytic.sdk.generated.ApiClient;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * A convenience class so that we only create a singleton of ApiClient
@@ -39,10 +39,11 @@ public class ConfigurationUtils {
      * @return  The version of the sdk
      */
     private static String getVersion() {
-        Path path = Paths.get("src/main/java/org/catalytic/sdk/version");
         String version = null;
-        try {
-            version = Files.readAllLines(path).get(0);
+
+        try (InputStream in = ConfigurationUtils.class.getClassLoader().getResourceAsStream("version");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            version = reader.readLine();
         } catch (IOException e) {
             // The project should never build without if this happens so therefore just print a stacktrace
             e.printStackTrace();

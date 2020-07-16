@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1]
+### Fixed
+- Error being thrown when trying to read version
+
 ## [0.1.0]
 ### Added
 - AccessTokens.waitForApproval method
@@ -34,7 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial methods for Users, Workflows, DataTables, Files, and Instances.
 
-[Unreleased]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.1...HEAD
+[0.1.1]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.1...0.1.0
 [0.1.0]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.0...0.0.2
 [0.0.2]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.0.2...0.0.1
 [0.0.1]: https://github.com/catalyticlabs/catalytic-sdk-java/releases/tag/0.0.1
