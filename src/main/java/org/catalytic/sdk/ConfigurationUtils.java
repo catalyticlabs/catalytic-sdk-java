@@ -12,8 +12,6 @@ import java.io.InputStreamReader;
  */
 public class ConfigurationUtils {
 
-    private static ApiClient apiClient;
-
     /**
      * Creates a Configuration if one doesn't exist and returns it
      *
@@ -21,7 +19,7 @@ public class ConfigurationUtils {
      * @return          The Configuration object
      */
     public static ApiClient getApiClient(String token) {
-        apiClient = new ApiClient();
+        ApiClient apiClient = new ApiClient();
         apiClient.setUserAgent("Catalytic Java SDK/" + getVersion());
 
         if (token != null) {
