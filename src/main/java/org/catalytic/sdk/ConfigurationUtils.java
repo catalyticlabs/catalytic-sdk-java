@@ -20,7 +20,7 @@ public class ConfigurationUtils {
      */
     public static ApiClient getApiClient(String token) {
         ApiClient apiClient = new ApiClient();
-        apiClient.setUserAgent("Catalytic Java SDK/" + getVersion());
+        apiClient.setUserAgent("catalytic-sdk-java/" + getVersion());
 
         if (token != null) {
             apiClient.setBearerToken(token.trim());
