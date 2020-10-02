@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
 
 public class ApiClient {
 
-    private String basePath = "https://sdk.catalytic.com/v1.0.1-pre-35";
+    private String basePath = "https://sdk.catalytic.com/v1.0.3";
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
     private Map<String, String> defaultCookieMap = new HashMap<String, String>();
@@ -123,7 +123,7 @@ public class ApiClient {
     /**
      * Set base path
      *
-     * @param basePath Base path of the URL (e.g https://sdk.catalytic.com/v1.0.1-pre-35
+     * @param basePath Base path of the URL (e.g https://sdk.catalytic.com/v1.0.3
      * @return An instance of OkHttpClient
      */
     public ApiClient setBasePath(String basePath) {
@@ -1191,6 +1191,21 @@ public class ApiClient {
     }
 
     /**
+     * Helper method to set token for HTTP bearer authentication.
+     * @param bearerToken the token
+     */
+    public void setBearerToken(String bearerToken) {
+        for (Authentication auth : authentications.values()) {
+            if (auth instanceof HttpBearerAuth) {
+                ((HttpBearerAuth) auth).setBearerToken(bearerToken);
+                return;
+            }
+        }
+        throw new RuntimeException("No Bearer authentication configured!");
+    }
+
+
+    /**
      * Build a multipart (file uploading) request body with the given form parameters,
      * which could contain text fields and file fields.
      *
@@ -1337,19 +1352,5 @@ public class ApiClient {
         } catch (IOException e) {
             throw new AssertionError(e);
         }
-    }
-
-    /**
-     * Helper method to set token for HTTP bearer authentication.
-     * @param bearerToken the token
-     */
-    public void setBearerToken(String bearerToken) {
-        for (Authentication auth : authentications.values()) {
-            if (auth instanceof HttpBearerAuth) {
-                ((HttpBearerAuth) auth).setBearerToken(bearerToken);
-                return;
-            }
-        }
-        throw new RuntimeException("No Bearer authentication configured!");
     }
 }

@@ -25,17 +25,18 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.catalytic.sdk.generated.model.FileMetadata;
+import org.catalytic.sdk.generated.model.Integration;
 import org.catalytic.sdk.generated.model.PagingOptions;
 
 /**
- * FileMetadataPage
+ * A page of Integrations returned from a FindAync request
  */
+@ApiModel(description = "A page of Integrations returned from a FindAync request")
 
-public class FileMetadataPage {
-  public static final String SERIALIZED_NAME_FILES = "files";
-  @SerializedName(SERIALIZED_NAME_FILES)
-  private List<FileMetadata> files = null;
+public class IntegrationsPage {
+  public static final String SERIALIZED_NAME_INTEGRATIONS = "integrations";
+  @SerializedName(SERIALIZED_NAME_INTEGRATIONS)
+  private List<Integration> integrations = null;
 
   public static final String SERIALIZED_NAME_NEXT_PAGE_OPTIONS = "nextPageOptions";
   @SerializedName(SERIALIZED_NAME_NEXT_PAGE_OPTIONS)
@@ -50,38 +51,38 @@ public class FileMetadataPage {
   private Integer count;
 
 
-  public FileMetadataPage files(List<FileMetadata> files) {
+  public IntegrationsPage integrations(List<Integration> integrations) {
     
-    this.files = files;
+    this.integrations = integrations;
     return this;
   }
 
-  public FileMetadataPage addFilesItem(FileMetadata filesItem) {
-    if (this.files == null) {
-      this.files = new ArrayList<>();
+  public IntegrationsPage addIntegrationsItem(Integration integrationsItem) {
+    if (this.integrations == null) {
+      this.integrations = new ArrayList<>();
     }
-    this.files.add(filesItem);
+    this.integrations.add(integrationsItem);
     return this;
   }
 
    /**
-   * A Collection of items with Dictionaries keyed by both ID and ReferenceName
-   * @return files
+   * The list of Integrations
+   * @return integrations
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "A Collection of items with Dictionaries keyed by both ID and ReferenceName")
+  @ApiModelProperty(value = "The list of Integrations")
 
-  public List<FileMetadata> getFiles() {
-    return files;
+  public List<Integration> getIntegrations() {
+    return integrations;
   }
 
 
-  public void setFiles(List<FileMetadata> files) {
-    this.files = files;
+  public void setIntegrations(List<Integration> integrations) {
+    this.integrations = integrations;
   }
 
 
-  public FileMetadataPage nextPageOptions(PagingOptions nextPageOptions) {
+  public IntegrationsPage nextPageOptions(PagingOptions nextPageOptions) {
     
     this.nextPageOptions = nextPageOptions;
     return this;
@@ -104,7 +105,7 @@ public class FileMetadataPage {
   }
 
 
-  public FileMetadataPage nextPageToken(String nextPageToken) {
+  public IntegrationsPage nextPageToken(String nextPageToken) {
     
     this.nextPageToken = nextPageToken;
     return this;
@@ -127,7 +128,7 @@ public class FileMetadataPage {
   }
 
 
-  public FileMetadataPage count(Integer count) {
+  public IntegrationsPage count(Integer count) {
     
     this.count = count;
     return this;
@@ -158,24 +159,24 @@ public class FileMetadataPage {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    FileMetadataPage fileMetadataPage = (FileMetadataPage) o;
-    return Objects.equals(this.files, fileMetadataPage.files) &&
-        Objects.equals(this.nextPageOptions, fileMetadataPage.nextPageOptions) &&
-        Objects.equals(this.nextPageToken, fileMetadataPage.nextPageToken) &&
-        Objects.equals(this.count, fileMetadataPage.count);
+    IntegrationsPage integrationsPage = (IntegrationsPage) o;
+    return Objects.equals(this.integrations, integrationsPage.integrations) &&
+        Objects.equals(this.nextPageOptions, integrationsPage.nextPageOptions) &&
+        Objects.equals(this.nextPageToken, integrationsPage.nextPageToken) &&
+        Objects.equals(this.count, integrationsPage.count);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(files, nextPageOptions, nextPageToken, count);
+    return Objects.hash(integrations, nextPageOptions, nextPageToken, count);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class FileMetadataPage {\n");
-    sb.append("    files: ").append(toIndentedString(files)).append("\n");
+    sb.append("class IntegrationsPage {\n");
+    sb.append("    integrations: ").append(toIndentedString(integrations)).append("\n");
     sb.append("    nextPageOptions: ").append(toIndentedString(nextPageOptions)).append("\n");
     sb.append("    nextPageToken: ").append(toIndentedString(nextPageToken)).append("\n");
     sb.append("    count: ").append(toIndentedString(count)).append("\n");

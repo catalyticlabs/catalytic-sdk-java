@@ -1,6 +1,7 @@
 package org.catalytic.sdk.clients;
 
 import org.catalytic.sdk.entities.Field;
+import org.catalytic.sdk.generated.model.FieldUpdateRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,5 +52,26 @@ public class BaseClient {
                 internalField.getDefaultValue()
         );
         return field;
+    }
+
+    /**
+     * Create FieldUpdateRequest's from Fields
+     *
+     * @param fields    The fields to create FieldUpdateRequest's from
+     * @return          FieldUpdateRequest's created from Field's
+     */
+    List<FieldUpdateRequest> createFieldUpdateRequests(List<Field> fields) {
+        List<FieldUpdateRequest> fieldUpdateRequests = new ArrayList<>();
+
+        if (fields != null) {
+            for (Field field : fields) {
+                FieldUpdateRequest fieldUpdateRequest = new FieldUpdateRequest();
+                fieldUpdateRequest.setName(field.getName());
+                fieldUpdateRequest.setReferenceName(field.getReferenceName());
+                fieldUpdateRequest.setValue(field.getValue());
+                fieldUpdateRequests.add(fieldUpdateRequest);
+            }
+        }
+        return fieldUpdateRequests;
     }
 }

@@ -25,48 +25,16 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * Represents the types of data that may be stored in Fields.
+ * Type of authentication used by an Integration Definition
  */
-@JsonAdapter(FieldType.Adapter.class)
-public enum FieldType {
+@JsonAdapter(IntegrationType.Adapter.class)
+public enum IntegrationType {
   
-  UNDEFINED("undefined"),
-  
-  TEXT("text"),
-  
-  INTEGER("integer"),
-  
-  DECIMAL("decimal"),
-  
-  DATE("date"),
-  
-  DATETIME("dateTime"),
-  
-  JSON("json"),
-  
-  BOOL("bool"),
-  
-  SINGLECHOICE("singleChoice"),
-  
-  MULTIPLECHOICE("multipleChoice"),
-  
-  INSTRUCTIONS("instructions"),
-  
-  FILE("file"),
-  
-  TABLE("table"),
-  
-  WORKFLOW("workflow"),
-  
-  INSTANCE("instance"),
-  
-  USER("user"),
-  
-  PASSWORD("password");
+  OAUTH2("oAuth2");
 
   private String value;
 
-  FieldType(String value) {
+  IntegrationType(String value) {
     this.value = value;
   }
 
@@ -79,8 +47,8 @@ public enum FieldType {
     return String.valueOf(value);
   }
 
-  public static FieldType fromValue(String value) {
-    for (FieldType b : FieldType.values()) {
+  public static IntegrationType fromValue(String value) {
+    for (IntegrationType b : IntegrationType.values()) {
       if (b.value.equals(value)) {
         return b;
       }
@@ -88,16 +56,16 @@ public enum FieldType {
     throw new IllegalArgumentException("Unexpected value '" + value + "'");
   }
 
-  public static class Adapter extends TypeAdapter<FieldType> {
+  public static class Adapter extends TypeAdapter<IntegrationType> {
     @Override
-    public void write(final JsonWriter jsonWriter, final FieldType enumeration) throws IOException {
+    public void write(final JsonWriter jsonWriter, final IntegrationType enumeration) throws IOException {
       jsonWriter.value(enumeration.getValue());
     }
 
     @Override
-    public FieldType read(final JsonReader jsonReader) throws IOException {
+    public IntegrationType read(final JsonReader jsonReader) throws IOException {
       String value = jsonReader.nextString();
-      return FieldType.fromValue(value);
+      return IntegrationType.fromValue(value);
     }
   }
 }

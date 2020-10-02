@@ -5,8 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Integrations Client
+- Get Integration method
+- Find Integrations method
+- Create Integration method
+- Update Integration method
+- Get Integration Connection method
+- Create Integration Connection method
+- Delete Integration Connection method
 
 ## [0.1.5]
+### Changed
+- Updated user agent string
 
 ## [0.1.4]
 ### Fixed
@@ -53,11 +64,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial methods for Users, Workflows, DataTables, Files, and Instances.
 
 [Unreleased]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.5...HEAD
-[0.1.5]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.5...0.1.4
-[0.1.4]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.4...0.1.3
-[0.1.3]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.3...0.1.2
-[0.1.2]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.2...0.1.1
-[0.1.1]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.1...0.1.0
-[0.1.0]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.0...0.0.2
-[0.0.2]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.0.2...0.0.1
+[0.1.5]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.4...0.1.5
+[0.1.4]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.3...0.1.4
+[0.1.3]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.2...0.1.3
+[0.1.2]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.1...0.1.2
+[0.1.1]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.1.0...0.1.1
+[0.1.0]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.0.2...0.1.0
+[0.0.2]: https://github.com/catalyticlabs/catalytic-sdk-java/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/catalyticlabs/catalytic-sdk-java/releases/tag/0.0.1

@@ -49,6 +49,10 @@ public class Field {
   @SerializedName(SERIALIZED_NAME_DESCRIPTION)
   private String description;
 
+  public static final String SERIALIZED_NAME_EXAMPLE = "example";
+  @SerializedName(SERIALIZED_NAME_EXAMPLE)
+  private String example;
+
   public static final String SERIALIZED_NAME_POSITION = "position";
   @SerializedName(SERIALIZED_NAME_POSITION)
   private Integer position;
@@ -64,6 +68,10 @@ public class Field {
   public static final String SERIALIZED_NAME_VALUE = "value";
   @SerializedName(SERIALIZED_NAME_VALUE)
   private String value;
+
+  public static final String SERIALIZED_NAME_TEMPLATE_VALUE = "templateValue";
+  @SerializedName(SERIALIZED_NAME_TEMPLATE_VALUE)
+  private String templateValue;
 
   public static final String SERIALIZED_NAME_DEFAULT_VALUE = "defaultValue";
   @SerializedName(SERIALIZED_NAME_DEFAULT_VALUE)
@@ -162,6 +170,29 @@ public class Field {
   }
 
 
+  public Field example(String example) {
+    
+    this.example = example;
+    return this;
+  }
+
+   /**
+   * An example of possible values for this field.
+   * @return example
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "An example of possible values for this field.")
+
+  public String getExample() {
+    return example;
+  }
+
+
+  public void setExample(String example) {
+    this.example = example;
+  }
+
+
   public Field position(Integer position) {
     
     this.position = position;
@@ -254,6 +285,29 @@ public class Field {
   }
 
 
+  public Field templateValue(String templateValue) {
+    
+    this.templateValue = templateValue;
+    return this;
+  }
+
+   /**
+   * The template expression that will become the field value  once it is evaluated
+   * @return templateValue
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "The template expression that will become the field value  once it is evaluated")
+
+  public String getTemplateValue() {
+    return templateValue;
+  }
+
+
+  public void setTemplateValue(String templateValue) {
+    this.templateValue = templateValue;
+  }
+
+
   public Field defaultValue(String defaultValue) {
     
     this.defaultValue = defaultValue;
@@ -290,16 +344,18 @@ public class Field {
         Objects.equals(this.name, field.name) &&
         Objects.equals(this.referenceName, field.referenceName) &&
         Objects.equals(this.description, field.description) &&
+        Objects.equals(this.example, field.example) &&
         Objects.equals(this.position, field.position) &&
         Objects.equals(this.restrictions, field.restrictions) &&
         Objects.equals(this.fieldType, field.fieldType) &&
         Objects.equals(this.value, field.value) &&
+        Objects.equals(this.templateValue, field.templateValue) &&
         Objects.equals(this.defaultValue, field.defaultValue);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, referenceName, description, position, restrictions, fieldType, value, defaultValue);
+    return Objects.hash(id, name, referenceName, description, example, position, restrictions, fieldType, value, templateValue, defaultValue);
   }
 
 
@@ -311,10 +367,12 @@ public class Field {
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    referenceName: ").append(toIndentedString(referenceName)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
+    sb.append("    example: ").append(toIndentedString(example)).append("\n");
     sb.append("    position: ").append(toIndentedString(position)).append("\n");
     sb.append("    restrictions: ").append(toIndentedString(restrictions)).append("\n");
     sb.append("    fieldType: ").append(toIndentedString(fieldType)).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
+    sb.append("    templateValue: ").append(toIndentedString(templateValue)).append("\n");
     sb.append("    defaultValue: ").append(toIndentedString(defaultValue)).append("\n");
     sb.append("}");
     return sb.toString();

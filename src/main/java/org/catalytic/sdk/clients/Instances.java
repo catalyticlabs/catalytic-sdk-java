@@ -463,27 +463,6 @@ public class Instances extends BaseClient {
     }
 
     /**
-     * Create FieldUpdateRequest's from Fields
-     *
-     * @param fields    The fields to create FieldUpdateRequest's from
-     * @return          FieldUpdateRequest's created from Field's
-     */
-    private List<FieldUpdateRequest> createFieldUpdateRequests (List<Field> fields) {
-        List<FieldUpdateRequest> fieldUpdateRequests = new ArrayList<>();
-
-        if (fields != null) {
-            for (Field field : fields) {
-                FieldUpdateRequest fieldUpdateRequest = new FieldUpdateRequest();
-                fieldUpdateRequest.setName(field.getName());
-                fieldUpdateRequest.setReferenceName(field.getReferenceName());
-                fieldUpdateRequest.setValue(field.getValue());
-                fieldUpdateRequests.add(fieldUpdateRequest);
-            }
-        }
-        return fieldUpdateRequests;
-    }
-
-    /**
      * Get an instance step by its id
      *
      * @param id            The id of the step to get
