@@ -5,7 +5,7 @@ apply plugin: 'maven'
 apply plugin: 'jacoco'
 
 group = 'org.catalytic'
-version = '0.1.5'
+version = '1.0.0'
 
 buildscript {
     repositories {

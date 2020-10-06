@@ -325,8 +325,8 @@ public class Integrations extends BaseClient {
     /**
      * Create an Integration Connection
      *
-     * @param name                          The name to give to the Integration
      * @param integrationId                 The id of the Integration to create a connection from
+     * @param name                          The name to give to the Integration
      * @param connectionParams              The connection params to use when creating the Integration Connection
      * @return                              The newly created Integration
      * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
@@ -334,7 +334,7 @@ public class Integrations extends BaseClient {
      * @throws InternalErrorException       If any error creating Integrations
      * @throws UnauthorizedException        If unauthorized
      */
-    public IntegrationConnection createIntegrationConnection(String name, String integrationId, List<Field> connectionParams) throws AccessTokenNotFoundException, UnauthorizedException, InternalErrorException, IntegrationNotFoundException {
+    public IntegrationConnection createIntegrationConnection(String integrationId, String name, List<Field> connectionParams) throws AccessTokenNotFoundException, UnauthorizedException, InternalErrorException, IntegrationNotFoundException {
         ClientHelpers.verifyAccessTokenExists(this.token);
 
         List<FieldUpdateRequest> connectionParamRequest = createFieldUpdateRequests(connectionParams);
@@ -346,7 +346,7 @@ public class Integrations extends BaseClient {
         org.catalytic.sdk.generated.model.IntegrationConnection internalIntegrationConnection;
 
         try {
-            log.debug("Creating Integration Connection with name: {}, and id: ", name, integrationId);
+            log.debug("Creating Integration Connection with integrationId: {}, and name: ", integrationId, name);
             internalIntegrationConnection = this.integrationsApi.createIntegrationConnection(integrationId, request);
         } catch (ApiException e) {
             if (e.getCode() == 401) {

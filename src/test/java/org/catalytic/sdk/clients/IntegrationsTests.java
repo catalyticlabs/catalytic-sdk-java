@@ -554,7 +554,7 @@ public class IntegrationsTests {
     @Test(expected = AccessTokenNotFoundException.class)
     public void createIntegrationConnection_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
         Integrations integrationsClient = new Integrations(null);
-        integrationsClient.createIntegrationConnection("My connection", "1234", null);
+        integrationsClient.createIntegrationConnection("1234", "My connection", null);
     }
 
     @Test(expected = IntegrationNotFoundException.class)
@@ -577,7 +577,7 @@ public class IntegrationsTests {
 
         List<Field> connectionParams = new ArrayList<>();
         connectionParams.add(new Field("foo", "bar"));
-        integrationsClient.createIntegrationConnection("My connection", "2b4362d6-5e46-494c-846f-c53184c8d124", connectionParams);
+        integrationsClient.createIntegrationConnection("2b4362d6-5e46-494c-846f-c53184c8d124", "My connection", connectionParams);
     }
 
     @Test(expected = InternalErrorException.class)
@@ -600,7 +600,7 @@ public class IntegrationsTests {
 
         List<Field> connectionParams = new ArrayList<>();
         connectionParams.add(new Field("foo", "bar"));
-        integrationsClient.createIntegrationConnection("My connection", "2b4362d6-5e46-494c-846f-c53184c8d124", connectionParams);
+        integrationsClient.createIntegrationConnection("2b4362d6-5e46-494c-846f-c53184c8d124", "My connection", connectionParams);
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -623,7 +623,7 @@ public class IntegrationsTests {
 
         List<Field> connectionParams = new ArrayList<>();
         connectionParams.add(new Field("foo", "bar"));
-        integrationsClient.createIntegrationConnection("My connection", "2b4362d6-5e46-494c-846f-c53184c8d124", connectionParams);
+        integrationsClient.createIntegrationConnection("2b4362d6-5e46-494c-846f-c53184c8d124", "My connection", connectionParams);
     }
 
     @Test
@@ -652,7 +652,7 @@ public class IntegrationsTests {
 
         List<Field> connectionParams = new ArrayList<>();
         connectionParams.add(new Field("foo", "bar"));
-        IntegrationConnection integrationConnection = integrationsClient.createIntegrationConnection("My connection", "2b4362d6-5e46-494c-846f-c53184c8d124", connectionParams);
+        IntegrationConnection integrationConnection = integrationsClient.createIntegrationConnection("2b4362d6-5e46-494c-846f-c53184c8d124", "My connection", connectionParams);
         assertThat(integrationConnection).isNotNull();
         assertThat(integrationConnection.getId()).isEqualTo("ac14952a-a331-457c-ac7d-9a284258b65a");
         assertThat(integrationConnection.getIntegrationId()).isEqualTo("2b4362d6-5e46-494c-846f-c53184c8d124");
