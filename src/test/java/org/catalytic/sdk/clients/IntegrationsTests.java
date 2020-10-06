@@ -562,6 +562,7 @@ public class IntegrationsTests {
         List<FieldUpdateRequest> internalConnectionParams = new ArrayList<>();
         FieldUpdateRequest fieldUpdateRequest = new FieldUpdateRequest();
         fieldUpdateRequest.setName("foo");
+        fieldUpdateRequest.setReferenceName("foo");
         fieldUpdateRequest.setValue("bar");
         internalConnectionParams.add(fieldUpdateRequest);
 
@@ -584,6 +585,7 @@ public class IntegrationsTests {
         List<FieldUpdateRequest> internalConnectionParams = new ArrayList<>();
         FieldUpdateRequest fieldUpdateRequest = new FieldUpdateRequest();
         fieldUpdateRequest.setName("foo");
+        fieldUpdateRequest.setReferenceName("foo");
         fieldUpdateRequest.setValue("bar");
         internalConnectionParams.add(fieldUpdateRequest);
 
@@ -606,6 +608,7 @@ public class IntegrationsTests {
         List<FieldUpdateRequest> internalConnectionParams = new ArrayList<>();
         FieldUpdateRequest fieldUpdateRequest = new FieldUpdateRequest();
         fieldUpdateRequest.setName("foo");
+        fieldUpdateRequest.setReferenceName("foo");
         fieldUpdateRequest.setValue("bar");
         internalConnectionParams.add(fieldUpdateRequest);
 
@@ -628,6 +631,7 @@ public class IntegrationsTests {
         List<FieldUpdateRequest> internalConnectionParams = new ArrayList<>();
         FieldUpdateRequest fieldUpdateRequest = new FieldUpdateRequest();
         fieldUpdateRequest.setName("foo");
+        fieldUpdateRequest.setReferenceName("foo");
         fieldUpdateRequest.setValue("bar");
         internalConnectionParams.add(fieldUpdateRequest);
 

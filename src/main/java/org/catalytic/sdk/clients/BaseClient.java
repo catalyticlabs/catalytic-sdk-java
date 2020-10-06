@@ -67,7 +67,7 @@ public class BaseClient {
             for (Field field : fields) {
                 FieldUpdateRequest fieldUpdateRequest = new FieldUpdateRequest();
                 fieldUpdateRequest.setName(field.getName());
-                fieldUpdateRequest.setReferenceName(field.getReferenceName());
+                fieldUpdateRequest.setReferenceName(field.getName());
                 fieldUpdateRequest.setValue(field.getValue());
                 fieldUpdateRequests.add(fieldUpdateRequest);
             }
