@@ -17,6 +17,7 @@ public class CatalyticClient {
     private Files files;
     private DataTables dataTables;
     private AccessTokens accessTokens;
+    private Integrations integrations;
 
     /**
      * Instantiate this instance of CatalyticClient
@@ -66,6 +67,10 @@ public class CatalyticClient {
         return accessTokens;
     }
 
+    public Integrations integrations() {
+        return integrations;
+    }
+
     /**
      * Get the AccessToken used to instantiate this instance of CatalyticClient
      *
@@ -95,5 +100,6 @@ public class CatalyticClient {
         this.files = new Files(this.token);
         this.dataTables = new DataTables(this.token);
         this.accessTokens = new AccessTokens(this.token);
+        this.integrations = new Integrations(this.token);
     }
 }
