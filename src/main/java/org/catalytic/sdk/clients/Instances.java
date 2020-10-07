@@ -507,6 +507,8 @@ public class Instances extends BaseClient {
                 steps,
                 fields,
                 status,
+                internalInstance.getStartDate(),
+                internalInstance.getEndDate(),
                 internalInstance.getFieldVisibility(),
                 internalInstance.getVisibility(),
                 internalInstance.getVisibleToUsers()
@@ -544,6 +546,8 @@ public class Instances extends BaseClient {
             internalInstanceStep.getDescription(),
             status,
             internalInstanceStep.getAssignedTo(),
+            internalInstanceStep.getStartDate(),
+            internalInstanceStep.getEndDate(),
             outputFields
         );
         return instanceStep;

@@ -3,6 +3,7 @@ package org.catalytic.sdk.entities;
 import org.catalytic.sdk.generated.model.FieldVisibility;
 import org.catalytic.sdk.generated.model.InstanceVisibilty;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,13 +23,15 @@ public class Instance {
     private List<InstanceStep> steps;
     private List<Field> fields;
     private String status;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
     private FieldVisibility fieldVisibility;
     private InstanceVisibilty visibility;
     private List<String> visibleToUsers;
 
     public Instance() {}
 
-    public Instance(UUID id, UUID workflowId, String name, String teamName, String description, String category, String owner, String createdBy, List<InstanceStep> steps, List<Field> fields, String status, FieldVisibility fieldVisibility, InstanceVisibilty visibility, List<String> visibleToUsers) {
+    public Instance(UUID id, UUID workflowId, String name, String teamName, String description, String category, String owner, String createdBy, List<InstanceStep> steps, List<Field> fields, String status, OffsetDateTime startDate, OffsetDateTime endDate, FieldVisibility fieldVisibility, InstanceVisibilty visibility, List<String> visibleToUsers) {
         this.id = id;
         this.workflowId = workflowId;
         this.name = name;
@@ -40,6 +43,8 @@ public class Instance {
         this.steps = steps;
         this.fields = fields;
         this.status = status;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.fieldVisibility = fieldVisibility;
         this.visibility = visibility;
         this.visibleToUsers = visibleToUsers;
@@ -133,6 +138,22 @@ public class Instance {
         this.status = status;
     }
 
+    public OffsetDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(OffsetDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public OffsetDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(OffsetDateTime endDate) {
+        this.endDate = endDate;
+    }
+
     public FieldVisibility getFieldVisibility() {
         return fieldVisibility;
     }
@@ -171,6 +192,8 @@ public class Instance {
                 ", steps=" + steps +
                 ", fields=" + fields +
                 ", status='" + status + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
                 ", fieldVisibility=" + fieldVisibility +
                 ", visibility=" + visibility +
                 ", visibleToUsers=" + visibleToUsers +

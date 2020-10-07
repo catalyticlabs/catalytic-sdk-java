@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 10-6-2020
+## [1.0.0] - 10-7-2020
 ### Added
 - Integrations Client
 - Get Integration method
@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Get Integration Connection method
 - Create Integration Connection method
 - Delete Integration Connection method
+- getStartDate and getEndDate methods to Instance entity
+- getStartDate and getEndDate methods to InstanceStep entity
 
 ## [0.1.5]
 ### Changed

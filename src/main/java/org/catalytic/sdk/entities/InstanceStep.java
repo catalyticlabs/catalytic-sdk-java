@@ -1,5 +1,6 @@
 package org.catalytic.sdk.entities;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,11 +18,13 @@ public class InstanceStep {
     private String description;
     private String status;
     private String assignedTo;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
     private List<Field> outputFields;
 
     public InstanceStep() {}
 
-    public InstanceStep(UUID id, UUID instanceId, UUID workflowId, String name, String teamName, Integer position, String description, String status, String assignedTo, List<Field> outputFields) {
+    public InstanceStep(UUID id, UUID instanceId, UUID workflowId, String name, String teamName, Integer position, String description, String status, String assignedTo, OffsetDateTime startDate, OffsetDateTime endDate, List<Field> outputFields) {
         this.id = id;
         this.instanceId = instanceId;
         this.workflowId = workflowId;
@@ -31,6 +34,8 @@ public class InstanceStep {
         this.description = description;
         this.status = status;
         this.assignedTo = assignedTo;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.outputFields = outputFields;
     }
 
@@ -106,6 +111,22 @@ public class InstanceStep {
         this.assignedTo = assignedTo;
     }
 
+    public OffsetDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(OffsetDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public OffsetDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(OffsetDateTime endDate) {
+        this.endDate = endDate;
+    }
+
     public List<Field> getOutputFields() {
         return outputFields;
     }
@@ -126,6 +147,8 @@ public class InstanceStep {
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
                 ", assignedTo='" + assignedTo + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
                 ", outputFields=" + outputFields +
                 '}';
     }
