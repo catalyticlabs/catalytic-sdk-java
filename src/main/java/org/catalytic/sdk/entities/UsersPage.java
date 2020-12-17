@@ -23,6 +23,20 @@ public class UsersPage extends Page {
         this.users = users;
     }
 
+    /**
+     * Add a list of users.
+     *
+     * Note that this is different than setting a list of users.
+     *
+     * @param users         The users to add
+     * @param nextPageToken The next page token
+     */
+    public void addUsers(List<User> users, String nextPageToken) {
+        this.users.addAll(users);
+        this.count = this.count + users.size();
+        this.nextPageToken = nextPageToken;
+    }
+
     @Override
     public String toString() {
         return "UsersPage{" +

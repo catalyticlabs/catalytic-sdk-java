@@ -1,18 +1,20 @@
 package org.catalytic.sdk.entities;
 
+import org.catalytic.sdk.generated.model.FieldType;
+
 /**
  * A dataTable column object
  */
 public class DataTableColumn {
 
     private String name;
-    private String type;
+    private org.catalytic.sdk.generated.model.FieldType fieldType;
     private String referenceName;
     private FieldRestrictions restrictions;
 
-    public DataTableColumn(String name, String type, String referenceName, FieldRestrictions restrictions) {
+    public DataTableColumn(String name, org.catalytic.sdk.generated.model.FieldType fieldType, String referenceName, FieldRestrictions restrictions) {
         this.name = name;
-        this.type = type;
+        this.fieldType = fieldType;
         this.referenceName = referenceName;
         this.restrictions = restrictions;
     }
@@ -25,12 +27,12 @@ public class DataTableColumn {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public org.catalytic.sdk.generated.model.FieldType getFieldType() {
+        return fieldType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setFieldType(FieldType fieldType) {
+        this.fieldType = fieldType;
     }
 
     public String getReferenceName() {
@@ -53,7 +55,7 @@ public class DataTableColumn {
     public String toString() {
         return "DataTableColumn{" +
                 "name='" + name + '\'' +
-                ", type='" + type + '\'' +
+                ", fieldType=" + fieldType +
                 ", referenceName='" + referenceName + '\'' +
                 ", restrictions=" + restrictions +
                 '}';

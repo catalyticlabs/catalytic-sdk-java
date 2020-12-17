@@ -50,6 +50,25 @@ public class Instance {
         this.visibleToUsers = visibleToUsers;
     }
 
+    public Instance(UUID id, UUID workflowId, String name, String teamName, String description, String category, String owner, String createdBy, List<Field> fields, String status, OffsetDateTime startDate, OffsetDateTime endDate, FieldVisibility fieldVisibility, InstanceVisibilty visibility, List<String> visibleToUsers) {
+        this.id = id;
+        this.workflowId = workflowId;
+        this.name = name;
+        this.teamName = teamName;
+        this.description = description;
+        this.category = category;
+        this.owner = owner;
+        this.createdBy = createdBy;
+//        this.steps = steps;
+        this.fields = fields;
+        this.status = status;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.fieldVisibility = fieldVisibility;
+        this.visibility = visibility;
+        this.visibleToUsers = visibleToUsers;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -114,10 +133,12 @@ public class Instance {
         this.createdBy = createdBy;
     }
 
+    @Deprecated
     public List<InstanceStep> getSteps() {
         return steps;
     }
 
+    @Deprecated
     public void setSteps(List<InstanceStep> steps) {
         this.steps = steps;
     }

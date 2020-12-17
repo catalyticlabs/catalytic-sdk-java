@@ -8,6 +8,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class CatalyticClientTests {
 
     @Test
+    // NOTE: THIS TEST WILL FAIL LOCALLY IF YOU HAVE AN ACCESS TOKEN IN ~/.catalytic/tokens/default
     public void itShouldHaveNullAccessToken() throws Exception {
         CatalyticClient catalytic = new CatalyticClient();
         assertThat(catalytic.getAccessToken()).isNull();

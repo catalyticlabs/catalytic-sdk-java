@@ -14,10 +14,12 @@ public enum FieldType {
     MULTIPLECHOICE("multipleChoice"),
     INSTRUCTIONS("instructions"),
     FILE("file"),
+    FILES("files"),
     TABLE("table"),
     WORKFLOW("workflow"),
     INSTANCE("instance"),
-    USER("user");
+    USER("user"),
+    PASSWORD("password");
 
     private String value;
 

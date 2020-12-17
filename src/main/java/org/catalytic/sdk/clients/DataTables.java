@@ -419,9 +419,10 @@ public class DataTables {
                 internalColumn.getRestrictions().getValueRequired()
         );
 
+
         DataTableColumn column = new DataTableColumn(
                 internalColumn.getName(),
-                internalColumn.getType().getValue(),
+                internalColumn.getFieldType(),
                 internalColumn.getReferenceName(),
                 restrictions
         );

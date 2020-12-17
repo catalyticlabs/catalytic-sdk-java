@@ -1,7 +1,9 @@
 package org.catalytic.sdk.clients;
 
 import org.catalytic.sdk.entities.Field;
+import org.catalytic.sdk.generated.model.DateTimeOffsetNullableRange;
 import org.catalytic.sdk.generated.model.FieldUpdateRequest;
+import org.catalytic.sdk.search.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,5 +75,109 @@ public class BaseClient {
             }
         }
         return fieldUpdateRequests;
+    }
+
+    /**
+     * Create an internal GuidSearchExpression from an external GuidSearchExpression
+     *
+     * @param guidSearchExpression  The external GuidSearchExpression to create an internal one from
+     * @return                      An internal GuidSearchExpression
+     */
+    org.catalytic.sdk.generated.model.GuidSearchExpression createInternalGuidSearchExpression(GuidSearchExpression guidSearchExpression) {
+        org.catalytic.sdk.generated.model.GuidSearchExpression internalGuidSearchExpression = null;
+
+        if (guidSearchExpression != null) {
+            internalGuidSearchExpression = new org.catalytic.sdk.generated.model.GuidSearchExpression();
+            internalGuidSearchExpression.setIsEqualTo(guidSearchExpression.getIsEqualTo());
+        }
+        return internalGuidSearchExpression;
+    }
+
+    /**
+     * Create an internal StringSearchExpression from an external StringSearchExpression
+     *
+     * @param stringSearchExpression    The external StringSearchExpression to create an internal one from
+     * @return                          An internal StringSearchExpression
+     */
+    org.catalytic.sdk.generated.model.StringSearchExpression createInternalStringSearchExpression(StringSearchExpression stringSearchExpression) {
+        org.catalytic.sdk.generated.model.StringSearchExpression internalStringSearchExpression = null;
+        
+        if (stringSearchExpression != null) {
+            internalStringSearchExpression = new org.catalytic.sdk.generated.model.StringSearchExpression();
+            internalStringSearchExpression.setIsEqualTo(stringSearchExpression.getIsEqualTo());
+            internalStringSearchExpression.setContains(stringSearchExpression.getContains());
+            org.catalytic.sdk.generated.model.StringRange internalStringRange = createInternalStringRange(stringSearchExpression.getBetween());
+            internalStringSearchExpression.setBetween(internalStringRange);
+        }
+        return internalStringSearchExpression;
+    }
+
+    /**
+     * Create an internal BooleanSearchExpression from an external BoolSearchExpression
+     *
+     * @param booleanSearchExpression   The external BooleanSearchExpression to create an internal one from
+     * @return                          An internal BooleanSearchExpression
+     */
+    org.catalytic.sdk.generated.model.BoolSearchExpression createInternalBooleanSearchExpression(BooleanSearchExpression booleanSearchExpression) {
+        org.catalytic.sdk.generated.model.BoolSearchExpression internalBooleanSearchExpression = null;
+
+        if (booleanSearchExpression != null) {
+            internalBooleanSearchExpression = new org.catalytic.sdk.generated.model.BoolSearchExpression();
+            internalBooleanSearchExpression.setIsEqualTo(booleanSearchExpression.getIsEqualTo());
+        }
+        return internalBooleanSearchExpression;
+    }
+
+    /**
+     * Create an internal DateTimeSearchExpression from an external DateTimeSearchExpression
+     *
+     * @param dateTimeSearchExpression  The external DateTimeSearchExpression to create an internal one from
+     * @return                          An internal DateTimeSearchExpression
+     */
+    org.catalytic.sdk.generated.model.DateTimeSearchExpression createInternalDateTimeSearchExpression(DateTimeSearchExpression dateTimeSearchExpression) {
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression internalDateTimeSearchExpression = null;
+
+        if (dateTimeSearchExpression != null) {
+            internalDateTimeSearchExpression = new org.catalytic.sdk.generated.model.DateTimeSearchExpression();
+            internalDateTimeSearchExpression.setContains(dateTimeSearchExpression.getContains());
+            internalDateTimeSearchExpression.setIsEqualTo(dateTimeSearchExpression.getIsEqualTo());
+            DateTimeOffsetNullableRange internalDateTimeRange = createInternalDateTimeOffsetRange(dateTimeSearchExpression.getBetween());
+            internalDateTimeSearchExpression.setBetween(internalDateTimeRange);
+        }
+        return internalDateTimeSearchExpression;
+    }
+
+    /**
+     * Create an internal DateTimeOffsetNullableRange from an external DateTimeRange
+     *
+     * @param dateTimeOffsetRange   The external DateTimeRange to create an internal DateTimeOffsetNullable range from
+     * @return                      An internal DateTimeOffsetNullableRange
+     */
+    private DateTimeOffsetNullableRange createInternalDateTimeOffsetRange(DateTimeOffsetRange dateTimeOffsetRange) {
+        DateTimeOffsetNullableRange internalDateTimeRange = null;
+
+        if (dateTimeOffsetRange != null) {
+            internalDateTimeRange = new DateTimeOffsetNullableRange();
+            internalDateTimeRange.setLowerBoundInclusive(dateTimeOffsetRange.getLowerBoundInclusive());
+            internalDateTimeRange.setUpperBoundInclusive(dateTimeOffsetRange.getUpperBoundInclusive());
+        }
+        return internalDateTimeRange;
+    }
+
+    /**
+     * Create an internal StringRange from an external one
+     *
+     * @param stringRange   The external StringRange to create an internal one from
+     * @return              An internal StringRange
+     */
+    private org.catalytic.sdk.generated.model.StringRange createInternalStringRange(StringRange stringRange) {
+        org.catalytic.sdk.generated.model.StringRange internalStringRange = null;
+
+        if (stringRange != null) {
+            internalStringRange = new org.catalytic.sdk.generated.model.StringRange();
+            internalStringRange.setLowerBoundInclusive(stringRange.getLowerBoundInclusive());
+            internalStringRange.setUpperBoundInclusive(stringRange.getUpperBoundInclusive());
+        }
+        return internalStringRange;
     }
 }

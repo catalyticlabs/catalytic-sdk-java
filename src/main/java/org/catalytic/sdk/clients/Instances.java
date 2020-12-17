@@ -492,7 +492,6 @@ public class Instances extends BaseClient {
         }
 
         List<Field> fields = createFields(internalInstance.getFields());
-        List<InstanceStep> steps = createInstanceSteps(internalInstance.getSteps());
 
         // Create an external Instance
         Instance instance = new Instance(
@@ -504,7 +503,6 @@ public class Instances extends BaseClient {
                 internalInstance.getCategory(),
                 internalInstance.getOwner(),
                 internalInstance.getCreatedBy(),
-                steps,
                 fields,
                 status,
                 internalInstance.getStartDate(),
