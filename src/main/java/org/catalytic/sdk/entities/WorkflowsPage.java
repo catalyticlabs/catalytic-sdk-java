@@ -28,6 +28,20 @@ public class WorkflowsPage extends Page {
         this.workflows = workflows;
     }
 
+    /**
+     * Add a list of Workflows.
+     *
+     * Note that this is different than setting a list of Workflows.
+     *
+     * @param workflows     The workflows to add
+     * @param nextPageToken The next page token
+     */
+    public void addWorkflows(List<Workflow> workflows, String nextPageToken) {
+        this.workflows.addAll(workflows);
+        this.count = this.count + workflows.size();
+        this.nextPageToken = nextPageToken;
+    }
+
     @Override
     public String toString() {
         return "WorkflowsPage{" +

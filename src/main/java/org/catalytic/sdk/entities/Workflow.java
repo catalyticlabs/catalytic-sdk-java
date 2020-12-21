@@ -3,6 +3,7 @@ package org.catalytic.sdk.entities;
 import org.catalytic.sdk.generated.model.FieldVisibility;
 import org.catalytic.sdk.generated.model.InstanceVisibilty;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,10 +26,11 @@ public class Workflow {
     private InstanceVisibilty instanceVisibility;
     private List<String> adminUsers;
     private List<String> standardUsers;
+    private OffsetDateTime createdDate;
 
     public Workflow() {}
 
-    public Workflow(UUID id, String name, String teamName, String description, String category, String owner, String createdBy, List<Field> inputFields, Boolean isPublished, Boolean isArchived, FieldVisibility fieldVisibility, InstanceVisibilty instanceVisibility, List<String> adminUsers, List<String> standardUsers) {
+    public Workflow(UUID id, String name, String teamName, String description, String category, String owner, String createdBy, List<Field> inputFields, Boolean isPublished, Boolean isArchived, FieldVisibility fieldVisibility, InstanceVisibilty instanceVisibility, List<String> adminUsers, List<String> standardUsers, OffsetDateTime createdDate) {
         this.id = id;
         this.name = name;
         this.teamName = teamName;
@@ -43,6 +45,7 @@ public class Workflow {
         this.instanceVisibility = instanceVisibility;
         this.adminUsers = adminUsers;
         this.standardUsers = standardUsers;
+        this.createdDate = createdDate;
     }
 
     public UUID getId() {
@@ -113,16 +116,16 @@ public class Workflow {
         return isPublished;
     }
 
-    public void setPublished(Boolean published) {
-        isPublished = published;
+    public void setIsPublished(Boolean isPublished) {
+        isPublished = isPublished;
     }
 
     public Boolean getIsArchived() {
         return isArchived;
     }
 
-    public void setArchived(Boolean archived) {
-        isArchived = archived;
+    public void setIsArchived(Boolean isArchived) {
+        isArchived = isArchived;
     }
 
     public FieldVisibility getFieldVisibility() {
@@ -157,6 +160,14 @@ public class Workflow {
         this.standardUsers = standardUsers;
     }
 
+    public OffsetDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(OffsetDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
     @Override
     public String toString() {
         return "Workflow{" +
@@ -174,6 +185,7 @@ public class Workflow {
                 ", instanceVisibility=" + instanceVisibility +
                 ", adminUsers=" + adminUsers +
                 ", standardUsers=" + standardUsers +
+                ", createdDate=" + createdDate +
                 '}';
     }
 }

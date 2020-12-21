@@ -77,18 +77,18 @@ public class UsersTests {
         assertThat(user.getEmail()).containsMatch("alice@example.com");
     }
 
-    @Test(expected = AccessTokenNotFoundException.class)
-    public void search_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
-        Users usersClient = new Users(null);
-        usersClient.search(null);
-    }
-
     @Test(expected = UnauthorizedException.class)
     public void search_itShouldReturnUnauthorizedException() throws Exception {
         when(usersApi.searchUsers(null, null, new org.catalytic.sdk.generated.model.UserSearchClause()))
                 .thenThrow(new ApiException(401, null));
 
         Users usersClient = new Users("1234", usersApi);
+        usersClient.search(null);
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void search_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Users usersClient = new Users(null);
         usersClient.search(null);
     }
 

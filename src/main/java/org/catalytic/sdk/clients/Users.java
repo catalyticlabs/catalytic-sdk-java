@@ -80,6 +80,9 @@ public class Users extends BaseClient {
     /**
      * Finds all users
      *
+     * @deprecated
+     * Use {@link Users#list()}search instead
+     *
      * @return                              A UsersPage object which contains the results
      * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any error finding users
@@ -92,6 +95,9 @@ public class Users extends BaseClient {
 
     /**
      * Finds users by a variety of filters
+     *
+     * @deprecated
+     * Use {@link Users#search(UserSearchClause, String, Integer)}search instead
      *
      * @param pageToken                     The token of the page to fetch
      * @return                              A UsersPage object which contains the results
@@ -107,6 +113,9 @@ public class Users extends BaseClient {
     /**
      * Finds users by a variety of filters
      *
+     * @deprecated
+     * Use {@link Users#search(UserSearchClause, String, Integer)}search instead
+     *
      * @param filter                        The filter to search users by
      * @return                              A UsersPage object which contains the results
      * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
@@ -120,6 +129,9 @@ public class Users extends BaseClient {
 
     /**
      * Finds users by a variety of filters
+     *
+     * @deprecated
+     * Use {@link Users#search(UserSearchClause, String, Integer)}search instead
      *
      * @param filter                        The filter to search users by
      * @param pageToken                     The token of the page to fetch
@@ -135,6 +147,9 @@ public class Users extends BaseClient {
 
     /**
      * Finds users by a variety of filters
+     *
+     * @deprecated
+     * Use {@link Users#search(UserSearchClause, String, Integer)}search instead
      *
      * @param filter                        The filter to search users by
      * @param pageToken                     The token of the page to fetch

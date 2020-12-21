@@ -7,16 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - teamName property to User entity
+- isTeamAdmin property to User entity
+- isDeactivated property to User entity
+- isLockedOut property to User entity
+- createdDate property to User entity  
+- createdDate property to Workflow entity  
 - Search Users method
 - List Users method
+- Search Workflows method
+- List Workflows method
 
 ### Deprecated
 - Find Users method
 - Instance.getSteps method
 - Instance.setSteps method
+- Find Workflows method
 
 ### Changed
-- DataTableColumn.type to DataTableColumn.fieldType (Breaking Change)
+- DataTableColumn.type to DataTableColumn.fieldType (Breaking change)
+- Workflow.getPublished to Workflow.getIsPublished (Breaking change)
+- Workflow.setPublished to Workflow.setIsPublished (Breaking change)
+- Workflow.getArchived to Workflow.getIsArchived (Breaking change)
+- Workflow.setArchived to Workflow.setIsArchived (Breaking change)
 
 ## [1.0.0] - 10-7-2020
 ### Added

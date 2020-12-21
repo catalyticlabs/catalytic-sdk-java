@@ -82,8 +82,8 @@ public class User {
         return isDeactivated;
     }
 
-    public void setDeactivated(Boolean deactivated) {
-        isDeactivated = deactivated;
+    public void setIsDeactivated(Boolean isDeactivated) {
+        isDeactivated = isDeactivated;
     }
 
     public Boolean getIsLockedOut() {

@@ -17,6 +17,7 @@ import org.catalytic.sdk.generated.model.WorkflowImport;
 import org.catalytic.sdk.generated.model.WorkflowImportRequest;
 import org.catalytic.sdk.search.Filter;
 import org.catalytic.sdk.search.SearchUtils;
+import org.catalytic.sdk.search.WorkflowSearchClause;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,11 +87,15 @@ public class Workflows extends BaseClient {
     /**
      * Find all workflows
      *
+     * @deprecated
+     * Use {@link Workflows#search(WorkflowSearchClause, String, Integer)}search instead
+     *
      * @return                              A WorkflowsPage which contains the results
      * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any error finding workflows
      * @throws UnauthorizedException        If unauthorized
      */
+    @Deprecated
     public WorkflowsPage find() throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(null, null, null);
     }
@@ -98,12 +103,16 @@ public class Workflows extends BaseClient {
     /**
      * Find all workflows
      *
+     * @deprecated
+     * Use {@link Workflows#search(WorkflowSearchClause, String, Integer)}search instead
+     *
      * @param pageToken                     The token of the page to fetch
      * @return                              A WorkflowsPage which contains the results
      * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any error finding workflows
      * @throws UnauthorizedException        If unauthorized
      */
+    @Deprecated
     public WorkflowsPage find(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(null, pageToken, null);
     }
@@ -111,18 +120,25 @@ public class Workflows extends BaseClient {
     /**
      * Find workflows by a variety of filters
      *
+     * @deprecated
+     * Use {@link Workflows#search(WorkflowSearchClause, String, Integer)}search instead
+     *
      * @param filter                        The filter criteria to search workflows by
      * @return                              A WorkflowsPage which contains the results
      * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws InternalErrorException       If any error finding workflows
      * @throws UnauthorizedException        If unauthorized
      */
+    @Deprecated
     public WorkflowsPage find(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(filter, null, null);
     }
 
     /**
      * Find workflows by a variety of filters
+     *
+     * @deprecated
+     * Use {@link Workflows#search(WorkflowSearchClause, String, Integer)}search instead
      *
      * @param filter                        The filter criteria to search workflows by
      * @param pageToken                     The token of the page to fetch
@@ -131,12 +147,16 @@ public class Workflows extends BaseClient {
      * @throws InternalErrorException       If any error finding workflows
      * @throws UnauthorizedException        If unauthorized
      */
+    @Deprecated
     public WorkflowsPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         return this.find(filter, pageToken, null);
     }
 
     /**
      * Find workflows by a variety of filters
+     *
+     * @deprecated
+     * Use {@link Workflows#search(WorkflowSearchClause, String, Integer)}search instead
      *
      * @param filter                        The filter criteria to search workflows by
      * @param pageToken                     The token of the page to fetch
@@ -146,6 +166,7 @@ public class Workflows extends BaseClient {
      * @throws InternalErrorException       If any error finding workflows
      * @throws UnauthorizedException        If unauthorized
      */
+    @Deprecated
     public WorkflowsPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
         ClientHelpers.verifyAccessTokenExists(this.token);
 
@@ -170,6 +191,115 @@ public class Workflows extends BaseClient {
                 throw new UnauthorizedException(e);
             }
             throw new InternalErrorException("Unable to find workflows", e);
+        }
+
+        for (org.catalytic.sdk.generated.model.Workflow internalWorkflow : results.getWorkflows()) {
+            Workflow workflow = createWorkflow(internalWorkflow);
+            workflows.add(workflow);
+        }
+
+        WorkflowsPage workflowsPage = new WorkflowsPage(workflows, results.getCount(), results.getNextPageToken());
+        return workflowsPage;
+    }
+
+    /**
+     * Get all Workflows
+     *
+     * @return                              A WorkflowsPage object which contains the all the Workflows from all pages of results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Workflows
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public WorkflowsPage list() throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        // Get the first page of Workflows
+        WorkflowsPage workflowsPage = search(null, null);
+        WorkflowsPage results = workflowsPage;
+
+        // Loop through the rest of the pages and add the workflows to results
+        while(!workflowsPage.getNextPageToken().isEmpty()) {
+            workflowsPage = search(null, workflowsPage.getNextPageToken());
+            results.addWorkflows(workflowsPage.getWorkflows(), workflowsPage.getNextPageToken());
+        }
+
+        return results;
+    }
+
+    /**
+     * Finds Workflows by a variety of filters
+     *
+     * @param workflowSearchClause          The search criteria to search Workflows by
+     * @return                              A WorkflowsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Workflows
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public WorkflowsPage search(WorkflowSearchClause workflowSearchClause) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        return search(workflowSearchClause, null, null);
+    }
+
+    /**
+     * Finds Workflows by a variety of filters
+     *
+     * @param workflowSearchClause          The search criteria to search Workflows by
+     * @param pageToken                     The token of the page to fetch
+     * @return                              A WorkflowsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Workflows
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public WorkflowsPage search(WorkflowSearchClause workflowSearchClause, String pageToken) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        return search(workflowSearchClause, pageToken, null);
+    }
+
+    /**
+     * Finds Workflows by a variety of filters
+     *
+     * @param workflowSearchClause          The search criteria to search Workflows by
+     * @param pageToken                     The token of the page to fetch
+     * @param pageSize                      The number of Workflows to fetch per page
+     * @return                              A WorkflowsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Workflows
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public WorkflowsPage search(WorkflowSearchClause workflowSearchClause, String pageToken, Integer pageSize) throws AccessTokenNotFoundException, InternalErrorException, UnauthorizedException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
+        org.catalytic.sdk.generated.model.WorkflowsPage results;
+        List<Workflow> workflows = new ArrayList<>();
+
+        if (workflowSearchClause == null) {
+            workflowSearchClause = new WorkflowSearchClause();
+        }
+
+        org.catalytic.sdk.generated.model.GuidSearchExpression internalId = createInternalGuidSearchExpression(workflowSearchClause.getId());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalName = createInternalStringSearchExpression(workflowSearchClause.getName());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalDescription = createInternalStringSearchExpression(workflowSearchClause.getDescription());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalOwner = createInternalStringSearchExpression(workflowSearchClause.getOwner());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalCategory = createInternalStringSearchExpression(workflowSearchClause.getCategory());
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression internalCreatedDate = createInternalDateTimeSearchExpression(workflowSearchClause.getCreatedDate());
+
+        List<org.catalytic.sdk.generated.model.WorkflowSearchClause> internalAnd = createInternalWorkflowSearchClause(workflowSearchClause.getAnd());
+        List<org.catalytic.sdk.generated.model.WorkflowSearchClause> internalOr = createInternalWorkflowSearchClause(workflowSearchClause.getOr());
+
+        org.catalytic.sdk.generated.model.WorkflowSearchClause workflowSearchRequest = new org.catalytic.sdk.generated.model.WorkflowSearchClause();
+        workflowSearchRequest.setAnd(internalAnd);
+        workflowSearchRequest.setOr(internalOr);
+        workflowSearchRequest.setId(internalId);
+        workflowSearchRequest.setName(internalName);
+        workflowSearchRequest.setDescription(internalDescription);
+        workflowSearchRequest.setOwner(internalOwner);
+        workflowSearchRequest.setCategory(internalCategory);
+        workflowSearchRequest.setCreatedDate(internalCreatedDate);
+
+        try {
+            log.debug("Finding Workflows with criteria {}", () -> workflowSearchRequest);
+            results = this.workflowsApi.searchWorkflows(pageToken, pageSize, workflowSearchRequest);
+        } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException(e);
+            }
+            throw new InternalErrorException("Unable to find Workflows", e);
         }
 
         for (org.catalytic.sdk.generated.model.Workflow internalWorkflow : results.getWorkflows()) {
@@ -338,8 +468,47 @@ public class Workflows extends BaseClient {
                 internalWorkflow.getFieldVisibility(),
                 internalWorkflow.getInstanceVisibility(),
                 internalWorkflow.getAdminUsers(),
-                internalWorkflow.getStandardUsers()
+                internalWorkflow.getStandardUsers(),
+                internalWorkflow.getCreatedDate()
         );
         return workflow;
+    }
+
+    /**
+     * Create an internal WorkflowSearchClause from an external WorkflowSearchClause
+     *
+     * @param workflowSearchClause  The external WorkflowSearchClause to create an internal one from
+     * @return                      An internal WorkflowSearchClause
+     */
+    private List<org.catalytic.sdk.generated.model.WorkflowSearchClause> createInternalWorkflowSearchClause(List<WorkflowSearchClause> workflowSearchClause) {
+        List<org.catalytic.sdk.generated.model.WorkflowSearchClause> internalWorkflowSearchClauses = null;
+
+        if (workflowSearchClause != null) {
+
+            internalWorkflowSearchClauses = new ArrayList<>();
+
+            for (WorkflowSearchClause searchClause : workflowSearchClause) {
+                org.catalytic.sdk.generated.model.GuidSearchExpression internalId = createInternalGuidSearchExpression(searchClause.getId());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalName = createInternalStringSearchExpression(searchClause.getName());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalDescription = createInternalStringSearchExpression(searchClause.getDescription());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalOwner = createInternalStringSearchExpression(searchClause.getOwner());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalCategory = createInternalStringSearchExpression(searchClause.getCategory());
+                org.catalytic.sdk.generated.model.DateTimeSearchExpression internalCreatedDate = createInternalDateTimeSearchExpression(searchClause.getCreatedDate());
+
+                org.catalytic.sdk.generated.model.WorkflowSearchClause internalWorkflowSearchClause = new org.catalytic.sdk.generated.model.WorkflowSearchClause();
+                internalWorkflowSearchClause.setId(internalId);
+                internalWorkflowSearchClause.setName(internalName);
+                internalWorkflowSearchClause.setDescription(internalDescription);
+                internalWorkflowSearchClause.setOwner(internalOwner);
+                internalWorkflowSearchClause.setCategory(internalCategory);
+                internalWorkflowSearchClause.setCreatedDate(internalCreatedDate);
+                List<org.catalytic.sdk.generated.model.WorkflowSearchClause> internalAnd = createInternalWorkflowSearchClause(searchClause.getAnd());
+                List<org.catalytic.sdk.generated.model.WorkflowSearchClause> internalOr = createInternalWorkflowSearchClause(searchClause.getOr());
+                internalWorkflowSearchClause.setAnd(internalAnd);
+                internalWorkflowSearchClause.setOr(internalOr);
+                internalWorkflowSearchClauses.add(internalWorkflowSearchClause);
+            }
+        }
+        return internalWorkflowSearchClauses;
     }
 }
