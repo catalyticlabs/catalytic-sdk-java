@@ -1,6 +1,6 @@
 package org.catalytic.sdk.entities;
 
-import org.catalytic.sdk.generated.model.FieldRestrictions;
+import org.catalytic.sdk.generated.model.FieldDisplayOptions;
 
 import java.util.UUID;
 
@@ -14,7 +14,7 @@ public class Field {
     private String referenceName;
     private String description;
     private Integer position;
-    private FieldRestrictions restrictions;
+    private FieldDisplayOptions display;
     private String fieldType;
     private String value;
     private String defaultValue;
@@ -30,13 +30,13 @@ public class Field {
         this.value = value;
     }
 
-    public Field(UUID id, String name, String referenceName, String description, Integer position, FieldRestrictions restrictions, String fieldType, String value, String defaultValue) {
+    public Field(UUID id, String name, String referenceName, String description, Integer position, FieldDisplayOptions display, String fieldType, String value, String defaultValue) {
         this.id = id;
         this.name = name;
         this.referenceName = referenceName;
         this.description = description;
         this.position = position;
-        this.restrictions = restrictions;
+        this.display = display;
         this.fieldType = fieldType;
         this.value = value;
         this.defaultValue = defaultValue;
@@ -82,12 +82,12 @@ public class Field {
         this.position = position;
     }
 
-    public FieldRestrictions getRestrictions() {
-        return restrictions;
+    public FieldDisplayOptions getDisplay() {
+        return display;
     }
 
-    public void setRestrictions(FieldRestrictions restrictions) {
-        this.restrictions = restrictions;
+    public void setDisplay(FieldDisplayOptions display) {
+        this.display = display;
     }
 
     public String getFieldType() {
@@ -122,7 +122,7 @@ public class Field {
                 ", referenceName='" + referenceName + '\'' +
                 ", description='" + description + '\'' +
                 ", position=" + position +
-                ", restrictions=" + restrictions +
+                ", display=" + display +
                 ", fieldType='" + fieldType + '\'' +
                 ", value='" + value + '\'' +
                 ", defaultValue='" + defaultValue + '\'' +

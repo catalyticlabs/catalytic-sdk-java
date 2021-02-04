@@ -10,13 +10,13 @@ public class DataTableColumn {
     private String name;
     private org.catalytic.sdk.generated.model.FieldType fieldType;
     private String referenceName;
-    private FieldRestrictions restrictions;
+    private FieldDisplayOptions display;
 
-    public DataTableColumn(String name, org.catalytic.sdk.generated.model.FieldType fieldType, String referenceName, FieldRestrictions restrictions) {
+    public DataTableColumn(String name, org.catalytic.sdk.generated.model.FieldType fieldType, String referenceName, FieldDisplayOptions display) {
         this.name = name;
         this.fieldType = fieldType;
         this.referenceName = referenceName;
-        this.restrictions = restrictions;
+        this.display = display;
     }
 
     public String getName() {
@@ -43,12 +43,12 @@ public class DataTableColumn {
         this.referenceName = referenceName;
     }
 
-    public FieldRestrictions getRestrictions() {
-        return restrictions;
+    public FieldDisplayOptions getDisplay() {
+        return display;
     }
 
-    public void setRestrictions(FieldRestrictions restrictions) {
-        this.restrictions = restrictions;
+    public void setDisplay(FieldDisplayOptions display) {
+        this.display = display;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class DataTableColumn {
                 "name='" + name + '\'' +
                 ", fieldType=" + fieldType +
                 ", referenceName='" + referenceName + '\'' +
-                ", restrictions=" + restrictions +
+                ", display=" + display +
                 '}';
     }
 }

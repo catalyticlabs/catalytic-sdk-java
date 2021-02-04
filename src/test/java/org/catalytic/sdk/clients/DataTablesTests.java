@@ -1,14 +1,12 @@
 package org.catalytic.sdk.clients;
 
 import org.catalytic.sdk.entities.DataTable;
-import org.catalytic.sdk.entities.DataTablesPage;
 import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.DataTableNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.DataTablesApi;
-import org.catalytic.sdk.search.Where;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -70,106 +68,6 @@ public class DataTablesTests {
         DataTable dataTable = dataTablesClient.get("f98b3a70-a461-46b1-b43a-3eb1cced3efd");
         assertThat(dataTable).isNotNull();
         assertThat(dataTable.getId()).isEqualTo(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
-    }
-
-    @Test(expected = AccessTokenNotFoundException.class)
-    public void findDataTables_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
-        String nullString = null;
-        DataTables dataTablesClient = new DataTables(nullString);
-        dataTablesClient.find();
-    }
-
-    @Test(expected = UnauthorizedException.class)
-    public void findDataTables_itShouldReturnUnauthorizedException() throws Exception {
-        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenThrow(new ApiException(401, null));
-
-        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
-        dataTablesClient.find();
-    }
-
-    @Test(expected = InternalErrorException.class)
-    public void findDataTables_itShouldReturnInternalErrorException() throws Exception {
-        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenThrow(new ApiException(500, null));
-
-        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
-        dataTablesClient.find();
-    }
-
-    @Test
-    public void findDataTables_itShouldReturnAllDataTables() throws Exception {
-        org.catalytic.sdk.generated.model.DataTable internalDataTable = new org.catalytic.sdk.generated.model.DataTable();
-        internalDataTable.setId(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
-        org.catalytic.sdk.generated.model.DataTablesPage dataTablesPage = new org.catalytic.sdk.generated.model.DataTablesPage();
-        dataTablesPage.setDataTables(Arrays.asList(internalDataTable));
-        dataTablesPage.setCount(Arrays.asList(internalDataTable).size());
-        dataTablesPage.setNextPageToken(null);
-        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenReturn(dataTablesPage);
-
-        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
-        DataTablesPage results = dataTablesClient.find();
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getDataTables().get(0).getId()).isEqualTo(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
-    }
-
-    @Test
-    public void findDataTables_itShouldFindNextPage() throws Exception {
-        org.catalytic.sdk.generated.model.DataTable internalDataTable = new org.catalytic.sdk.generated.model.DataTable();
-        internalDataTable.setId(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
-        org.catalytic.sdk.generated.model.DataTablesPage dataTablesPage = new org.catalytic.sdk.generated.model.DataTablesPage();
-        dataTablesPage.setDataTables(Arrays.asList(internalDataTable));
-        dataTablesPage.setCount(Arrays.asList(internalDataTable).size());
-        dataTablesPage.setNextPageToken(null);
-        when(dataTablesApi.findDataTables(null, null, null, null, null, null, null, null, null, null, null, "25", null))
-                .thenReturn(dataTablesPage);
-
-        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
-        DataTablesPage results = dataTablesClient.find("25");
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getDataTables().get(0).getId()).isEqualTo(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
-    }
-
-    @Test
-    public void findDataTables_itShouldFindDataTableByText() throws Exception {
-        org.catalytic.sdk.generated.model.DataTable internalDataTable = new org.catalytic.sdk.generated.model.DataTable();
-        internalDataTable.setId(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
-        internalDataTable.setName("example");
-        org.catalytic.sdk.generated.model.DataTablesPage dataTablesPage = new org.catalytic.sdk.generated.model.DataTablesPage();
-        dataTablesPage.setDataTables(Arrays.asList(internalDataTable));
-        dataTablesPage.setCount(Arrays.asList(internalDataTable).size());
-        dataTablesPage.setNextPageToken(null);
-        when(dataTablesApi.findDataTables("example", null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenReturn(dataTablesPage);
-
-        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
-        Where where = new Where();
-        DataTablesPage results = dataTablesClient.find(where.text().is("example"));
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getDataTables().get(0).getId()).isEqualTo(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
-    }
-
-    @Test
-    public void findDataTables_itShouldFindDataTableByTextAndPage() throws Exception {
-        org.catalytic.sdk.generated.model.DataTable internalDataTable = new org.catalytic.sdk.generated.model.DataTable();
-        internalDataTable.setId(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
-        org.catalytic.sdk.generated.model.DataTablesPage dataTablesPage = new org.catalytic.sdk.generated.model.DataTablesPage();
-        dataTablesPage.setDataTables(Arrays.asList(internalDataTable));
-        dataTablesPage.setCount(Arrays.asList(internalDataTable).size());
-        dataTablesPage.setNextPageToken(null);
-        when(dataTablesApi.findDataTables("example", null, null, null, null, null, null, null, null, null, null, "25", null))
-                .thenReturn(dataTablesPage);
-
-        DataTables dataTablesClient = new DataTables("1234", dataTablesApi);
-        Where where = new Where();
-        DataTablesPage results = dataTablesClient.find(where.text().is("example"), "25");
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getDataTables().get(0).getId()).isEqualTo(UUID.fromString("f98b3a70-a461-46b1-b43a-3eb1cced3efd"));
     }
 
     @Test(expected = AccessTokenNotFoundException.class)

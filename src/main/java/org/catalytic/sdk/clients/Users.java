@@ -13,8 +13,6 @@ import org.catalytic.sdk.generated.ApiClient;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.UsersApi;
 import org.catalytic.sdk.generated.model.BoolSearchExpression;
-import org.catalytic.sdk.search.Filter;
-import org.catalytic.sdk.search.SearchUtils;
 import org.catalytic.sdk.search.UserSearchClause;
 
 import java.util.ArrayList;
@@ -75,119 +73,6 @@ public class Users extends BaseClient {
         }
         User user = createUser(internalUser);
         return user;
-    }
-
-    /**
-     * Finds all users
-     *
-     * @deprecated
-     * Use {@link Users#list()}search instead
-     *
-     * @return                              A UsersPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding users
-     * @throws UnauthorizedException        If unauthorized
-     */
-    @Deprecated
-    public UsersPage find() throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return find(null, null, null);
-    }
-
-    /**
-     * Finds users by a variety of filters
-     *
-     * @deprecated
-     * Use {@link Users#search(UserSearchClause, String, Integer)}search instead
-     *
-     * @param pageToken                     The token of the page to fetch
-     * @return                              A UsersPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding users
-     * @throws UnauthorizedException        If unauthorized
-     */
-    @Deprecated
-    public UsersPage find(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.find(null, pageToken, null);
-    }
-
-    /**
-     * Finds users by a variety of filters
-     *
-     * @deprecated
-     * Use {@link Users#search(UserSearchClause, String, Integer)}search instead
-     *
-     * @param filter                        The filter to search users by
-     * @return                              A UsersPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding users
-     * @throws UnauthorizedException        If unauthorized
-     */
-    @Deprecated
-    public UsersPage find(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return find(filter, null, null);
-    }
-
-    /**
-     * Finds users by a variety of filters
-     *
-     * @deprecated
-     * Use {@link Users#search(UserSearchClause, String, Integer)}search instead
-     *
-     * @param filter                        The filter to search users by
-     * @param pageToken                     The token of the page to fetch
-     * @return                              A UsersPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding users
-     * @throws UnauthorizedException        If unauthorized
-     */
-    @Deprecated
-    public UsersPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return find(filter, pageToken, null);
-    }
-
-    /**
-     * Finds users by a variety of filters
-     *
-     * @deprecated
-     * Use {@link Users#search(UserSearchClause, String, Integer)}search instead
-     *
-     * @param filter                        The filter to search users by
-     * @param pageToken                     The token of the page to fetch
-     * @param pageSize                      The number of users per page to fetch
-     * @return                              A UsersPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding users
-     * @throws UnauthorizedException        If unauthorized
-     */
-    @Deprecated
-    public UsersPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        ClientHelpers.verifyAccessTokenExists(this.token);
-
-        org.catalytic.sdk.generated.model.UsersPage results;
-        List<User> users = new ArrayList<>();
-        String text = null;
-
-        if (filter != null) {
-            text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
-        }
-
-        try {
-            log.debug("Finding users with text: {}", text);
-            results = this.usersApi.findUsers(text, null, null, null, null, null, null, null, null, null, null, pageToken, pageSize);
-        } catch (ApiException e) {
-            if (e.getCode() == 401) {
-                throw new UnauthorizedException(e);
-            }
-            throw new InternalErrorException("Unable to find users", e);
-        }
-
-        for (org.catalytic.sdk.generated.model.User internalUser : results.getUsers()) {
-            User user = createUser(internalUser);
-            users.add(user);
-        }
-
-        UsersPage usersPage = new UsersPage(users, results.getCount(), results.getNextPageToken());
-        return usersPage;
     }
 
     /**
@@ -311,7 +196,6 @@ public class Users extends BaseClient {
         User user = new User(
                 internalUser.getId(),
                 internalUser.getTeamName(),
-                internalUser.getUsername(),
                 internalUser.getEmail(),
                 internalUser.getFullName(),
                 internalUser.getIsTeamAdmin(),

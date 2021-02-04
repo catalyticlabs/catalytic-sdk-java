@@ -10,7 +10,6 @@ import org.catalytic.sdk.generated.model.WorkflowExport;
 import org.catalytic.sdk.generated.model.WorkflowExportRequest;
 import org.catalytic.sdk.generated.model.WorkflowImport;
 import org.catalytic.sdk.generated.model.WorkflowImportRequest;
-import org.catalytic.sdk.search.Where;
 import org.catalytic.sdk.search.WorkflowSearchClause;
 import org.catalytic.sdk.search.WorkflowsWhere;
 import org.junit.Before;
@@ -78,142 +77,6 @@ public class WorkflowsTests {
         Workflow workflow = workflowsClient.get("ac14952a-a331-457c-ac7d-9a284258b65a");
         assertThat(workflow).isNotNull();
         assertThat(workflow.getId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-    }
-
-    @Test(expected = AccessTokenNotFoundException.class)
-    public void findWorkflows_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
-        Workflows workflowsClient = new Workflows(null);
-        workflowsClient.find();
-    }
-
-    @Test(expected = UnauthorizedException.class)
-    public void findWorkflows_itShouldReturnUnauthorizedException() throws Exception {
-        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenThrow(new ApiException(401, null));
-
-        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
-        workflowsClient.find();
-    }
-
-    @Test(expected = InternalErrorException.class)
-    public void findWorkflows_itShouldReturnInternalErrorException() throws Exception {
-        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenThrow(new ApiException(500, null));
-
-        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
-        workflowsClient.find();
-    }
-
-    @Test
-    public void findWorkflows_itShouldReturnAllWorkflows() throws Exception {
-        org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
-        myWorkflow.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-        org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
-        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
-        workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenReturn(workflowsPage);
-
-        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
-        WorkflowsPage results = workflowsClient.find();
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getWorkflows().get(0).getId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-    }
-
-    @Test
-    public void findWorkflows_itShouldFindNextPage() throws Exception {
-        org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
-        myWorkflow.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-        org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
-        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
-        workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows(null, null, null, null, null, null, null, null, null, null, null, "25", null))
-                .thenReturn(workflowsPage);
-
-        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
-        WorkflowsPage results = workflowsClient.find("25");
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getWorkflows().get(0).getId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-    }
-
-    @Test
-    public void findWorkflows_itShouldFindWorkflowByName() throws Exception {
-        org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
-        myWorkflow.setName("My Workflow");
-        org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
-        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
-        workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows("My Workflow", null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenReturn(workflowsPage);
-
-        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
-        Where where = new Where();
-        WorkflowsPage results = workflowsClient.find(where.text().matches("My Workflow"));
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getWorkflows().get(0).getName()).isEqualTo("My Workflow");
-    }
-
-    @Test
-    public void findWorkflows_itShouldFindWorkflowByOwner() throws Exception {
-        org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
-        myWorkflow.setOwner("alice@example.com");
-        org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
-        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
-        workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows(null, null, null, null, "alice@example.com", null, null, null, null, null, null, null, null))
-                .thenReturn(workflowsPage);
-
-        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
-        Where where = new Where();
-        WorkflowsPage results = workflowsClient.find(where.owner().is("alice@example.com"));
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getWorkflows().get(0).getOwner()).isEqualTo("alice@example.com");
-    }
-
-    @Test
-    public void findWorkflows_itShouldFindWorkflowByCategory() throws Exception {
-        org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
-        myWorkflow.setCategory("general");
-        org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
-        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
-        workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows(null, null, null, null, null, "general", null, null, null, null, null, null, null))
-                .thenReturn(workflowsPage);
-
-        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
-        Where where = new Where();
-        WorkflowsPage results = workflowsClient.find(where.category().is("general"));
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getWorkflows().get(0).getCategory()).isEqualTo("general");
-    }
-
-    @Test
-    public void findWorkflows_itShouldFindWorkflowByNameAndPage() throws Exception {
-        org.catalytic.sdk.generated.model.Workflow myWorkflow = new org.catalytic.sdk.generated.model.Workflow();
-        myWorkflow.setName("My Workflow");
-        org.catalytic.sdk.generated.model.WorkflowsPage workflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        workflowsPage.setWorkflows(Arrays.asList(myWorkflow));
-        workflowsPage.setCount(Arrays.asList(myWorkflow).size());
-        workflowsPage.setNextPageToken(null);
-        when(workflowsApi.findWorkflows("My Workflow", null, null, null, null, null, null, null, null, null, null, "25", null))
-                .thenReturn(workflowsPage);
-
-        Workflows workflowsClient = new Workflows("1234", workflowsApi, filesClient);
-        Where where = new Where();
-        WorkflowsPage results = workflowsClient.find(where.text().is("My Workflow"), "25");
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getWorkflows().get(0).getName()).isEqualTo("My Workflow");
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -473,75 +336,22 @@ public class WorkflowsTests {
     @Test
     public void searchWorkflows_itShouldFindWorkflowByOwner() throws Exception {
         org.catalytic.sdk.generated.model.Workflow workflow = new org.catalytic.sdk.generated.model.Workflow();
-        workflow.setOwner("Bob Marley");
+        workflow.setOwnerEmail("Bob Marley");
         org.catalytic.sdk.generated.model.WorkflowsPage WorkflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
         WorkflowsPage.setWorkflows(Arrays.asList(workflow));
         WorkflowsPage.setCount(Arrays.asList(workflow).size());
         WorkflowsPage.setNextPageToken("");
 
         org.catalytic.sdk.generated.model.WorkflowSearchClause WorkflowSearchClause = new org.catalytic.sdk.generated.model.WorkflowSearchClause();
-        org.catalytic.sdk.generated.model.StringSearchExpression owner = new org.catalytic.sdk.generated.model.StringSearchExpression();
-        owner.setIsEqualTo("Bob Marley");
-        WorkflowSearchClause.setOwner(owner);
+        org.catalytic.sdk.generated.model.ExactStringSearchExpression ownerEmail = new org.catalytic.sdk.generated.model.ExactStringSearchExpression();
+        ownerEmail.setIsEqualTo("Bob Marley");
+        WorkflowSearchClause.setOwnerEmail(ownerEmail);
         when(workflowsApi.searchWorkflows(null, null, WorkflowSearchClause))
                 .thenReturn(WorkflowsPage);
 
-        WorkflowSearchClause searchCriteria = WorkflowsWhere.owner("Bob Marley");
+        WorkflowSearchClause searchCriteria = WorkflowsWhere.ownerEmail("Bob Marley");
 
         Workflows WorkflowsClient = new Workflows("1234", workflowsApi, null);
-        WorkflowsPage results = WorkflowsClient.search(searchCriteria);
-
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isEmpty();
-        assertThat(results.getWorkflows().get(0).getOwner()).isEqualTo("Bob Marley");
-    }
-
-    @Test
-    public void searchWorkflows_itShouldFindWorkflowByPartialOwner() throws Exception {
-        org.catalytic.sdk.generated.model.Workflow workflow = new org.catalytic.sdk.generated.model.Workflow();
-        workflow.setOwner("Bob Marley");
-        org.catalytic.sdk.generated.model.WorkflowsPage WorkflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        WorkflowsPage.setWorkflows(Arrays.asList(workflow));
-        WorkflowsPage.setCount(Arrays.asList(workflow).size());
-        WorkflowsPage.setNextPageToken("");
-
-        org.catalytic.sdk.generated.model.WorkflowSearchClause WorkflowSearchClause = new org.catalytic.sdk.generated.model.WorkflowSearchClause();
-        org.catalytic.sdk.generated.model.StringSearchExpression owner = new org.catalytic.sdk.generated.model.StringSearchExpression();
-        owner.setContains("bob");
-        WorkflowSearchClause.setOwner(owner);
-        when(workflowsApi.searchWorkflows(null, null, WorkflowSearchClause))
-                .thenReturn(WorkflowsPage);
-
-        Workflows WorkflowsClient = new Workflows("1234", workflowsApi, null);
-        WorkflowSearchClause searchCriteria = WorkflowsWhere.ownerContains("bob");
-        WorkflowsPage results = WorkflowsClient.search(searchCriteria);
-
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isEmpty();
-        assertThat(results.getWorkflows().get(0).getOwner()).isEqualTo("Bob Marley");
-    }
-
-    @Test
-    public void searchWorkflows_itShouldFindWorkflowBetweenOwners() throws Exception {
-        org.catalytic.sdk.generated.model.Workflow workflow = new org.catalytic.sdk.generated.model.Workflow();
-        workflow.setOwner("Bob Marley");
-        org.catalytic.sdk.generated.model.WorkflowsPage WorkflowsPage = new org.catalytic.sdk.generated.model.WorkflowsPage();
-        WorkflowsPage.setWorkflows(Arrays.asList(workflow));
-        WorkflowsPage.setCount(Arrays.asList(workflow).size());
-        WorkflowsPage.setNextPageToken("");
-
-        org.catalytic.sdk.generated.model.WorkflowSearchClause workflowSearchClause = new org.catalytic.sdk.generated.model.WorkflowSearchClause();
-        org.catalytic.sdk.generated.model.StringSearchExpression owner = new org.catalytic.sdk.generated.model.StringSearchExpression();
-        org.catalytic.sdk.generated.model.StringRange ownerRange = new org.catalytic.sdk.generated.model.StringRange();
-        ownerRange.setLowerBoundInclusive("Ba");
-        ownerRange.setUpperBoundInclusive("Bz");
-        owner.setBetween(ownerRange);
-        workflowSearchClause.setOwner(owner);
-        when(workflowsApi.searchWorkflows(null, null, workflowSearchClause))
-                .thenReturn(WorkflowsPage);
-
-        Workflows WorkflowsClient = new Workflows("1234", workflowsApi, null);
-        WorkflowSearchClause searchCriteria = WorkflowsWhere.ownerBetween("Ba", "Bz");
         WorkflowsPage results = WorkflowsClient.search(searchCriteria);
 
         assertThat(results.getCount()).isEqualTo(1);

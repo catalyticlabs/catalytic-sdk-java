@@ -10,7 +10,6 @@ import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.UsersApi;
 import org.catalytic.sdk.search.UserSearchClause;
 import org.catalytic.sdk.search.UsersWhere;
-import org.catalytic.sdk.search.Where;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -598,104 +597,5 @@ public class UsersTests {
         assertThat(results.getNextPageToken()).isEmpty();
         assertThat(results.getUsers().get(0).getEmail()).isEqualTo("alice@example.com");
         assertThat(results.getUsers().get(1).getEmail()).isEqualTo("marvin@aol.com");
-    }
-
-    @Test(expected = AccessTokenNotFoundException.class)
-    public void findUsers_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
-        String nullString = null;
-        Users usersClient = new Users(nullString);
-        usersClient.find();
-    }
-
-    @Test(expected = UnauthorizedException.class)
-    public void findUsers_itShouldReturnUnauthorizedException() throws Exception {
-        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenThrow(new ApiException(401, null));
-
-        Users usersClient = new Users("1234", usersApi);
-        usersClient.find();
-    }
-
-    @Test(expected = InternalErrorException.class)
-    public void findUsers_itShouldReturnInternalErrorException() throws Exception {
-        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenThrow(new ApiException(500, null));
-
-        Users usersClient = new Users("1234", usersApi);
-        usersClient.find();
-    }
-
-    @Test
-    public void findUsers_itShouldReturnAllUsers() throws Exception {
-        org.catalytic.sdk.generated.model.User alice = new org.catalytic.sdk.generated.model.User();
-        alice.setEmail("alice@example.com");
-        org.catalytic.sdk.generated.model.UsersPage usersPage = new org.catalytic.sdk.generated.model.UsersPage();
-        usersPage.setUsers(Arrays.asList(alice));
-        usersPage.setCount(Arrays.asList(alice).size());
-        usersPage.setNextPageToken("");
-        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenReturn(usersPage);
-
-        Users usersClient = new Users("1234", usersApi);
-        UsersPage results = usersClient.find();
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isEmpty();
-        assertThat(results.getUsers().get(0).getEmail()).isEqualTo("alice@example.com");
-    }
-
-    @Test
-    public void findUsers_itShouldFindNextPage() throws Exception {
-        org.catalytic.sdk.generated.model.User alice = new org.catalytic.sdk.generated.model.User();
-        alice.setEmail("alice@example.com");
-        org.catalytic.sdk.generated.model.UsersPage usersPage = new org.catalytic.sdk.generated.model.UsersPage();
-        usersPage.setUsers(Arrays.asList(alice));
-        usersPage.setCount(Arrays.asList(alice).size());
-        usersPage.setNextPageToken("");
-        when(usersApi.findUsers(null, null, null, null, null, null, null, null, null, null, null, "25", null))
-                .thenReturn(usersPage);
-
-        Users usersClient = new Users("1234", usersApi);
-        UsersPage results = usersClient.find("25");
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isEmpty();
-        assertThat(results.getUsers().get(0).getEmail()).isEqualTo("alice@example.com");
-    }
-
-    @Test
-    public void findUsers_itShouldFindUserByEmail() throws Exception {
-        org.catalytic.sdk.generated.model.User alice = new org.catalytic.sdk.generated.model.User();
-        alice.setEmail("alice@example.com");
-        org.catalytic.sdk.generated.model.UsersPage usersPage = new org.catalytic.sdk.generated.model.UsersPage();
-        usersPage.setUsers(Arrays.asList(alice));
-        usersPage.setCount(Arrays.asList(alice).size());
-        usersPage.setNextPageToken("");
-        when(usersApi.findUsers("alice@example.com", null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenReturn(usersPage);
-
-        Users usersClient = new Users("1234", usersApi);
-        Where where = new Where();
-        UsersPage results = usersClient.find(where.text().is("alice@example.com"));
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isEmpty();
-        assertThat(results.getUsers().get(0).getEmail()).isEqualTo("alice@example.com");
-    }
-
-    @Test
-    public void findUsers_itShouldFindUserByEmailAndPage() throws Exception {
-        org.catalytic.sdk.generated.model.User alice = new org.catalytic.sdk.generated.model.User();
-        alice.setEmail("alice@example.com");
-        org.catalytic.sdk.generated.model.UsersPage usersPage = new org.catalytic.sdk.generated.model.UsersPage();
-        usersPage.setUsers(Arrays.asList(alice));
-        usersPage.setCount(Arrays.asList(alice).size());
-        usersPage.setNextPageToken("");
-        when(usersApi.findUsers("alice@example.com", null, null, null, null, null, null, null, null, null, null, "25", null))
-                .thenReturn(usersPage);
-
-        Users usersClient = new Users("1234", usersApi);
-        Where where = new Where();
-        UsersPage results = usersClient.find(where.text().is("alice@example.com"), "25");
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isEmpty();
-        assertThat(results.getUsers().get(0).getEmail()).isEqualTo("alice@example.com");
     }
 }

@@ -1,7 +1,7 @@
 package org.catalytic.sdk.entities;
 
 import org.catalytic.sdk.generated.model.FieldVisibility;
-import org.catalytic.sdk.generated.model.InstanceVisibilty;
+import org.catalytic.sdk.generated.model.InstanceVisibility;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -18,33 +18,33 @@ public class Workflow {
     private String description;
     private String category;
     private String owner;
-    private String createdBy;
+    private String createdByEmail;
     private List<Field> inputFields;
     private Boolean isPublished;
     private Boolean isArchived;
     private FieldVisibility fieldVisibility;
-    private InstanceVisibilty instanceVisibility;
-    private List<String> adminUsers;
-    private List<String> standardUsers;
+    private InstanceVisibility instanceVisibility;
+    private List<String> adminUserEmails;
+    private List<String> standardUserEmails;
     private OffsetDateTime createdDate;
 
     public Workflow() {}
 
-    public Workflow(UUID id, String name, String teamName, String description, String category, String owner, String createdBy, List<Field> inputFields, Boolean isPublished, Boolean isArchived, FieldVisibility fieldVisibility, InstanceVisibilty instanceVisibility, List<String> adminUsers, List<String> standardUsers, OffsetDateTime createdDate) {
+    public Workflow(UUID id, String name, String teamName, String description, String category, String owner, String createdByEmail, List<Field> inputFields, Boolean isPublished, Boolean isArchived, FieldVisibility fieldVisibility, InstanceVisibility instanceVisibility, List<String> adminUserEmails, List<String> standardUserEmails, OffsetDateTime createdDate) {
         this.id = id;
         this.name = name;
         this.teamName = teamName;
         this.description = description;
         this.category = category;
         this.owner = owner;
-        this.createdBy = createdBy;
+        this.createdByEmail = createdByEmail;
         this.inputFields = inputFields;
         this.isPublished = isPublished;
         this.isArchived = isArchived;
         this.fieldVisibility = fieldVisibility;
         this.instanceVisibility = instanceVisibility;
-        this.adminUsers = adminUsers;
-        this.standardUsers = standardUsers;
+        this.adminUserEmails = adminUserEmails;
+        this.standardUserEmails = standardUserEmails;
         this.createdDate = createdDate;
     }
 
@@ -96,12 +96,12 @@ public class Workflow {
         this.owner = owner;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
+    public String getCreatedByEmail() {
+        return createdByEmail;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
+    public void setCreatedByEmail(String createdByEmail) {
+        this.createdByEmail = createdByEmail;
     }
 
     public List<Field> getInputFields() {
@@ -136,28 +136,28 @@ public class Workflow {
         this.fieldVisibility = fieldVisibility;
     }
 
-    public InstanceVisibilty getInstanceVisibility() {
+    public InstanceVisibility getInstanceVisibility() {
         return instanceVisibility;
     }
 
-    public void setInstanceVisibility(InstanceVisibilty instanceVisibility) {
+    public void setInstanceVisibility(InstanceVisibility instanceVisibility) {
         this.instanceVisibility = instanceVisibility;
     }
 
-    public List<String> getAdminUsers() {
-        return adminUsers;
+    public List<String> getAdminUserEmails() {
+        return adminUserEmails;
     }
 
-    public void setAdminUsers(List<String> adminUsers) {
-        this.adminUsers = adminUsers;
+    public void setAdminUserEmails(List<String> adminUserEmails) {
+        this.adminUserEmails = adminUserEmails;
     }
 
-    public List<String> getStandardUsers() {
-        return standardUsers;
+    public List<String> getStandardUserEmails() {
+        return standardUserEmails;
     }
 
-    public void setStandardUsers(List<String> standardUsers) {
-        this.standardUsers = standardUsers;
+    public void setStandardUserEmails(List<String> standardUserEmails) {
+        this.standardUserEmails = standardUserEmails;
     }
 
     public OffsetDateTime getCreatedDate() {
@@ -177,14 +177,14 @@ public class Workflow {
                 ", description='" + description + '\'' +
                 ", category='" + category + '\'' +
                 ", owner='" + owner + '\'' +
-                ", createdBy='" + createdBy + '\'' +
+                ", createdByEmail='" + createdByEmail + '\'' +
                 ", inputFields=" + inputFields +
                 ", isPublished=" + isPublished +
                 ", isArchived=" + isArchived +
                 ", fieldVisibility=" + fieldVisibility +
                 ", instanceVisibility=" + instanceVisibility +
-                ", adminUsers=" + adminUsers +
-                ", standardUsers=" + standardUsers +
+                ", adminUserEmails=" + adminUserEmails +
+                ", standardUserEmails=" + standardUserEmails +
                 ", createdDate=" + createdDate +
                 '}';
     }

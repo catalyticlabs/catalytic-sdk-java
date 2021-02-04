@@ -10,7 +10,6 @@ public class User {
 
     private UUID id;
     private String teamName;
-    private String username;
     private String email;
     private String fullName;
     private Boolean isTeamAdmin;
@@ -18,10 +17,9 @@ public class User {
     private Boolean isLockedOut;
     private OffsetDateTime createdDate;
 
-    public User(UUID id, String teamName, String username, String email, String fullName, Boolean isTeamAdmin, Boolean isDeactivated, Boolean isLockedOut, OffsetDateTime createdDate) {
+    public User(UUID id, String teamName, String email, String fullName, Boolean isTeamAdmin, Boolean isDeactivated, Boolean isLockedOut, OffsetDateTime createdDate) {
         this.id = id;
         this.teamName = teamName;
-        this.username = username;
         this.email = email;
         this.fullName = fullName;
         this.isTeamAdmin = isTeamAdmin;
@@ -36,14 +34,6 @@ public class User {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {
@@ -106,7 +96,6 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", teamName='" + teamName + '\'' +

@@ -16,7 +16,7 @@ public class WorkflowSearchClause {
     private GuidSearchExpression id;
     private StringSearchExpression name;
     private StringSearchExpression description;
-    private StringSearchExpression owner;
+    private ExactStringSearchExpression ownerEmail;
     private StringSearchExpression category;
     private DateTimeSearchExpression createdDate;
 
@@ -96,27 +96,14 @@ public class WorkflowSearchClause {
         this.description = descriptionExpression;
     }
 
-    public StringSearchExpression getOwner() {
-        return owner;
+    public ExactStringSearchExpression getOwnerEmail() {
+        return ownerEmail;
     }
 
-    public void setOwner(String owner) {
-        StringSearchExpression ownerExpression = new StringSearchExpression();
-        ownerExpression.setIsEqualTo(owner);
-        this.owner = ownerExpression;
-    }
-
-    public void setOwnerContains(String owner) {
-        StringSearchExpression ownerExpression = new StringSearchExpression();
-        ownerExpression.setContains(owner);
-        this.owner = ownerExpression;
-    }
-
-    public void setOwnerBetween(String start, String end) {
-        StringSearchExpression ownerExpression = new StringSearchExpression();
-        StringRange ownerRange = new StringRange(start, end);
-        ownerExpression.setBetween(ownerRange);
-        this.owner = ownerExpression;
+    public void setOwnerEmail(String ownerEmail) {
+        ExactStringSearchExpression ownerEmailExpression = new ExactStringSearchExpression();
+        ownerEmailExpression.setIsEqualTo(ownerEmail);
+        this.ownerEmail = ownerEmailExpression;
     }
 
     public StringSearchExpression getCategory() {
@@ -167,7 +154,7 @@ public class WorkflowSearchClause {
                 ", id=" + id +
                 ", name=" + name +
                 ", description=" + description +
-                ", owner=" + owner +
+                ", ownerEmail=" + ownerEmail +
                 ", category=" + category +
                 ", createdDate=" + createdDate +
                 '}';

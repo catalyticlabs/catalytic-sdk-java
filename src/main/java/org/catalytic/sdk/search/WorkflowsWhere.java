@@ -131,39 +131,14 @@ public class WorkflowsWhere {
     }
 
     /**
-     * Search by owner
+     * Search by owner email
      *
-     * @param owner The owner to search for Workflows by
-     * @return      The search clause
+     * @param ownerEmail    The email of the owner to search for Workflows by
+     * @return              The search clause
      */
-    public static WorkflowSearchClause owner(String owner) {
+    public static WorkflowSearchClause ownerEmail(String ownerEmail) {
         WorkflowSearchClause workflowSearchClause = new WorkflowSearchClause();
-        workflowSearchClause.setOwner(owner);
-        return workflowSearchClause;
-    }
-
-    /**
-     * Search by partial owner
-     *
-     * @param owner The partial owner to search for Workflows by
-     * @return      The search clause
-     */
-    public static WorkflowSearchClause ownerContains(String owner) {
-        WorkflowSearchClause workflowSearchClause = new WorkflowSearchClause();
-        workflowSearchClause.setOwnerContains(owner);
-        return workflowSearchClause;
-    }
-
-    /**
-     * Search by a range of owners
-     *
-     * @param start The inclusive start owner to search for Workflows by
-     * @param end   The inclusive end owner to search for Workflows by
-     * @return      The search clause
-     */
-    public static WorkflowSearchClause ownerBetween(String start, String end) {
-        WorkflowSearchClause workflowSearchClause = new WorkflowSearchClause();
-        workflowSearchClause.setOwnerBetween(start, end);
+        workflowSearchClause.setOwnerEmail(ownerEmail);
         return workflowSearchClause;
     }
 

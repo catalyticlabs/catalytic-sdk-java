@@ -25,16 +25,17 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * BoolSearchExpression
+ * Allows searching for an exact string match, like an email address
  */
+@ApiModel(description = "Allows searching for an exact string match, like an email address")
 
-public class BoolSearchExpression {
+public class ExactStringSearchExpression {
   public static final String SERIALIZED_NAME_IS_EQUAL_TO = "isEqualTo";
   @SerializedName(SERIALIZED_NAME_IS_EQUAL_TO)
-  private Boolean isEqualTo;
+  private String isEqualTo;
 
 
-  public BoolSearchExpression isEqualTo(Boolean isEqualTo) {
+  public ExactStringSearchExpression isEqualTo(String isEqualTo) {
     
     this.isEqualTo = isEqualTo;
     return this;
@@ -47,12 +48,12 @@ public class BoolSearchExpression {
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public Boolean getIsEqualTo() {
+  public String getIsEqualTo() {
     return isEqualTo;
   }
 
 
-  public void setIsEqualTo(Boolean isEqualTo) {
+  public void setIsEqualTo(String isEqualTo) {
     this.isEqualTo = isEqualTo;
   }
 
@@ -65,8 +66,8 @@ public class BoolSearchExpression {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    BoolSearchExpression boolSearchExpression = (BoolSearchExpression) o;
-    return Objects.equals(this.isEqualTo, boolSearchExpression.isEqualTo);
+    ExactStringSearchExpression exactStringSearchExpression = (ExactStringSearchExpression) o;
+    return Objects.equals(this.isEqualTo, exactStringSearchExpression.isEqualTo);
   }
 
   @Override
@@ -78,7 +79,7 @@ public class BoolSearchExpression {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class BoolSearchExpression {\n");
+    sb.append("class ExactStringSearchExpression {\n");
     sb.append("    isEqualTo: ").append(toIndentedString(isEqualTo)).append("\n");
     sb.append("}");
     return sb.toString();

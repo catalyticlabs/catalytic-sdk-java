@@ -11,17 +11,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - isDeactivated property to User entity
 - isLockedOut property to User entity
 - createdDate property to User entity  
-- createdDate property to Workflow entity  
+- createdDate property to Workflow entity
+- rootInstanceId property to Instance entity
+- isTest property to Instance entity
 - Search Users method
 - List Users method
 - Search Workflows method
 - List Workflows method
+- Search Instances method
+- List Instances method
 
-### Deprecated
-- Find Users method
-- Instance.getSteps method
-- Instance.setSteps method
-- Find Workflows method
+### Removed
+- Find Users method (Breaking change)
+- Find Access Tokens method (Breaking change)
+- Instance.getSteps method (Breaking change)
+- Instance.setSteps method (Breaking change)
+- Find Workflows method (Breaking change)
+- Find Instances method (Breaking change)
+- Find Instance Steps method (Breaking change)
+- Find Data Tables method (Breaking change)
+- Find Integrations method (Breaking change)
 
 ### Changed
 - DataTableColumn.type to DataTableColumn.fieldType (Breaking change)
@@ -29,6 +38,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Workflow.setPublished to Workflow.setIsPublished (Breaking change)
 - Workflow.getArchived to Workflow.getIsArchived (Breaking change)
 - Workflow.setArchived to Workflow.setIsArchived (Breaking change)
+- Workflow.createdBy to Workflow.createdByEmail (Breaking change)
+- Workflow.standardUsers to Workflow.standardUserEmails (Breaking change)
+- Workflow.adminUsers to Workflow.adminUserEmails (Breaking change)
+- Instance.status from String to InstanceStatus (Breaking change)
+- Instance.createdBy to Instance.createdByEmail (Breaking change)
+- Instance.visibility from org.catalytic.sdk.generated.model.InstanceVisibilty to InstanceVisibility (Breaking change)
+- Instance.fieldVisibility from org.catalytic.sdk.generated.model.FieldVisibility to FieldVisibility (Breaking change)
+- Field.restrictions to Field.display (Breaking change)
+- DataTableColumn.restrictions to DataTableColumn.display (Breaking change)
 
 ## [1.0.0] - 10-7-2020
 ### Added

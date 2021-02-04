@@ -4,24 +4,18 @@ import org.apache.logging.log4j.Logger;
 import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.AccessToken;
-import org.catalytic.sdk.entities.AccessTokensPage;
 import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
 import org.catalytic.sdk.generated.ApiClient;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.AccessTokensApi;
-import org.catalytic.sdk.generated.api.AuthenticationApi;
 import org.catalytic.sdk.generated.model.AccessTokenCreationRequest;
 import org.catalytic.sdk.generated.model.AccessTokenCreationWithEmailAndPasswordRequest;
 import org.catalytic.sdk.generated.model.WaitForAccessTokenApprovalRequest;
-import org.catalytic.sdk.search.Filter;
-import org.catalytic.sdk.search.SearchUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Credentials client
@@ -31,13 +25,11 @@ public class AccessTokens {
     private String token;
     private static final Logger log = CatalyticLogger.getLogger(AccessTokens.class);
     private AccessTokensApi accessTokensApi;
-    private AuthenticationApi authenticationApi;
 
     public AccessTokens(String token) {
         this.token = token;
         ApiClient apiClient = ConfigurationUtils.getApiClient(token);
         this.accessTokensApi = new AccessTokensApi(apiClient);
-        this.authenticationApi = new AuthenticationApi(apiClient);
     }
 
     /**
@@ -47,12 +39,10 @@ public class AccessTokens {
      *
      * @param token             The token to be used
      * @param accessTokensApi   The mocked UserCredentialsApi
-     * @param authenticationApi The mocked AuthenticationApi
      */
-    public AccessTokens(String token, AccessTokensApi accessTokensApi, AuthenticationApi authenticationApi) {
+    public AccessTokens(String token, AccessTokensApi accessTokensApi) {
         this.token = token;
         this.accessTokensApi = accessTokensApi;
-        this.authenticationApi = authenticationApi;
     }
 
     /**
@@ -81,99 +71,6 @@ public class AccessTokens {
         }
         AccessToken accessToken = createAccessToken(internalAccessToken);
         return accessToken;
-    }
-
-    /**
-     * Finds all Credentials
-     *
-     * @return                              A CredentialsPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding users
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public AccessTokensPage find() throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return find(null, null, null);
-    }
-
-    /**
-     * Finds Credentials by a variety of filters
-     *
-     * @param pageToken                     The token of the page to fetch
-     * @return                              A CredentialsPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding users
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public AccessTokensPage find(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.find(null, pageToken, null);
-    }
-
-    /**
-     * Finds Credentials by a variety of filters
-     *
-     * @param filter                        The filter to search users by
-     * @return                              A CredentialsPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding users
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public AccessTokensPage find(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return find(filter, null, null);
-    }
-
-    /**
-     * Finds Credentials by a variety of filters
-     *
-     * @param filter                        The filter to search users by
-     * @param pageToken                     The token of the page to fetch
-     * @return                              A CredentialsPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding users
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public AccessTokensPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return find(filter, pageToken, null);
-    }
-
-    /**
-     * Finds Credentials by a variety of filters
-     *
-     * @param filter                        The filter to search users by
-     * @param pageToken                     The token of the page to fetch
-     * @param pageSize                      The number of users per page to fetch
-     * @return                              A CredentialsPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding users
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public AccessTokensPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        ClientHelpers.verifyAccessTokenExists(this.token);
-
-        org.catalytic.sdk.generated.model.AccessTokensPage results;
-        List<AccessToken> allCredentials = new ArrayList<>();
-        String text = null;
-
-        if (filter != null) {
-            text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
-        }
-
-        try {
-            log.debug("Finding users with text: {}", text);
-            results = this.accessTokensApi.findAccessTokens(text, null, null, null, null, null, null, null, null, null, null, pageToken, pageSize);
-        } catch (ApiException e) {
-            if (e.getCode() == 401) {
-                throw new UnauthorizedException(e);
-            }
-            throw new InternalErrorException("Unable to find users", e);
-        }
-
-        for (org.catalytic.sdk.generated.model.AccessToken internalCredentials : results.getAccessTokens()) {
-            AccessToken accessToken = createAccessToken(internalCredentials);
-            allCredentials.add(accessToken);
-        }
-
-        AccessTokensPage accessTokensPage = new AccessTokensPage(allCredentials, results.getCount(), results.getNextPageToken());
-        return accessTokensPage;
     }
 
     /**
@@ -211,7 +108,7 @@ public class AccessTokens {
         request.setName(name);
         try {
             log.debug("Creating Credentials with email {}, teamName {}, and name {}", teamName, email, name);
-            internalCredentials = this.authenticationApi.createAndApproveAccessToken(request);
+            internalCredentials = this.accessTokensApi.createAndApproveAccessToken(request);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
@@ -256,7 +153,7 @@ public class AccessTokens {
         request.setName(name);
         try {
             log.debug("Creating Credentials with teamName {} and name {}", teamName, name);
-            internalAccessToken = this.authenticationApi.createAccessToken(request);
+            internalAccessToken = this.accessTokensApi.createAccessToken(request);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
@@ -308,7 +205,7 @@ public class AccessTokens {
         request.setToken(accessToken.getToken());
         request.setWaitTimeMillis(waitTimeInMillis);
         try {
-            this.authenticationApi.waitForAccessTokenApproval(request);
+            this.accessTokensApi.waitForAccessTokenApproval(request);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);

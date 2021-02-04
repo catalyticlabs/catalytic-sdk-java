@@ -12,8 +12,8 @@ import org.catalytic.sdk.generated.api.InstancesApi;
 import org.catalytic.sdk.generated.model.CompleteStepRequest;
 import org.catalytic.sdk.generated.model.FieldUpdateRequest;
 import org.catalytic.sdk.generated.model.StartInstanceRequest;
-import org.catalytic.sdk.search.Filter;
-import org.catalytic.sdk.search.SearchUtils;
+import org.catalytic.sdk.search.InstanceSearchClause;
+import org.catalytic.sdk.search.InstanceStatusSearchExpression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,101 +81,121 @@ public class Instances extends BaseClient {
     }
 
     /**
-     * Find all instances
+     * Get all Instances
      *
-     * @return                              An InstancesPage which contains the results
+     * @return                              An InstancesPage object which contains the all the Instances from all pages of results
      * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding workflows
+     * @throws InternalErrorException       If any error finding Workflows
      * @throws UnauthorizedException        If unauthorized
      */
-    public InstancesPage find() throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.find(null, null, null);
-    }
+    public InstancesPage list() throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        // Get the first page of Instances
+        InstancesPage instancesPage = search(null, null);
+        InstancesPage results = instancesPage;
 
-    /**
-     * Find all instances
-     *
-     * @param pageToken                     The token of the page to fetch
-     * @return                              An InstancesPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding workflows
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public InstancesPage find(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.find(null, pageToken, null);
-    }
-
-    /**
-     * Find instances by a variety of criteria
-     *
-     * @param filter                        The filter criteria to search instances by
-     * @return                              An InstancesPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding workflows
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public InstancesPage find(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.find(filter, null, null);
-    }
-
-    /**
-     * Find instances by a variety of criteria
-     *
-     * @param filter                        The filter criteria to search instances by
-     * @param pageToken                     The token of the page to fetch
-     * @return                              An InstancesPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding workflows
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public InstancesPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.find(filter, pageToken, null);
-    }
-
-    /**
-     * Find instances by a variety of criteria
-     *
-     * @param filter                        The filter criteria to search instances by
-     * @param pageToken                     The token of the page to fetch
-     * @param pageSize                      The number of workflows per page to fetch
-     * @return                              An InstancesPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding workflows
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public InstancesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        ClientHelpers.verifyAccessTokenExists(this.token);
-
-        String text = null;
-        String owner = null;
-        String status = null;
-        String workflowId = null;
-
-        if (filter != null) {
-            text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
-            owner = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "owner");
-            status = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "status");
-            workflowId = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "workflowId");
+        // Loop through the rest of the pages and add the Instances to results
+        while(!instancesPage.getNextPageToken().isEmpty()) {
+            instancesPage = search(null, instancesPage.getNextPageToken());
+            results.addInstances(instancesPage.getInstances(), instancesPage.getNextPageToken());
         }
 
-        org.catalytic.sdk.generated.model.InstancesPage internalInstances = null;
+        return results;
+    }
+
+    /**
+     * Finds Instances by a variety of filters
+     *
+     * @param instanceSearchClause         The search criteria to search Instances by
+     * @return                              An InstancesPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Workflows
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public InstancesPage search(InstanceSearchClause instanceSearchClause) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        return search(instanceSearchClause, null, null);
+    }
+
+    /**
+     * Finds Instances by a variety of filters
+     *
+     * @param instanceSearchClause          The search criteria to search Instances by
+     * @param pageToken                     The token of the page to fetch
+     * @return                              An InstancesPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Workflows
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public InstancesPage search(InstanceSearchClause instanceSearchClause, String pageToken) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        return search(instanceSearchClause, pageToken, null);
+    }
+
+    /**
+     * Finds Instances by a variety of filters
+     *
+     * @param instanceSearchClause          The search criteria to search Instances by
+     * @param pageToken                     The token of the page to fetch
+     * @param pageSize                      The number of Workflows to fetch per page
+     * @return                              A WorkflowsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Workflows
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public InstancesPage search(InstanceSearchClause instanceSearchClause, String pageToken, Integer pageSize) throws AccessTokenNotFoundException, InternalErrorException, UnauthorizedException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
+        org.catalytic.sdk.generated.model.InstancesPage results;
+        List<Instance> instances = new ArrayList<>();
+
+        if (instanceSearchClause == null) {
+            instanceSearchClause = new InstanceSearchClause();
+        }
+
+        org.catalytic.sdk.generated.model.GuidSearchExpression internalId = createInternalGuidSearchExpression(instanceSearchClause.getId());
+        org.catalytic.sdk.generated.model.GuidSearchExpression workflowId = createInternalGuidSearchExpression(instanceSearchClause.getWorkflowId());
+        org.catalytic.sdk.generated.model.GuidSearchExpression rootInstanceId = createInternalGuidSearchExpression(instanceSearchClause.getRootInstanceId());
+        org.catalytic.sdk.generated.model.ExactStringSearchExpression internalOwnerEmail = createInternalExactStringSearchExpression(instanceSearchClause.getOwnerEmail());
+        org.catalytic.sdk.generated.model.BoolSearchExpression internalIsTest = createInternalBooleanSearchExpression(instanceSearchClause.getIsTest());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalName = createInternalStringSearchExpression(instanceSearchClause.getName());
+        org.catalytic.sdk.generated.model.InstanceStatusSearchExpression internalStatus = createInternalInstanceStatusSearchExpression(instanceSearchClause.getStatus());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalDescription = createInternalStringSearchExpression(instanceSearchClause.getDescription());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalCategory = createInternalStringSearchExpression(instanceSearchClause.getCategory());
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression internalStartDate = createInternalDateTimeSearchExpression(instanceSearchClause.getStartDate());
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression internalEndDate = createInternalDateTimeSearchExpression(instanceSearchClause.getEndDate());
+
+        List<org.catalytic.sdk.generated.model.InstanceSearchClause> internalAnd = createInternalInstanceSearchClause(instanceSearchClause.getAnd());
+        List<org.catalytic.sdk.generated.model.InstanceSearchClause> internalOr = createInternalInstanceSearchClause(instanceSearchClause.getOr());
+
+        org.catalytic.sdk.generated.model.InstanceSearchClause instanceSearchRequest = new org.catalytic.sdk.generated.model.InstanceSearchClause();
+        instanceSearchRequest.setAnd(internalAnd);
+        instanceSearchRequest.setOr(internalOr);
+        instanceSearchRequest.setId(internalId);
+        instanceSearchRequest.setWorkflowId(workflowId);
+        instanceSearchRequest.setRootInstanceId(rootInstanceId);
+        instanceSearchRequest.setOwnerEmail(internalOwnerEmail);
+        instanceSearchRequest.setIsTest(internalIsTest);
+        instanceSearchRequest.setName(internalName);
+        instanceSearchRequest.setStatus(internalStatus);
+        instanceSearchRequest.setDescription(internalDescription);
+        instanceSearchRequest.setCategory(internalCategory);
+        instanceSearchRequest.setStartDate(internalStartDate);
+        instanceSearchRequest.setEndDate(internalEndDate);
+
         try {
-            log.debug("Finding instances with text: {}, owner: {}, status: {}, workflowId: {}", text, owner, status, workflowId);
-            internalInstances = this.instancesApi.findInstances(text, status, workflowId, null, owner, null, null, null, null, null, null, pageToken, pageSize);
+            log.debug("Finding Instances with criteria {}", () -> instanceSearchRequest);
+            results = this.instancesApi.searchInstances(pageToken, pageSize, instanceSearchRequest);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
             }
-            throw new InternalErrorException("Unable to find instances", e);
+            throw new InternalErrorException("Unable to find Instances", e);
         }
-        List<Instance> instances = new ArrayList<>();
 
-        for (org.catalytic.sdk.generated.model.Instance internalInstance : internalInstances.getInstances()) {
+        for (org.catalytic.sdk.generated.model.Instance internalInstance : results.getInstances()) {
             Instance instance = createInstance(internalInstance);
             instances.add(instance);
         }
 
-        InstancesPage instancesPage = new InstancesPage(instances, internalInstances.getCount(), internalInstances.getNextPageToken());
+        InstancesPage instancesPage = new InstancesPage(instances, results.getCount(), results.getNextPageToken());
         return instancesPage;
     }
 
@@ -284,127 +304,39 @@ public class Instances extends BaseClient {
         return step;
     }
 
-    /**
-     * Gets all the steps for a specific instance id
-     *
-     * @param instanceId                    The id of the instances to get steps for
-     * @return                              The InstanceStepsPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any errors getting steps
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public InstanceStepsPage getSteps(String instanceId) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        ClientHelpers.verifyAccessTokenExists(this.token);
-
-        org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceSteps;
-        try {
-            log.debug("Getting all the steps for instance {}", () -> instanceId);
-            internalInstanceSteps = this.instanceStepsApi.findInstanceSteps(instanceId, null, null, null, null, null, null, null, null, null, null, null, null, null);
-        } catch (ApiException e) {
-            if (e.getCode() == 401) {
-                throw new UnauthorizedException(e);
-            }
-            throw new InternalErrorException("Unable to get steps for instance " + instanceId, e);
-        }
-
-        List<InstanceStep> instanceSteps = new ArrayList<>();
-
-        for (org.catalytic.sdk.generated.model.InstanceStep internalInstanceStep : internalInstanceSteps.getSteps()) {
-            InstanceStep instanceStep = createInstanceStep(internalInstanceStep);
-            instanceSteps.add(instanceStep);
-        }
-
-        InstanceStepsPage instanceStepsPage = new InstanceStepsPage(instanceSteps, internalInstanceSteps.getCount(), internalInstanceSteps.getNextPageToken());
-        return instanceStepsPage;
-    }
-
-    /**
-     * Search for steps
-     *
-     * @param pageToken                     The token of the page to fetch
-     * @return                              An InstanceStepsPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any errors finding steps
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public InstanceStepsPage findSteps(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.findSteps(null, pageToken, null);
-    }
-
-    /**
-     * Search for steps
-     *
-     * @param filter                        The filter criteria to search instance steps by
-     * @return                              An InstanceStepsPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any errors finding steps
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public InstanceStepsPage findSteps(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.findSteps(filter, null, null);
-    }
-
-    /**
-     * Search for steps
-     *
-     * @param filter                        The filter criteria to search instance steps by
-     * @param pageToken                     The token of the page to fetch
-     * @return                              An InstanceStepsPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any errors finding steps
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public InstanceStepsPage findSteps(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.findSteps(filter, pageToken, null);
-    }
-
-    /**
-     * Search for steps
-     *
-     * @param filter                        The filter criteria to search instance steps by
-     * @param pageToken                     The token of the page to fetch
-     * @param pageSize                      The number of instance steps per page to fetch
-     * @return                              An InstanceStepsPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any errors finding steps
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public InstanceStepsPage findSteps(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        ClientHelpers.verifyAccessTokenExists(this.token);
-
-        // The REST api supports wildcard instance id when searching for instance steps
-        // https://cloud.google.com/apis/design/design_patterns#list_sub-collections
-        String wildcardInstanceId = "-";
-        String text = null;
-        String workflowId = null;
-        String assignee = null;
-
-        if (filter != null) {
-            text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
-            workflowId = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "workflowId");
-            assignee = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "assignee");
-        }
-
-        org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceStepsPage;
-        try {
-            log.debug("Finding steps with text: {}, workflowId: {}, assignee: {}", text, workflowId, assignee);
-            internalInstanceStepsPage = this.instanceStepsApi.findInstanceSteps(wildcardInstanceId, text, null, workflowId, null, null, null, assignee, null, null, null, null, pageToken, pageSize);
-        } catch (ApiException e) {
-            if (e.getCode() == 401) {
-                throw new UnauthorizedException(e);
-            }
-            throw new InternalErrorException("Unable to find steps", e);
-        }
-        List<InstanceStep> steps = new ArrayList<>();
-
-        for (org.catalytic.sdk.generated.model.InstanceStep internalStep : internalInstanceStepsPage.getSteps()) {
-            InstanceStep step = createInstanceStep(internalStep);
-            steps.add(step);
-        }
-
-        InstanceStepsPage instanceStepsPage = new InstanceStepsPage(steps, internalInstanceStepsPage.getCount(), internalInstanceStepsPage.getNextPageToken());
-        return instanceStepsPage;
-    }
+//    /**
+//     * Gets all the steps for a specific instance id
+//     *
+//     * @param instanceId                    The id of the instances to get steps for
+//     * @return                              The InstanceStepsPage which contains the results
+//     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+//     * @throws InternalErrorException       If any errors getting steps
+//     * @throws UnauthorizedException        If unauthorized
+//     */
+//    public InstanceStepsPage getSteps(String instanceId) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+//        ClientHelpers.verifyAccessTokenExists(this.token);
+//
+//        org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceSteps;
+//        try {
+//            log.debug("Getting all the steps for instance {}", () -> instanceId);
+//            internalInstanceSteps = this.instanceStepsApi.findInstanceSteps(instanceId, null, null, null, null, null, null, null, null, null, null, null, null, null);
+//        } catch (ApiException e) {
+//            if (e.getCode() == 401) {
+//                throw new UnauthorizedException(e);
+//            }
+//            throw new InternalErrorException("Unable to get steps for instance " + instanceId, e);
+//        }
+//
+//        List<InstanceStep> instanceSteps = new ArrayList<>();
+//
+//        for (org.catalytic.sdk.generated.model.InstanceStep internalInstanceStep : internalInstanceSteps.getSteps()) {
+//            InstanceStep instanceStep = createInstanceStep(internalInstanceStep);
+//            instanceSteps.add(instanceStep);
+//        }
+//
+//        InstanceStepsPage instanceStepsPage = new InstanceStepsPage(instanceSteps, internalInstanceSteps.getCount(), internalInstanceSteps.getNextPageToken());
+//        return instanceStepsPage;
+//    }
 
     /**
      * Completes a specific step
@@ -485,31 +417,30 @@ public class Instances extends BaseClient {
      */
     private Instance createInstance(org.catalytic.sdk.generated.model.Instance internalInstance)
     {
-        String status = null;
-
-        if (internalInstance.getStatus() != null) {
-            status = internalInstance.getStatus().getValue();
-        }
-
         List<Field> fields = createFields(internalInstance.getFields());
+        InstanceStatus status = InstanceStatus.valueOf(internalInstance.getStatus().name());
+        FieldVisibility fieldVisibility = FieldVisibility.valueOf(internalInstance.getFieldVisibility().name());
+        InstanceVisibility visibility = InstanceVisibility.valueOf(internalInstance.getVisibility().name());
 
         // Create an external Instance
         Instance instance = new Instance(
                 internalInstance.getId(),
                 internalInstance.getWorkflowId(),
+                internalInstance.getRootInstanceId(),
                 internalInstance.getName(),
                 internalInstance.getTeamName(),
                 internalInstance.getDescription(),
                 internalInstance.getCategory(),
-                internalInstance.getOwner(),
-                internalInstance.getCreatedBy(),
+                internalInstance.getIsTest(),
+                internalInstance.getOwnerEmail(),
+                internalInstance.getCreatedByEmail(),
                 fields,
                 status,
                 internalInstance.getStartDate(),
                 internalInstance.getEndDate(),
-                internalInstance.getFieldVisibility(),
-                internalInstance.getVisibility(),
-                internalInstance.getVisibleToUsers()
+                fieldVisibility,
+                visibility,
+                internalInstance.getVisibleToUserEmails()
         );
 
         return instance;
@@ -543,7 +474,7 @@ public class Instances extends BaseClient {
             internalInstanceStep.getPosition(),
             internalInstanceStep.getDescription(),
             status,
-            internalInstanceStep.getAssignedTo(),
+            internalInstanceStep.getAssignedToEmail(),
             internalInstanceStep.getStartDate(),
             internalInstanceStep.getEndDate(),
             outputFields
@@ -569,5 +500,70 @@ public class Instances extends BaseClient {
         }
 
         return steps;
+    }
+
+    /**
+     * Create an internal InstanceStatusSearchExpression from an external InstanceStatusSearchExpression
+     *
+     * @param instanceStatusSearchExpression    The external InstanceStatusSearchExpression to create an internal one from
+     * @return                                  An internal InstanceStatusSearchExpression
+     */
+    org.catalytic.sdk.generated.model.InstanceStatusSearchExpression createInternalInstanceStatusSearchExpression(InstanceStatusSearchExpression instanceStatusSearchExpression) {
+        org.catalytic.sdk.generated.model.InstanceStatusSearchExpression internalInstanceStatusSearchExpression = null;
+
+        if (instanceStatusSearchExpression != null) {
+            org.catalytic.sdk.generated.model.InstanceStatus status = org.catalytic.sdk.generated.model.InstanceStatus.fromValue(instanceStatusSearchExpression.getIsEqualTo().getValue());
+            internalInstanceStatusSearchExpression = new org.catalytic.sdk.generated.model.InstanceStatusSearchExpression();
+            internalInstanceStatusSearchExpression.setIsEqualTo(status);
+        }
+        return internalInstanceStatusSearchExpression;
+    }
+
+    /**
+     * Create an internal WorkflowSearchClause from an external WorkflowSearchClause
+     *
+     * @param instanceSearchClause  The external InstanceSearchClause to create an internal one from
+     * @return                      An internal InstanceSearchClause
+     */
+    private List<org.catalytic.sdk.generated.model.InstanceSearchClause> createInternalInstanceSearchClause(List<InstanceSearchClause> instanceSearchClause) {
+        List<org.catalytic.sdk.generated.model.InstanceSearchClause> internalInstanceSearchClauses = null;
+
+        if (instanceSearchClause != null) {
+
+            internalInstanceSearchClauses = new ArrayList<>();
+
+            for (InstanceSearchClause searchClause : instanceSearchClause) {
+                org.catalytic.sdk.generated.model.GuidSearchExpression internalId = createInternalGuidSearchExpression(searchClause.getId());
+                org.catalytic.sdk.generated.model.GuidSearchExpression internalWorkflowId = createInternalGuidSearchExpression(searchClause.getWorkflowId());
+                org.catalytic.sdk.generated.model.GuidSearchExpression internalRootInstanceId = createInternalGuidSearchExpression(searchClause.getRootInstanceId());
+                org.catalytic.sdk.generated.model.ExactStringSearchExpression internalOwnerEmail = createInternalExactStringSearchExpression(searchClause.getOwnerEmail());
+                org.catalytic.sdk.generated.model.BoolSearchExpression internalIsTest = createInternalBooleanSearchExpression(searchClause.getIsTest());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalName = createInternalStringSearchExpression(searchClause.getName());
+                org.catalytic.sdk.generated.model.InstanceStatusSearchExpression internalStatus = createInternalInstanceStatusSearchExpression(searchClause.getStatus());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalDescription = createInternalStringSearchExpression(searchClause.getDescription());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalCategory = createInternalStringSearchExpression(searchClause.getCategory());
+                org.catalytic.sdk.generated.model.DateTimeSearchExpression internalStartDate = createInternalDateTimeSearchExpression(searchClause.getStartDate());
+                org.catalytic.sdk.generated.model.DateTimeSearchExpression internalEndDate = createInternalDateTimeSearchExpression(searchClause.getEndDate());
+
+                org.catalytic.sdk.generated.model.InstanceSearchClause internalInstanceSearchClause = new org.catalytic.sdk.generated.model.InstanceSearchClause();
+                internalInstanceSearchClause.setId(internalId);
+                internalInstanceSearchClause.setWorkflowId(internalWorkflowId);
+                internalInstanceSearchClause.setRootInstanceId(internalRootInstanceId);
+                internalInstanceSearchClause.setOwnerEmail(internalOwnerEmail);
+                internalInstanceSearchClause.setIsTest(internalIsTest);
+                internalInstanceSearchClause.setName(internalName);
+                internalInstanceSearchClause.setStatus(internalStatus);
+                internalInstanceSearchClause.setDescription(internalDescription);
+                internalInstanceSearchClause.setCategory(internalCategory);
+                internalInstanceSearchClause.setStartDate(internalStartDate);
+                internalInstanceSearchClause.setEndDate(internalEndDate);
+                List<org.catalytic.sdk.generated.model.InstanceSearchClause> internalAnd = createInternalInstanceSearchClause(searchClause.getAnd());
+                List<org.catalytic.sdk.generated.model.InstanceSearchClause> internalOr = createInternalInstanceSearchClause(searchClause.getOr());
+                internalInstanceSearchClause.setAnd(internalAnd);
+                internalInstanceSearchClause.setOr(internalOr);
+                internalInstanceSearchClauses.add(internalInstanceSearchClause);
+            }
+        }
+        return internalInstanceSearchClauses;
     }
 }

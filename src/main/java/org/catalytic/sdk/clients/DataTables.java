@@ -5,8 +5,7 @@ import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.DataTable;
 import org.catalytic.sdk.entities.DataTableColumn;
-import org.catalytic.sdk.entities.DataTablesPage;
-import org.catalytic.sdk.entities.FieldRestrictions;
+import org.catalytic.sdk.entities.FieldDisplayOptions;
 import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.DataTableNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
@@ -15,8 +14,6 @@ import org.catalytic.sdk.generated.ApiClient;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.DataTablesApi;
 import org.catalytic.sdk.generated.model.DataTableExportFormat;
-import org.catalytic.sdk.search.Filter;
-import org.catalytic.sdk.search.SearchUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,99 +86,6 @@ public class DataTables {
 
         DataTable dataTable = createDataTable(internalDataTable);
         return dataTable;
-    }
-
-    /**
-     * Find all dataTables
-     *
-     * @return                              A DataTablesPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any errors finding tables
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public DataTablesPage find() throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.find(null, null, null);
-    }
-
-    /**
-     * Finds dataTables by a variety of filters
-     *
-     * @param filter                        The filter to search dataTables by
-     * @return                              A DataTablesPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any errors finding tables
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public DataTablesPage find(Filter filter) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.find(filter, null, null);
-    }
-
-    /**
-     * Finds dataTables by a variety of filters
-     *
-     * @param pageToken                     The token of the page to fetch
-     * @return                              A DataTablesPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any errors finding tables
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public DataTablesPage find(String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.find(null, pageToken, null);
-    }
-
-    /**
-     * Finds dataTables by a variety of filters
-     *
-     * @param filter                        The filter to search dataTables by
-     * @param pageToken                     The token of the page to fetch
-     * @return                              A DataTablesPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any errors finding tables
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public DataTablesPage find(Filter filter, String pageToken) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        return this.find(filter, pageToken, null);
-    }
-
-    /**
-     * Finds dataTables by a variety of filters
-     *
-     * @param filter                        The filter to search dataTables by
-     * @param pageToken                     The token of the page to fetch
-     * @param pageSize                      The number of dataTables per page to fetch
-     * @return                              A DataTablesPage object which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any errors finding tables
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public DataTablesPage find(Filter filter, String pageToken, Integer pageSize) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-        ClientHelpers.verifyAccessTokenExists(this.token);
-
-        String text = null;
-
-        if (filter != null) {
-            text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
-        }
-
-        org.catalytic.sdk.generated.model.DataTablesPage internalDataTables = null;
-        try {
-            log.debug("Finding dataTables with text {}", text);
-            internalDataTables = this.dataTablesApi.findDataTables(text, null, null, null, null, null, null, null, null, null, null, pageToken, pageSize);
-        } catch (ApiException e) {
-            if (e.getCode() == 401) {
-                throw new UnauthorizedException(e);
-            }
-            throw new InternalErrorException("Unable to find dataTables", e);
-        }
-        List<DataTable> dataTables = new ArrayList<>();
-
-        for (org.catalytic.sdk.generated.model.DataTable internalInstance : internalDataTables.getDataTables()) {
-            DataTable dataTable = createDataTable(internalInstance);
-            dataTables.add(dataTable);
-        }
-
-        DataTablesPage dataTablesPage = new DataTablesPage(dataTables, internalDataTables.getCount(), internalDataTables.getNextPageToken());
-        return dataTablesPage;
     }
 
     /**
@@ -414,9 +318,9 @@ public class DataTables {
      * @return                  The created DataTableColumn object
      */
     private DataTableColumn createDataTableColumn(org.catalytic.sdk.generated.model.DataTableColumn internalColumn) {
-        FieldRestrictions restrictions = new FieldRestrictions(
-                internalColumn.getRestrictions().getChoices(),
-                internalColumn.getRestrictions().getValueRequired()
+        FieldDisplayOptions display = new FieldDisplayOptions(
+                internalColumn.getDisplay().getChoices(),
+                internalColumn.getDisplay().getValueRequired()
         );
 
 
@@ -424,7 +328,7 @@ public class DataTables {
                 internalColumn.getName(),
                 internalColumn.getFieldType(),
                 internalColumn.getReferenceName(),
-                restrictions
+                display
         );
 
         return column;

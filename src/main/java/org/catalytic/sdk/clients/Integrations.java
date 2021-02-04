@@ -7,14 +7,11 @@ import org.catalytic.sdk.entities.Field;
 import org.catalytic.sdk.entities.Integration;
 import org.catalytic.sdk.entities.IntegrationConfiguration;
 import org.catalytic.sdk.entities.IntegrationConnection;
-import org.catalytic.sdk.entities.IntegrationsPage;
 import org.catalytic.sdk.exceptions.*;
 import org.catalytic.sdk.generated.ApiClient;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.IntegrationsApi;
 import org.catalytic.sdk.generated.model.*;
-import org.catalytic.sdk.search.Filter;
-import org.catalytic.sdk.search.SearchUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,101 +71,6 @@ public class Integrations extends BaseClient {
         }
         Integration integration = createIntegration(internalIntegration);
         return integration;
-    }
-
-    /**
-     * Find all Integrations
-     *
-     * @return                              An IntegrationsPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding Integrations
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public IntegrationsPage find () throws UnauthorizedException, InternalErrorException, AccessTokenNotFoundException {
-        return this.find(null, null, null);
-    }
-
-    /**
-     * Find Integrations by a variety of criteria
-     *
-     * @param pageToken                     The token of the page to fetch
-     * @return                              An IntegrationsPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding Integrations
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public IntegrationsPage find (String pageToken) throws UnauthorizedException, InternalErrorException, AccessTokenNotFoundException {
-        return this.find(null, pageToken, null);
-    }
-
-    /**
-     * Find Integrations by a variety of criteria
-     *
-     * @param filter                        The filter criteria to search Integrations by
-     * @return                              An IntegrationsPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding Integrations
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public IntegrationsPage find(Filter filter) throws AccessTokenNotFoundException, UnauthorizedException, InternalErrorException {
-        return this.find(filter, null, null);
-    }
-
-    /**
-     * Find Integrations by a variety of criteria
-     *
-     * @param filter                        The filter criteria to search Integrations by
-     * @param pageToken                     The token of the page to fetch
-     * @return                              An IntegrationsPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding Integrations
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public IntegrationsPage find(Filter filter, String pageToken) throws AccessTokenNotFoundException, UnauthorizedException, InternalErrorException {
-        return this.find(filter, pageToken, null);
-    }
-
-    /**
-     * Find Integrations by a variety of criteria
-     *
-     * @param filter                        The filter criteria to search instances by
-     * @param pageToken                     The token of the page to fetch
-     * @param pageSize                      The number of workflows per page to fetch
-     * @return                              An InstancesPage which contains the results
-     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If any error finding workflows
-     * @throws UnauthorizedException        If unauthorized
-     */
-    public IntegrationsPage find(Filter filter, String pageToken, Integer pageSize) throws AccessTokenNotFoundException, UnauthorizedException, InternalErrorException {
-        ClientHelpers.verifyAccessTokenExists(this.token);
-
-        String text = null;
-
-        if (filter != null) {
-            text = SearchUtils.getSearchCriteriaValueByKey(filter.searchFilters, "text");
-        }
-
-        org.catalytic.sdk.generated.model.IntegrationsPage internalIntegrations = null;
-
-        try {
-            log.debug("Finding Integrtaions with text: {}", text);
-            internalIntegrations = this.integrationsApi.findIntegrations(text, null, null, null, null, null, null, null, null, null, null, pageToken, pageSize);
-        } catch (ApiException e) {
-            if (e.getCode() == 401) {
-                throw new UnauthorizedException(e);
-            }
-            throw new InternalErrorException("Unable to find Integrations", e);
-        }
-
-        List<Integration> integrations = new ArrayList<>();
-
-        for (org.catalytic.sdk.generated.model.Integration internalIntegration : internalIntegrations.getIntegrations()) {
-            Integration integration = createIntegration(internalIntegration);
-            integrations.add(integration);
-        }
-
-        IntegrationsPage integrationsPage = new IntegrationsPage(integrations, internalIntegrations.getCount(), internalIntegrations.getNextPageToken());
-        return integrationsPage;
     }
 
     /**

@@ -1,8 +1,5 @@
 package org.catalytic.sdk.entities;
 
-import org.catalytic.sdk.generated.model.FieldVisibility;
-import org.catalytic.sdk.generated.model.InstanceVisibilty;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -14,59 +11,42 @@ public class Instance {
 
     private UUID id;
     private UUID workflowId;
+    private UUID rootInstanceId;
     private String name;
     private String teamName;
     private String description;
     private String category;
-    private String owner;
-    private String createdBy;
-    private List<InstanceStep> steps;
+    private Boolean isTest;
+    private String ownerEmail;
+    private String createdByEmail;
     private List<Field> fields;
-    private String status;
+    private InstanceStatus status;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private FieldVisibility fieldVisibility;
-    private InstanceVisibilty visibility;
-    private List<String> visibleToUsers;
+    private InstanceVisibility visibility;
+    private List<String> visibleToUserEmails;
 
     public Instance() {}
 
-    public Instance(UUID id, UUID workflowId, String name, String teamName, String description, String category, String owner, String createdBy, List<InstanceStep> steps, List<Field> fields, String status, OffsetDateTime startDate, OffsetDateTime endDate, FieldVisibility fieldVisibility, InstanceVisibilty visibility, List<String> visibleToUsers) {
+    public Instance(UUID id, UUID workflowId, UUID rootInstanceId, String name, String teamName, String description, String category, Boolean isTest, String ownerEmail, String createdByEmail, List<Field> fields, InstanceStatus status, OffsetDateTime startDate, OffsetDateTime endDate, FieldVisibility fieldVisibility, InstanceVisibility visibility, List<String> visibleToUserEmails) {
         this.id = id;
         this.workflowId = workflowId;
+        this.rootInstanceId = rootInstanceId;
         this.name = name;
         this.teamName = teamName;
         this.description = description;
         this.category = category;
-        this.owner = owner;
-        this.createdBy = createdBy;
-        this.steps = steps;
+        this.isTest = isTest;
+        this.ownerEmail = ownerEmail;
+        this.createdByEmail = createdByEmail;
         this.fields = fields;
         this.status = status;
         this.startDate = startDate;
         this.endDate = endDate;
         this.fieldVisibility = fieldVisibility;
         this.visibility = visibility;
-        this.visibleToUsers = visibleToUsers;
-    }
-
-    public Instance(UUID id, UUID workflowId, String name, String teamName, String description, String category, String owner, String createdBy, List<Field> fields, String status, OffsetDateTime startDate, OffsetDateTime endDate, FieldVisibility fieldVisibility, InstanceVisibilty visibility, List<String> visibleToUsers) {
-        this.id = id;
-        this.workflowId = workflowId;
-        this.name = name;
-        this.teamName = teamName;
-        this.description = description;
-        this.category = category;
-        this.owner = owner;
-        this.createdBy = createdBy;
-//        this.steps = steps;
-        this.fields = fields;
-        this.status = status;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.fieldVisibility = fieldVisibility;
-        this.visibility = visibility;
-        this.visibleToUsers = visibleToUsers;
+        this.visibleToUserEmails = visibleToUserEmails;
     }
 
     public UUID getId() {
@@ -83,6 +63,14 @@ public class Instance {
 
     public void setWorkflowId(UUID workflowId) {
         this.workflowId = workflowId;
+    }
+
+    public UUID getRootInstanceId() {
+        return rootInstanceId;
+    }
+
+    public void setRootInstanceId(UUID rootInstanceId) {
+        this.rootInstanceId = rootInstanceId;
     }
 
     public String getName() {
@@ -117,30 +105,28 @@ public class Instance {
         this.category = category;
     }
 
-    public String getOwner() {
-        return owner;
+    public Boolean getIsTest() {
+        return isTest;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setIsTest(Boolean test) {
+        isTest = test;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
+    public String getOwnerEmail() {
+        return ownerEmail;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
+    public void setOwnerEmail(String ownerEmail) {
+        this.ownerEmail = ownerEmail;
     }
 
-    @Deprecated
-    public List<InstanceStep> getSteps() {
-        return steps;
+    public String getCreatedByEmail() {
+        return createdByEmail;
     }
 
-    @Deprecated
-    public void setSteps(List<InstanceStep> steps) {
-        this.steps = steps;
+    public void setCreatedByEmail(String createdByEmail) {
+        this.createdByEmail = createdByEmail;
     }
 
     public List<Field> getFields() {
@@ -151,11 +137,11 @@ public class Instance {
         this.fields = fields;
     }
 
-    public String getStatus() {
+    public InstanceStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(InstanceStatus status) {
         this.status = status;
     }
 
@@ -183,20 +169,20 @@ public class Instance {
         this.fieldVisibility = fieldVisibility;
     }
 
-    public InstanceVisibilty getVisibility() {
+    public InstanceVisibility getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(InstanceVisibilty visibility) {
+    public void setVisibility(InstanceVisibility visibility) {
         this.visibility = visibility;
     }
 
-    public List<String> getVisibleToUsers() {
-        return visibleToUsers;
+    public List<String> getVisibleToUserEmails() {
+        return visibleToUserEmails;
     }
 
-    public void setVisibleToUsers(List<String> visibleToUsers) {
-        this.visibleToUsers = visibleToUsers;
+    public void setVisibleToUserEmails(List<String> visibleToUsers) {
+        this.visibleToUserEmails = visibleToUserEmails;
     }
 
     @Override
@@ -204,20 +190,21 @@ public class Instance {
         return "Instance{" +
                 "id=" + id +
                 ", workflowId=" + workflowId +
+                ", rootInstanceId=" + rootInstanceId +
                 ", name='" + name + '\'' +
                 ", teamName='" + teamName + '\'' +
                 ", description='" + description + '\'' +
                 ", category='" + category + '\'' +
-                ", owner='" + owner + '\'' +
-                ", createdBy='" + createdBy + '\'' +
-                ", steps=" + steps +
+                ", isTest=" + isTest +
+                ", ownerEmail='" + ownerEmail + '\'' +
+                ", createdByEmail='" + createdByEmail + '\'' +
                 ", fields=" + fields +
-                ", status='" + status + '\'' +
+                ", status=" + status +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", fieldVisibility=" + fieldVisibility +
                 ", visibility=" + visibility +
-                ", visibleToUsers=" + visibleToUsers +
+                ", visibleToUserEmails=" + visibleToUserEmails +
                 '}';
     }
 }

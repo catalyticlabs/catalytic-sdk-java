@@ -4,12 +4,10 @@ import org.catalytic.sdk.entities.Field;
 import org.catalytic.sdk.entities.Integration;
 import org.catalytic.sdk.entities.IntegrationConfiguration;
 import org.catalytic.sdk.entities.IntegrationConnection;
-import org.catalytic.sdk.entities.IntegrationsPage;
 import org.catalytic.sdk.exceptions.*;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.IntegrationsApi;
 import org.catalytic.sdk.generated.model.*;
-import org.catalytic.sdk.search.Where;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -71,105 +69,6 @@ public class IntegrationsTests {
         Integration integration = integrationsClient.get("my-integration");
         assertThat(integration).isNotNull();
         assertThat(integration.getId()).isEqualTo("my-integration");
-    }
-
-    @Test(expected = AccessTokenNotFoundException.class)
-    public void findIntegrations_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
-        Integrations integrationsClient = new Integrations(null);
-        integrationsClient.find();
-    }
-
-    @Test(expected = UnauthorizedException.class)
-    public void findIntegrations_itShouldReturnUnauthorizedException() throws Exception {
-        when(integrationsApi.findIntegrations(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenThrow(new ApiException(401, null));
-
-        Integrations integrationsClient = new Integrations("1234", integrationsApi);
-        integrationsClient.find();
-    }
-
-    @Test(expected = InternalErrorException.class)
-    public void findIntegrations_itShouldReturnInternalErrorException() throws Exception {
-        when(integrationsApi.findIntegrations(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenThrow(new ApiException(500, null));
-
-        Integrations integrationsClient = new Integrations("1234", integrationsApi);
-        integrationsClient.find();
-    }
-
-    @Test
-    public void findIntegrations_itShouldReturnAllIntegrations() throws Exception {
-        org.catalytic.sdk.generated.model.Integration myIntegration = new org.catalytic.sdk.generated.model.Integration();
-        myIntegration.setId("my-integration");
-        org.catalytic.sdk.generated.model.IntegrationsPage integrationsPage = new org.catalytic.sdk.generated.model.IntegrationsPage();
-        integrationsPage.setIntegrations(Arrays.asList(myIntegration));
-        integrationsPage.setCount(Arrays.asList(myIntegration).size());
-        integrationsPage.setNextPageToken(null);
-        when(integrationsApi.findIntegrations(null, null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenReturn(integrationsPage);
-
-        Integrations integrationsClient = new Integrations("1234", integrationsApi);
-        IntegrationsPage results = integrationsClient.find();
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getIntegrations().get(0).getId()).isEqualTo("my-integration");
-    }
-
-    @Test
-    public void findIntegrations_itShouldFindNextPage() throws Exception {
-        org.catalytic.sdk.generated.model.Integration myIntegration = new org.catalytic.sdk.generated.model.Integration();
-        myIntegration.setId("my-integration");
-        org.catalytic.sdk.generated.model.IntegrationsPage integrationsPage = new org.catalytic.sdk.generated.model.IntegrationsPage();
-        integrationsPage.setIntegrations(Arrays.asList(myIntegration));
-        integrationsPage.setCount(Arrays.asList(myIntegration).size());
-        integrationsPage.setNextPageToken(null);
-        when(integrationsApi.findIntegrations(null, null, null, null, null, null, null, null, null, null, null, "25", null))
-                .thenReturn(integrationsPage);
-
-        Integrations integrationsClient = new Integrations("1234", integrationsApi);
-        IntegrationsPage results = integrationsClient.find("25");
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getIntegrations().get(0).getId()).isEqualTo("my-integration");
-    }
-
-    @Test
-    public void findIntegrations_itShouldFindIntegrationByName() throws Exception {
-        org.catalytic.sdk.generated.model.Integration myIntegration = new org.catalytic.sdk.generated.model.Integration();
-        myIntegration.setName("My Integration");
-        org.catalytic.sdk.generated.model.IntegrationsPage integrationsPage = new org.catalytic.sdk.generated.model.IntegrationsPage();
-        integrationsPage.setIntegrations(Arrays.asList(myIntegration));
-        integrationsPage.setCount(Arrays.asList(myIntegration).size());
-        integrationsPage.setNextPageToken(null);
-        when(integrationsApi.findIntegrations("My Integration", null, null, null, null, null, null, null, null, null, null, null, null))
-                .thenReturn(integrationsPage);
-
-        Integrations integrationsClient = new Integrations("1234", integrationsApi);
-        Where where = new Where();
-        IntegrationsPage results = integrationsClient.find(where.text().is("My Integration"));
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getIntegrations().get(0).getName()).isEqualTo("My Integration");
-    }
-
-
-    @Test
-    public void findIntegrations_itShouldFindIntegrationByNameAndPage() throws Exception {
-        org.catalytic.sdk.generated.model.Integration myIntegration = new org.catalytic.sdk.generated.model.Integration();
-        myIntegration.setName("My Integration");
-        org.catalytic.sdk.generated.model.IntegrationsPage integrationsPage = new org.catalytic.sdk.generated.model.IntegrationsPage();
-        integrationsPage.setIntegrations(Arrays.asList(myIntegration));
-        integrationsPage.setCount(Arrays.asList(myIntegration).size());
-        integrationsPage.setNextPageToken(null);
-        when(integrationsApi.findIntegrations("My Integration", null, null, null, null, null, null, null, null, null, null, "25", null))
-                .thenReturn(integrationsPage);
-
-        Integrations integrationsClient = new Integrations("1234", integrationsApi);
-        Where where = new Where();
-        IntegrationsPage results = integrationsClient.find(where.text().is("My Integration"), "25");
-        assertThat(results.getCount()).isEqualTo(1);
-        assertThat(results.getNextPageToken()).isNull();
-        assertThat(results.getIntegrations().get(0).getName()).isEqualTo("My Integration");
     }
 
     @Test(expected = AccessTokenNotFoundException.class)

@@ -13,25 +13,36 @@
 
 package org.catalytic.sdk.generated.model;
 
+import java.util.Objects;
+import java.util.Arrays;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import org.catalytic.sdk.generated.model.BoolSearchExpression;
+import org.catalytic.sdk.generated.model.DateTimeSearchExpression;
+import org.catalytic.sdk.generated.model.ExactStringSearchExpression;
+import org.catalytic.sdk.generated.model.GuidSearchExpression;
+import org.catalytic.sdk.generated.model.StringSearchExpression;
 
 /**
- * WorkflowSearchClause
+ * DataTableSearchClause
  */
 
-public class WorkflowSearchClause {
+public class DataTableSearchClause {
   public static final String SERIALIZED_NAME_AND = "and";
   @SerializedName(SERIALIZED_NAME_AND)
-  private List<WorkflowSearchClause> and = null;
+  private List<DataTableSearchClause> and = null;
 
   public static final String SERIALIZED_NAME_OR = "or";
   @SerializedName(SERIALIZED_NAME_OR)
-  private List<WorkflowSearchClause> or = null;
+  private List<DataTableSearchClause> or = null;
 
   public static final String SERIALIZED_NAME_ID = "id";
   @SerializedName(SERIALIZED_NAME_ID)
@@ -41,30 +52,26 @@ public class WorkflowSearchClause {
   @SerializedName(SERIALIZED_NAME_NAME)
   private StringSearchExpression name;
 
-  public static final String SERIALIZED_NAME_DESCRIPTION = "description";
-  @SerializedName(SERIALIZED_NAME_DESCRIPTION)
-  private StringSearchExpression description;
+  public static final String SERIALIZED_NAME_IS_ARCHIVED = "isArchived";
+  @SerializedName(SERIALIZED_NAME_IS_ARCHIVED)
+  private BoolSearchExpression isArchived;
 
-  public static final String SERIALIZED_NAME_OWNER_EMAIL = "ownerEmail";
-  @SerializedName(SERIALIZED_NAME_OWNER_EMAIL)
-  private ExactStringSearchExpression ownerEmail;
-
-  public static final String SERIALIZED_NAME_CATEGORY = "category";
-  @SerializedName(SERIALIZED_NAME_CATEGORY)
-  private StringSearchExpression category;
+  public static final String SERIALIZED_NAME_CREATED_BY_EMAIL = "createdByEmail";
+  @SerializedName(SERIALIZED_NAME_CREATED_BY_EMAIL)
+  private ExactStringSearchExpression createdByEmail;
 
   public static final String SERIALIZED_NAME_CREATED_DATE = "createdDate";
   @SerializedName(SERIALIZED_NAME_CREATED_DATE)
   private DateTimeSearchExpression createdDate;
 
 
-  public WorkflowSearchClause and(List<WorkflowSearchClause> and) {
+  public DataTableSearchClause and(List<DataTableSearchClause> and) {
     
     this.and = and;
     return this;
   }
 
-  public WorkflowSearchClause addAndItem(WorkflowSearchClause andItem) {
+  public DataTableSearchClause addAndItem(DataTableSearchClause andItem) {
     if (this.and == null) {
       this.and = new ArrayList<>();
     }
@@ -79,23 +86,23 @@ public class WorkflowSearchClause {
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public List<WorkflowSearchClause> getAnd() {
+  public List<DataTableSearchClause> getAnd() {
     return and;
   }
 
 
-  public void setAnd(List<WorkflowSearchClause> and) {
+  public void setAnd(List<DataTableSearchClause> and) {
     this.and = and;
   }
 
 
-  public WorkflowSearchClause or(List<WorkflowSearchClause> or) {
+  public DataTableSearchClause or(List<DataTableSearchClause> or) {
     
     this.or = or;
     return this;
   }
 
-  public WorkflowSearchClause addOrItem(WorkflowSearchClause orItem) {
+  public DataTableSearchClause addOrItem(DataTableSearchClause orItem) {
     if (this.or == null) {
       this.or = new ArrayList<>();
     }
@@ -110,17 +117,17 @@ public class WorkflowSearchClause {
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public List<WorkflowSearchClause> getOr() {
+  public List<DataTableSearchClause> getOr() {
     return or;
   }
 
 
-  public void setOr(List<WorkflowSearchClause> or) {
+  public void setOr(List<DataTableSearchClause> or) {
     this.or = or;
   }
 
 
-  public WorkflowSearchClause id(GuidSearchExpression id) {
+  public DataTableSearchClause id(GuidSearchExpression id) {
     
     this.id = id;
     return this;
@@ -143,7 +150,7 @@ public class WorkflowSearchClause {
   }
 
 
-  public WorkflowSearchClause name(StringSearchExpression name) {
+  public DataTableSearchClause name(StringSearchExpression name) {
     
     this.name = name;
     return this;
@@ -166,76 +173,53 @@ public class WorkflowSearchClause {
   }
 
 
-  public WorkflowSearchClause description(StringSearchExpression description) {
+  public DataTableSearchClause isArchived(BoolSearchExpression isArchived) {
     
-    this.description = description;
+    this.isArchived = isArchived;
     return this;
   }
 
    /**
-   * Get description
-   * @return description
+   * Get isArchived
+   * @return isArchived
   **/
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public StringSearchExpression getDescription() {
-    return description;
+  public BoolSearchExpression getIsArchived() {
+    return isArchived;
   }
 
 
-  public void setDescription(StringSearchExpression description) {
-    this.description = description;
+  public void setIsArchived(BoolSearchExpression isArchived) {
+    this.isArchived = isArchived;
   }
 
 
-  public WorkflowSearchClause ownerEmail(ExactStringSearchExpression ownerEmail) {
+  public DataTableSearchClause createdByEmail(ExactStringSearchExpression createdByEmail) {
     
-    this.ownerEmail = ownerEmail;
+    this.createdByEmail = createdByEmail;
     return this;
   }
 
    /**
-   * Get ownerEmail
-   * @return ownerEmail
+   * Get createdByEmail
+   * @return createdByEmail
   **/
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public ExactStringSearchExpression getOwnerEmail() {
-    return ownerEmail;
+  public ExactStringSearchExpression getCreatedByEmail() {
+    return createdByEmail;
   }
 
 
-  public void setOwnerEmail(ExactStringSearchExpression ownerEmail) {
-    this.ownerEmail = ownerEmail;
+  public void setCreatedByEmail(ExactStringSearchExpression createdByEmail) {
+    this.createdByEmail = createdByEmail;
   }
 
 
-  public WorkflowSearchClause category(StringSearchExpression category) {
-    
-    this.category = category;
-    return this;
-  }
-
-   /**
-   * Get category
-   * @return category
-  **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
-
-  public StringSearchExpression getCategory() {
-    return category;
-  }
-
-
-  public void setCategory(StringSearchExpression category) {
-    this.category = category;
-  }
-
-
-  public WorkflowSearchClause createdDate(DateTimeSearchExpression createdDate) {
+  public DataTableSearchClause createdDate(DateTimeSearchExpression createdDate) {
     
     this.createdDate = createdDate;
     return this;
@@ -266,34 +250,32 @@ public class WorkflowSearchClause {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    WorkflowSearchClause workflowSearchClause = (WorkflowSearchClause) o;
-    return Objects.equals(this.and, workflowSearchClause.and) &&
-        Objects.equals(this.or, workflowSearchClause.or) &&
-        Objects.equals(this.id, workflowSearchClause.id) &&
-        Objects.equals(this.name, workflowSearchClause.name) &&
-        Objects.equals(this.description, workflowSearchClause.description) &&
-        Objects.equals(this.ownerEmail, workflowSearchClause.ownerEmail) &&
-        Objects.equals(this.category, workflowSearchClause.category) &&
-        Objects.equals(this.createdDate, workflowSearchClause.createdDate);
+    DataTableSearchClause dataTableSearchClause = (DataTableSearchClause) o;
+    return Objects.equals(this.and, dataTableSearchClause.and) &&
+        Objects.equals(this.or, dataTableSearchClause.or) &&
+        Objects.equals(this.id, dataTableSearchClause.id) &&
+        Objects.equals(this.name, dataTableSearchClause.name) &&
+        Objects.equals(this.isArchived, dataTableSearchClause.isArchived) &&
+        Objects.equals(this.createdByEmail, dataTableSearchClause.createdByEmail) &&
+        Objects.equals(this.createdDate, dataTableSearchClause.createdDate);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(and, or, id, name, description, ownerEmail, category, createdDate);
+    return Objects.hash(and, or, id, name, isArchived, createdByEmail, createdDate);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class WorkflowSearchClause {\n");
+    sb.append("class DataTableSearchClause {\n");
     sb.append("    and: ").append(toIndentedString(and)).append("\n");
     sb.append("    or: ").append(toIndentedString(or)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    description: ").append(toIndentedString(description)).append("\n");
-    sb.append("    ownerEmail: ").append(toIndentedString(ownerEmail)).append("\n");
-    sb.append("    category: ").append(toIndentedString(category)).append("\n");
+    sb.append("    isArchived: ").append(toIndentedString(isArchived)).append("\n");
+    sb.append("    createdByEmail: ").append(toIndentedString(createdByEmail)).append("\n");
     sb.append("    createdDate: ").append(toIndentedString(createdDate)).append("\n");
     sb.append("}");
     return sb.toString();

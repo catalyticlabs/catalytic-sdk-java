@@ -48,7 +48,7 @@ public class BaseClient {
                 internalField.getReferenceName(),
                 internalField.getDescription(),
                 internalField.getPosition(),
-                internalField.getRestrictions(),
+                internalField.getDisplay(),
                 internalField.getFieldType().getValue(),
                 internalField.getValue(),
                 internalField.getDefaultValue()
@@ -110,6 +110,22 @@ public class BaseClient {
             internalStringSearchExpression.setBetween(internalStringRange);
         }
         return internalStringSearchExpression;
+    }
+
+    /**
+     * Create an internal ExactStringSearchExpression from an external ExactStringSearchExpression
+     *
+     * @param exactStringSearchExpression   The external ExactStringSearchExpression to create an internal one from
+     * @return                              An internal ExactStringSearchExpression
+     */
+    org.catalytic.sdk.generated.model.ExactStringSearchExpression createInternalExactStringSearchExpression(ExactStringSearchExpression exactStringSearchExpression) {
+        org.catalytic.sdk.generated.model.ExactStringSearchExpression internalExactStringSearchExpression = null;
+
+        if (exactStringSearchExpression != null) {
+            internalExactStringSearchExpression = new org.catalytic.sdk.generated.model.ExactStringSearchExpression();
+            internalExactStringSearchExpression.setIsEqualTo(exactStringSearchExpression.getIsEqualTo());
+        }
+        return internalExactStringSearchExpression;
     }
 
     /**

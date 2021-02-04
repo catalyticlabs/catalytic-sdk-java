@@ -28,6 +28,20 @@ public class InstancesPage extends Page {
         this.instances = instances;
     }
 
+    /**
+     * Add a list of Instances.
+     *
+     * Note that this is different than setting a list of Instances.
+     *
+     * @param instances     The Instances to add
+     * @param nextPageToken The next page token
+     */
+    public void addInstances(List<Instance> instances, String nextPageToken) {
+        this.instances.addAll(instances);
+        this.count = this.count + instances.size();
+        this.nextPageToken = nextPageToken;
+    }
+
     @Override
     public String toString() {
         return "InstancesPage{" +
