@@ -7,31 +7,45 @@ import java.util.List;
  */
 public class AccessTokensPage extends Page {
 
-    private List<AccessToken> credentials;
+    private List<AccessToken> accessTokens;
 
-    public AccessTokensPage(List<AccessToken> credentials, int count) {
-        this.credentials = credentials;
+    public AccessTokensPage(List<AccessToken> accessTokens, int count) {
+        this.accessTokens = accessTokens;
         this.count = count;
     }
 
-    public AccessTokensPage(List<AccessToken> credentials, int count, String nextPageToken) {
-        this.credentials = credentials;
+    public AccessTokensPage(List<AccessToken> accessTokens, int count, String nextPageToken) {
+        this.accessTokens = accessTokens;
         this.count = count;
         this.nextPageToken = nextPageToken;
     }
 
     public List<AccessToken> getAccessTokens() {
-        return credentials;
+        return accessTokens;
     }
 
     public void setAccessTokens(List<AccessToken> credentials) {
-        this.credentials = credentials;
+        this.accessTokens = credentials;
+    }
+
+    /**
+     * Add a list of AccessTokens.
+     *
+     * Note that this is different than setting a list of AccessTokens.
+     *
+     * @param accessTokens  The Access Tokens to add
+     * @param nextPageToken The next page token
+     */
+    public void addAccessTokens(List<AccessToken> accessTokens, String nextPageToken) {
+        this.accessTokens.addAll(accessTokens);
+        this.count = this.count + accessTokens.size();
+        this.nextPageToken = nextPageToken;
     }
 
     @Override
     public String toString() {
         return "AccessTokensPage{" +
-                "credentials=" + credentials +
+                "credentials=" + accessTokens +
                 ", count=" + count +
                 ", nextPageToken='" + nextPageToken + '\'' +
                 '}';

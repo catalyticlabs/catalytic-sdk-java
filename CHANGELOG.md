@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - List Workflows method
 - Search Instances method
 - List Instances method
+- List Access Tokens method
 
 ### Removed
 - Find Users method (Breaking change)

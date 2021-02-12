@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.AccessToken;
+import org.catalytic.sdk.entities.AccessTokensPage;
 import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
@@ -16,6 +17,8 @@ import org.catalytic.sdk.generated.model.WaitForAccessTokenApprovalRequest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Credentials client
@@ -46,12 +49,38 @@ public class AccessTokens {
     }
 
     /**
-     * Get credentials by id
+     * Get all Access Tokens
      *
-     * @param id                            The id of the credentials to get
-     * @return Credentials                  The Credentials object
-     * @throws InternalErrorException       If error fetching credentials
-     * @throws AccessTokenNotFoundException If credentials with id do not exist
+     * @return                              An AccessTokensPage object which contains all the Access Tokens
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding users
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public AccessTokensPage list() throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
+        AccessTokensPage results;
+
+        // Get first page of Access Tokens
+        AccessTokensPage accessTokensPage = getPageOfAccessTokens(null);
+        results = accessTokensPage;
+
+        // Loop through the rest of the pages and add the Access Tokens to results
+        while(!accessTokensPage.getNextPageToken().isEmpty()) {
+            accessTokensPage = getPageOfAccessTokens(accessTokensPage.getNextPageToken());
+            results.addAccessTokens(accessTokensPage.getAccessTokens(), accessTokensPage.getNextPageToken());
+        }
+
+        return results;
+    }
+
+    /**
+     * Get Access Token by id
+     *
+     * @param id                            The id of the Access Token to get
+     * @return                              The Access Token object
+     * @throws InternalErrorException       If error fetching the Access Token
+     * @throws AccessTokenNotFoundException If Access Token with id does not exist
      * @throws UnauthorizedException        If unauthorized
      */
     public AccessToken get(String id) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
@@ -65,41 +94,41 @@ public class AccessTokens {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
-                throw new AccessTokenNotFoundException("Credentials with id " + id + " not found", e);
+                throw new AccessTokenNotFoundException("Access Token with id " + id + " not found", e);
             }
-            throw new InternalErrorException("Unable to get Credentials", e);
+            throw new InternalErrorException("Unable to get Access Token", e);
         }
         AccessToken accessToken = createAccessToken(internalAccessToken);
         return accessToken;
     }
 
     /**
-     * Create new Credentials
+     * Create new Access Token
      *
      * @param teamName  The team name or hostname of your Catalytic team
      * @param email     The email you use to login to Catalytic
      * @param password  The password you use to login to Catalytic
-     * @return          The newly created Credentials
+     * @return          The newly created Access Token
      * @throws UnauthorizedException    If unauthorized
-     * @throws InternalErrorException   If any errors creating the Credentials
+     * @throws InternalErrorException   If any errors creating the Access Token
      */
     public AccessToken create(String teamName, String email, String password) throws UnauthorizedException, InternalErrorException {
         return create(teamName, email, password, null);
     }
 
     /**
-     * Create new Credentials
+     * Create new Access Token
      *
      * @param teamName  The team name or hostname of your Catalytic team
      * @param email     The email you use to login to Catalytic
      * @param password  The password you use to login to Catalytic
-     * @param name      A name to identify the Credentials
-     * @return          The newly created Credentials
+     * @param name      A name to identify the Access Token
+     * @return          The newly created Access Token
      * @throws UnauthorizedException    If unauthorized
-     * @throws InternalErrorException   If any errors creating the Credentials
+     * @throws InternalErrorException   If any errors creating the Access Token
      */
     public AccessToken create(String teamName, String email, String password, String name) throws UnauthorizedException, InternalErrorException {
-        org.catalytic.sdk.generated.model.AccessToken internalCredentials;
+        org.catalytic.sdk.generated.model.AccessToken internalAccessToken;
         String domain = getDomainFromTeamName(teamName);
         AccessTokenCreationWithEmailAndPasswordRequest request = new AccessTokenCreationWithEmailAndPasswordRequest();
         request.setDomain(domain);
@@ -107,43 +136,43 @@ public class AccessTokens {
         request.setPassword(password);
         request.setName(name);
         try {
-            log.debug("Creating Credentials with email {}, teamName {}, and name {}", teamName, email, name);
-            internalCredentials = this.accessTokensApi.createAndApproveAccessToken(request);
+            log.debug("Creating Access Token with email {}, teamName {}, and name {}", teamName, email, name);
+            internalAccessToken = this.accessTokensApi.createAndApproveAccessToken(request);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
             }
-            throw new InternalErrorException("Unable to create Credentials", e);
+            throw new InternalErrorException("Unable to create Access Token", e);
         }
 
-        AccessToken accessToken = createAccessToken(internalCredentials);
+        AccessToken accessToken = createAccessToken(internalAccessToken);
         return accessToken;
     }
 
     /**
-     * Create new Credentials
+     * Create new Access Token
      *
-     * The Credentials will need to be approved before they can be used
+     * The Access Token will need to be approved before it can be used
      *
      * @param teamName                  The team name or hostname of your Catalytic team
-     * @return                          The newly created Credentials
+     * @return                          The newly created Access Token
      * @throws UnauthorizedException    If unauthorized
-     * @throws InternalErrorException   If any errors creating the Credentials
+     * @throws InternalErrorException   If any errors creating the Access Token
      */
     public AccessToken createWithWebApprovalFlow(String teamName) throws UnauthorizedException, InternalErrorException {
         return createWithWebApprovalFlow(teamName, null);
     }
 
     /**
-     * Create new Credentials
+     * Create new Access Token
      *
-     * The Credentials will need to be approved before they can be used
+     * The Access Token will need to be approved before it can be used
      *
      * @param teamName                  The team name or hostname of your Catalytic team
-     * @param name                      A name to identify the Credentials
-     * @return                          The newly created Credentials
+     * @param name                      A name to identify the Access Token
+     * @return                          The newly created Access Token
      * @throws UnauthorizedException    If unauthorized
-     * @throws InternalErrorException   If any errors creating the Credentials
+     * @throws InternalErrorException   If any errors creating the Access Token
      */
     public AccessToken createWithWebApprovalFlow(String teamName, String name) throws UnauthorizedException, InternalErrorException {
         org.catalytic.sdk.generated.model.AccessToken internalAccessToken;
@@ -152,13 +181,13 @@ public class AccessTokens {
         request.setDomain(domain);
         request.setName(name);
         try {
-            log.debug("Creating Credentials with teamName {} and name {}", teamName, name);
+            log.debug("Creating Access Token with teamName {} and name {}", teamName, name);
             internalAccessToken = this.accessTokensApi.createAccessToken(request);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
             }
-            throw new InternalErrorException("Unable to create Credentials", e);
+            throw new InternalErrorException("Unable to create Access Token", e);
         }
 
         AccessToken accessToken = createAccessToken(internalAccessToken);
@@ -166,10 +195,10 @@ public class AccessTokens {
     }
 
     /**
-     * Gets the url that the user must visit to approve Credentials created with createWithWebApprovalFlow
+     * Gets the url that the user must visit to approve the Access Token created with createWithWebApprovalFlow
      *
-     * @param accessToken       The Credentials to get the approval url from
-     * @return                  The url a user must visit to approve the created Credentials
+     * @param accessToken       The Access Token to get the approval url from
+     * @return                  The url a user must visit to approve the created Access Token
      * @throws InternalErrorException
      */
     public String getApprovalUrl(AccessToken accessToken) throws InternalErrorException {
@@ -177,11 +206,11 @@ public class AccessTokens {
     }
 
     /**
-     * Gets the url that the user must visit to approve Credentials created with createWithWebApprovalFlow
+     * Gets the url that the user must visit to approve the Access Token created with createWithWebApprovalFlow
      *
-     * @param accessToken       The Credentials to get the approval url from
+     * @param accessToken       The Access Token to get the approval url from
      * @param applicationName   The name of the application to label the token with
-     * @return                  The url a user must visit to approve the created Credentials
+     * @return                  The url a user must visit to approve the created Access Token
      * @throws InternalErrorException
      */
     public String getApprovalUrl(AccessToken accessToken, String applicationName) throws InternalErrorException {
@@ -215,13 +244,13 @@ public class AccessTokens {
     }
 
     /**
-     * Revoke credentials for a specific id
+     * Revoke Access Token by id
      *
-     * @param id                            The id of the Credentials to revoke
-     * @return Credentials                  The Credentials that were revoked
+     * @param id                            The id of the Access Token to revoke
+     * @return                              The Access Token that was revoked
      * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-     * @throws InternalErrorException       If error fetching Credentials
-     * @throws AccessTokenNotFoundException If credentials with id do not exist
+     * @throws InternalErrorException       If error fetching Access Token
+     * @throws AccessTokenNotFoundException If Access Token with id do not exist
      * @throws UnauthorizedException        If unauthorized
      */
     public AccessToken revoke(String id) throws UnauthorizedException, AccessTokenNotFoundException, InternalErrorException {
@@ -229,15 +258,15 @@ public class AccessTokens {
 
         org.catalytic.sdk.generated.model.AccessToken internalAccessToken;
         try {
-            log.debug("Revoking Credentials with id {}", () -> id);
+            log.debug("Revoking Access Token with id {}", () -> id);
             internalAccessToken = this.accessTokensApi.revokeAccessToken(id);
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 throw new UnauthorizedException(e);
             } else if (e.getCode() == 404) {
-                throw new AccessTokenNotFoundException("Credentials with id " + id + " not found", e);
+                throw new AccessTokenNotFoundException("Access Token with id " + id + " not found", e);
             }
-            throw new InternalErrorException("Unable to revoke Credentials", e);
+            throw new InternalErrorException("Unable to revoke Access Token", e);
         }
 
         AccessToken accessToken = createAccessToken(internalAccessToken);
@@ -245,21 +274,21 @@ public class AccessTokens {
     }
 
     /**
-     * Create a Credentials object from an internal File object
+     * Create an Access Token object from an internal File object
      *
-     * @param internalCredentials   The internal credentials to create a Credentials object from
-     * @return                      The created Credentials object
+     * @param internalAccessToken   The internal Access Token to create an Access Token object from
+     * @return                      The created Access Token object
      */
-    private AccessToken createAccessToken(org.catalytic.sdk.generated.model.AccessToken internalCredentials) {
+    private AccessToken createAccessToken(org.catalytic.sdk.generated.model.AccessToken internalAccessToken) {
         AccessToken accessToken = new AccessToken(
-                internalCredentials.getId(),
-                internalCredentials.getDomain(),
-                internalCredentials.getType().getValue(),
-                internalCredentials.getName(),
-                internalCredentials.getToken(),
-                internalCredentials.getSecret(),
-                internalCredentials.getEnvironment(),
-                internalCredentials.getOwner()
+                internalAccessToken.getId(),
+                internalAccessToken.getDomain(),
+                internalAccessToken.getType().getValue(),
+                internalAccessToken.getName(),
+                internalAccessToken.getToken(),
+                internalAccessToken.getSecret(),
+                internalAccessToken.getEnvironment(),
+                internalAccessToken.getOwner()
         );
         return accessToken;
     }
@@ -296,5 +325,36 @@ public class AccessTokens {
         if (!teamName.matches(validTeamNameRegex)) {
             throw new IllegalArgumentException("Invalid teamName");
         }
+    }
+
+    /**
+     * Get a page of Access Tokens
+     *
+     * @param pageToken                 The token of the page to fetch
+     * @return                          An AccessTokensPage object which contains the current page of Access Tokens
+     * @throws InternalErrorException   If any error finding users
+     * @throws UnauthorizedException    If unauthorized
+     */
+    private AccessTokensPage getPageOfAccessTokens(String pageToken) throws UnauthorizedException, InternalErrorException {
+        org.catalytic.sdk.generated.model.AccessTokensPage internalAccessTokensPage;
+        List<AccessToken> accessTokens = new ArrayList<>();
+
+        try {
+            log.debug("Getting all Access Tokens");
+            internalAccessTokensPage = this.accessTokensApi.listAccessTokens(pageToken, null);
+        } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException(e);
+            }
+            throw new InternalErrorException("Unable to get Access Tokens", e);
+        }
+
+        for (org.catalytic.sdk.generated.model.AccessToken internalAccessToken : internalAccessTokensPage.getAccessTokens()) {
+            AccessToken accessToken = createAccessToken(internalAccessToken);
+            accessTokens.add(accessToken);
+        }
+
+        AccessTokensPage accessTokensPage = new AccessTokensPage(accessTokens, internalAccessTokensPage.getCount(), internalAccessTokensPage.getNextPageToken());
+        return accessTokensPage;
     }
 }
