@@ -16,15 +16,18 @@ public class InstanceStep {
     private String teamName;
     private Integer position;
     private String description;
-    private String status;
-    private String assignedTo;
+    private InstanceStepStatus status;
+    private String assignedToEmail;
+    private String completedByEmail;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private List<Field> outputFields;
+    private String actionTypeId;
+    private Boolean isAutomated;
 
     public InstanceStep() {}
 
-    public InstanceStep(UUID id, UUID instanceId, UUID workflowId, String name, String teamName, Integer position, String description, String status, String assignedTo, OffsetDateTime startDate, OffsetDateTime endDate, List<Field> outputFields) {
+    public InstanceStep(UUID id, UUID instanceId, UUID workflowId, String name, String teamName, Integer position, String description, InstanceStepStatus status, String assignedToEmail, String completedByEmail, OffsetDateTime startDate, OffsetDateTime endDate, List<Field> outputFields, String actionTypeId, Boolean isAutomated) {
         this.id = id;
         this.instanceId = instanceId;
         this.workflowId = workflowId;
@@ -33,10 +36,13 @@ public class InstanceStep {
         this.position = position;
         this.description = description;
         this.status = status;
-        this.assignedTo = assignedTo;
+        this.assignedToEmail = assignedToEmail;
+        this.completedByEmail = completedByEmail;
         this.startDate = startDate;
         this.endDate = endDate;
         this.outputFields = outputFields;
+        this.actionTypeId = actionTypeId;
+        this.isAutomated = isAutomated;
     }
 
     public UUID getId() {
@@ -95,20 +101,28 @@ public class InstanceStep {
         this.description = description;
     }
 
-    public String getStatus() {
+    public InstanceStepStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(InstanceStepStatus status) {
         this.status = status;
     }
 
-    public String getAssignedTo() {
-        return assignedTo;
+    public String getAssignedToEmail() {
+        return assignedToEmail;
     }
 
-    public void setAssignedTo(String assignedTo) {
-        this.assignedTo = assignedTo;
+    public void setAssignedToEmail(String assignedToEmail) {
+        this.assignedToEmail = assignedToEmail;
+    }
+
+    public String getCompletedByEmail() {
+        return completedByEmail;
+    }
+
+    public void setCompletedByEmail(String completedByEmail) {
+        this.completedByEmail = completedByEmail;
     }
 
     public OffsetDateTime getStartDate() {
@@ -135,6 +149,22 @@ public class InstanceStep {
         this.outputFields = outputFields;
     }
 
+    public String getActionTypeId() {
+        return actionTypeId;
+    }
+
+    public void setActionTypeId(String actionTypeId) {
+        this.actionTypeId = actionTypeId;
+    }
+
+    public Boolean getIsAutomated() {
+        return isAutomated;
+    }
+
+    public void setIsAutomated(Boolean automated) {
+        isAutomated = automated;
+    }
+
     @Override
     public String toString() {
         return "InstanceStep{" +
@@ -145,11 +175,14 @@ public class InstanceStep {
                 ", teamName='" + teamName + '\'' +
                 ", position=" + position +
                 ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                ", assignedTo='" + assignedTo + '\'' +
+                ", status=" + status +
+                ", assignedToEmail='" + assignedToEmail + '\'' +
+                ", completedByEmail='" + completedByEmail + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", outputFields=" + outputFields +
+                ", actionTypeId='" + actionTypeId + '\'' +
+                ", isAutomated=" + isAutomated +
                 '}';
     }
 }

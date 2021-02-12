@@ -23,6 +23,20 @@ public class InstanceStepsPage extends Page {
         this.instanceSteps = instanceSteps;
     }
 
+    /**
+     * Add a list of InstanceSteps.
+     *
+     * Note that this is different than setting a list of InstanceSteps.
+     *
+     * @param instanceSteps The InstanceSteps to add
+     * @param nextPageToken The next page token
+     */
+    public void addInstanceSteps(List<InstanceStep> instanceSteps, String nextPageToken) {
+        this.instanceSteps.addAll(instanceSteps);
+        this.count = this.count + instanceSteps.size();
+        this.nextPageToken = nextPageToken;
+    }
+
     @Override
     public String toString() {
         return "InstanceStepsPage{" +

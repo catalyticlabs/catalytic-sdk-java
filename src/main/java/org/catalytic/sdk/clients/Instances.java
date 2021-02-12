@@ -14,6 +14,7 @@ import org.catalytic.sdk.generated.model.FieldUpdateRequest;
 import org.catalytic.sdk.generated.model.StartInstanceRequest;
 import org.catalytic.sdk.search.InstanceSearchClause;
 import org.catalytic.sdk.search.InstanceStatusSearchExpression;
+import org.catalytic.sdk.search.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -304,39 +305,140 @@ public class Instances extends BaseClient {
         return step;
     }
 
-//    /**
-//     * Gets all the steps for a specific instance id
-//     *
-//     * @param instanceId                    The id of the instances to get steps for
-//     * @return                              The InstanceStepsPage which contains the results
-//     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
-//     * @throws InternalErrorException       If any errors getting steps
-//     * @throws UnauthorizedException        If unauthorized
-//     */
-//    public InstanceStepsPage getSteps(String instanceId) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
-//        ClientHelpers.verifyAccessTokenExists(this.token);
-//
-//        org.catalytic.sdk.generated.model.InstanceStepsPage internalInstanceSteps;
-//        try {
-//            log.debug("Getting all the steps for instance {}", () -> instanceId);
-//            internalInstanceSteps = this.instanceStepsApi.findInstanceSteps(instanceId, null, null, null, null, null, null, null, null, null, null, null, null, null);
-//        } catch (ApiException e) {
-//            if (e.getCode() == 401) {
-//                throw new UnauthorizedException(e);
-//            }
-//            throw new InternalErrorException("Unable to get steps for instance " + instanceId, e);
-//        }
-//
-//        List<InstanceStep> instanceSteps = new ArrayList<>();
-//
-//        for (org.catalytic.sdk.generated.model.InstanceStep internalInstanceStep : internalInstanceSteps.getSteps()) {
-//            InstanceStep instanceStep = createInstanceStep(internalInstanceStep);
-//            instanceSteps.add(instanceStep);
-//        }
-//
-//        InstanceStepsPage instanceStepsPage = new InstanceStepsPage(instanceSteps, internalInstanceSteps.getCount(), internalInstanceSteps.getNextPageToken());
-//        return instanceStepsPage;
-//    }
+    /**
+     * Gets all the steps for a specific instance id
+     *
+     * @param instanceId                    The id of the instances to get steps for
+     * @return                              The InstanceStepsPage which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any errors getting steps
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public InstanceStepsPage getSteps(String instanceId) throws InternalErrorException, UnauthorizedException, AccessTokenNotFoundException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
+        InstanceStepsPage instanceStepsPage;
+        log.debug("Getting all the steps for instance {}", () -> instanceId);
+        InstanceStepSearchClause searchClause = InstanceStepsWhere.instanceId(instanceId);
+        instanceStepsPage = this.searchSteps(searchClause);
+        InstanceStepsPage results = instanceStepsPage;
+
+        // Loop through the rest of the pages and add the Instances to results
+        while(!instanceStepsPage.getNextPageToken().isEmpty()) {
+            instanceStepsPage = this.searchSteps(searchClause, instanceStepsPage.getNextPageToken());
+            results.addInstanceSteps(instanceStepsPage.getInstanceSteps(), instanceStepsPage.getNextPageToken());
+        }
+
+        InstanceStepsPage allInstanceStepsPage = new InstanceStepsPage(results.getInstanceSteps(), instanceStepsPage.getCount(), instanceStepsPage.getNextPageToken());
+        return allInstanceStepsPage;
+    }
+
+    /**
+     * Finds InstanceSteps by a variety of filters
+     *
+     * @param instanceStepSearchClause      The search criteria to search InstanceSteps by
+     * @return                              An InstanceStepsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Workflows
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public InstanceStepsPage searchSteps(InstanceStepSearchClause instanceStepSearchClause) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        return searchSteps(instanceStepSearchClause, null, null);
+    }
+
+    /**
+     * Finds InstanceSteps by a variety of filters
+     *
+     * @param instanceStepSearchClause      The search criteria to search InstanceSteps by
+     * @param pageToken                     The token of the page to fetch
+     * @return                              An InstanceStepsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Workflows
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public InstanceStepsPage searchSteps(InstanceStepSearchClause instanceStepSearchClause, String pageToken) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        return searchSteps(instanceStepSearchClause, pageToken, null);
+    }
+
+    /**
+     * Finds InstanceSteps by a variety of filters
+     *
+     * @param instanceStepSearchClause      The search criteria to search InstanceSteps by
+     * @param pageToken                     The token of the page to fetch
+     * @param pageSize                      The number of Workflows to fetch per page
+     * @return                              A WorkflowsPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Workflows
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public InstanceStepsPage searchSteps(InstanceStepSearchClause instanceStepSearchClause, String pageToken, Integer pageSize) throws AccessTokenNotFoundException, InternalErrorException, UnauthorizedException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
+        org.catalytic.sdk.generated.model.InstanceStepsPage results;
+        List<InstanceStep> instanceSteps = new ArrayList<>();
+
+        if (instanceStepSearchClause == null) {
+            instanceStepSearchClause = new InstanceStepSearchClause();
+        }
+
+        org.catalytic.sdk.generated.model.GuidSearchExpression internalId = createInternalGuidSearchExpression(instanceStepSearchClause.getId());
+        org.catalytic.sdk.generated.model.GuidSearchExpression internalInstanceId = createInternalGuidSearchExpression(instanceStepSearchClause.getInstanceId());
+        org.catalytic.sdk.generated.model.GuidSearchExpression internalWorkflowId = createInternalGuidSearchExpression(instanceStepSearchClause.getWorkflowId());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalName = createInternalStringSearchExpression(instanceStepSearchClause.getName());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalDescription = createInternalStringSearchExpression(instanceStepSearchClause.getDescription());
+        org.catalytic.sdk.generated.model.InstanceStepStatusSearchExpression internalStatus = createInternalInstanceStepStatusSearchExpression(instanceStepSearchClause.getStatus());
+        org.catalytic.sdk.generated.model.ExactStringSearchExpression internalAssignedToEmail = createInternalExactStringSearchExpression(instanceStepSearchClause.getAssignedToEmail());
+        org.catalytic.sdk.generated.model.ExactStringSearchExpression internalCompletedByEmail = createInternalExactStringSearchExpression(instanceStepSearchClause.getCompletedByEmail());
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression internalStartDate = createInternalDateTimeSearchExpression(instanceStepSearchClause.getStartDate());
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression internalEndDate = createInternalDateTimeSearchExpression(instanceStepSearchClause.getEndDate());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalActionTypeId = createInternalStringSearchExpression(instanceStepSearchClause.getActionTypeId());
+
+        List<org.catalytic.sdk.generated.model.InstanceStepSearchClause> internalAnd = createInternalInstanceStepSearchClause(instanceStepSearchClause.getAnd());
+        List<org.catalytic.sdk.generated.model.InstanceStepSearchClause> internalOr = createInternalInstanceStepSearchClause(instanceStepSearchClause.getOr());
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause instanceStepSearchRequest = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        instanceStepSearchRequest.setAnd(internalAnd);
+        instanceStepSearchRequest.setOr(internalOr);
+        instanceStepSearchRequest.setId(internalId);
+        instanceStepSearchRequest.setInstanceId(internalInstanceId);
+        instanceStepSearchRequest.setWorkflowId(internalWorkflowId);
+        instanceStepSearchRequest.setName(internalName);
+        instanceStepSearchRequest.setDescription(internalDescription);
+        instanceStepSearchRequest.setStatus(internalStatus);
+        instanceStepSearchRequest.setAssignedToEmail(internalAssignedToEmail);
+        instanceStepSearchRequest.setCompletedByEmail(internalCompletedByEmail);
+        instanceStepSearchRequest.setStartDate(internalStartDate);
+        instanceStepSearchRequest.setEndDate(internalEndDate);
+        instanceStepSearchRequest.setActionTypeId(internalActionTypeId);
+
+        try {
+            log.debug("Finding InstanceSteps with criteria {}", () -> instanceStepSearchRequest);
+            String instanceId;
+            if (instanceStepSearchClause.getInstanceId() == null) {
+                // The REST api supports wildcard instance id when searching for instance steps
+                // https://cloud.google.com/apis/design/design_patterns#list_sub-collections
+                String wildcardInstanceId = "-";
+                instanceId = wildcardInstanceId;
+            } else {
+                instanceId = instanceStepSearchClause.getInstanceId().getIsEqualTo().toString();
+            }
+
+            results = this.instanceStepsApi.searchInstanceSteps(instanceId, pageToken, pageSize, instanceStepSearchRequest);
+        } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException(e);
+            }
+            throw new InternalErrorException("Unable to find InstanceSteps", e);
+        }
+
+        for (org.catalytic.sdk.generated.model.InstanceStep internalInstanceStep : results.getSteps()) {
+            InstanceStep instanceStep = createInstanceStep(internalInstanceStep);
+            instanceSteps.add(instanceStep);
+        }
+
+        InstanceStepsPage instanceStepsPage = new InstanceStepsPage(instanceSteps, results.getCount(), results.getNextPageToken());
+        return instanceStepsPage;
+    }
 
     /**
      * Completes a specific step
@@ -454,15 +556,11 @@ public class Instances extends BaseClient {
      */
     private InstanceStep createInstanceStep(org.catalytic.sdk.generated.model.InstanceStep internalInstanceStep) {
         List<Field> outputFields = new ArrayList<>();
-        String status = null;
+        InstanceStepStatus status = InstanceStepStatus.valueOf(internalInstanceStep.getStatus().name());
 
         if (internalInstanceStep.getOutputFields() != null) {
             // Create external outputFields from internal outputFields
             outputFields = createFields(internalInstanceStep.getOutputFields());
-        }
-
-        if (internalInstanceStep.getStatus() != null) {
-            status = internalInstanceStep.getStatus().getValue();
         }
 
         InstanceStep instanceStep = new InstanceStep(
@@ -475,31 +573,14 @@ public class Instances extends BaseClient {
             internalInstanceStep.getDescription(),
             status,
             internalInstanceStep.getAssignedToEmail(),
+            internalInstanceStep.getCompletedByEmail(),
             internalInstanceStep.getStartDate(),
             internalInstanceStep.getEndDate(),
-            outputFields
+            outputFields,
+            internalInstanceStep.getActionTypeId(),
+            internalInstanceStep.getIsAutomated()
         );
         return instanceStep;
-    }
-
-    /**
-     * Create external InstanceStep from internal InstanceSteps
-     *
-     * @param internalSteps The internal steps to create external steps from
-     * @return              External steps
-     */
-    private List<InstanceStep> createInstanceSteps(List<org.catalytic.sdk.generated.model.InstanceStep> internalSteps) {
-        List<InstanceStep> steps = new ArrayList<>();
-
-        // Create external steps from internal steps
-        if (internalSteps != null) {
-            for (org.catalytic.sdk.generated.model.InstanceStep internalStep : internalSteps) {
-                InstanceStep step = createInstanceStep(internalStep);
-                steps.add(step);
-            }
-        }
-
-        return steps;
     }
 
     /**
@@ -565,5 +646,70 @@ public class Instances extends BaseClient {
             }
         }
         return internalInstanceSearchClauses;
+    }
+
+    /**
+     * Create an internal InstanceStepStatusSearchExpression from an external InstanceStepStatusSearchExpression
+     *
+     * @param instanceStepStatusSearchExpression    The external InstanceStepStatusSearchExpression to create an internal one from
+     * @return                                      An internal InstanceStepStatusSearchExpression
+     */
+    private org.catalytic.sdk.generated.model.InstanceStepStatusSearchExpression createInternalInstanceStepStatusSearchExpression(InstanceStepStatusSearchExpression instanceStepStatusSearchExpression) {
+        org.catalytic.sdk.generated.model.InstanceStepStatusSearchExpression internalInstanceStepStatusSearchExpression = null;
+
+        if (instanceStepStatusSearchExpression != null) {
+            org.catalytic.sdk.generated.model.InstanceStepStatus status = org.catalytic.sdk.generated.model.InstanceStepStatus.fromValue(instanceStepStatusSearchExpression.getIsEqualTo().getValue());
+            internalInstanceStepStatusSearchExpression = new org.catalytic.sdk.generated.model.InstanceStepStatusSearchExpression();
+            internalInstanceStepStatusSearchExpression.setIsEqualTo(status);
+        }
+        return internalInstanceStepStatusSearchExpression;
+    }
+
+    /**
+     * Create an internal InstanceStepSearchClause from an external InstanceStepSearchClause
+     *
+     * @param instanceStepSearchClause  The external InstanceStepSearchClause to create an internal one from
+     * @return                          An internal InstanceStepSearchClause
+     */
+    private List<org.catalytic.sdk.generated.model.InstanceStepSearchClause> createInternalInstanceStepSearchClause(List<InstanceStepSearchClause> instanceStepSearchClause) {
+        List<org.catalytic.sdk.generated.model.InstanceStepSearchClause> internalInstanceStepSearchClauses = null;
+
+        if (instanceStepSearchClause != null) {
+
+            internalInstanceStepSearchClauses = new ArrayList<>();
+
+            for (InstanceStepSearchClause searchClause : instanceStepSearchClause) {
+                org.catalytic.sdk.generated.model.GuidSearchExpression internalId = createInternalGuidSearchExpression(searchClause.getId());
+                org.catalytic.sdk.generated.model.GuidSearchExpression internalInstanceId = createInternalGuidSearchExpression(searchClause.getInstanceId());
+                org.catalytic.sdk.generated.model.GuidSearchExpression internalWorkflowId = createInternalGuidSearchExpression(searchClause.getWorkflowId());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalName = createInternalStringSearchExpression(searchClause.getName());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalDescription = createInternalStringSearchExpression(searchClause.getDescription());
+                org.catalytic.sdk.generated.model.InstanceStepStatusSearchExpression internalStatus = createInternalInstanceStepStatusSearchExpression(searchClause.getStatus());
+                org.catalytic.sdk.generated.model.ExactStringSearchExpression internalAssignedToEmail = createInternalExactStringSearchExpression(searchClause.getAssignedToEmail());
+                org.catalytic.sdk.generated.model.ExactStringSearchExpression internalCompletedByEmail = createInternalExactStringSearchExpression(searchClause.getCompletedByEmail());
+                org.catalytic.sdk.generated.model.DateTimeSearchExpression internalStartDate = createInternalDateTimeSearchExpression(searchClause.getStartDate());
+                org.catalytic.sdk.generated.model.DateTimeSearchExpression internalEndDate = createInternalDateTimeSearchExpression(searchClause.getEndDate());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalActionTypeId = createInternalStringSearchExpression(searchClause.getActionTypeId());
+
+                org.catalytic.sdk.generated.model.InstanceStepSearchClause internalInstanceStepSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+                internalInstanceStepSearchClause.setId(internalId);
+                internalInstanceStepSearchClause.setInstanceId(internalInstanceId);
+                internalInstanceStepSearchClause.setWorkflowId(internalWorkflowId);
+                internalInstanceStepSearchClause.setName(internalName);
+                internalInstanceStepSearchClause.setDescription(internalDescription);
+                internalInstanceStepSearchClause.setStatus(internalStatus);
+                internalInstanceStepSearchClause.setAssignedToEmail(internalAssignedToEmail);
+                internalInstanceStepSearchClause.setCompletedByEmail(internalCompletedByEmail);
+                internalInstanceStepSearchClause.setStartDate(internalStartDate);
+                internalInstanceStepSearchClause.setEndDate(internalEndDate);
+                internalInstanceStepSearchClause.setActionTypeId(internalActionTypeId);
+                List<org.catalytic.sdk.generated.model.InstanceStepSearchClause> internalAnd = createInternalInstanceStepSearchClause(searchClause.getAnd());
+                List<org.catalytic.sdk.generated.model.InstanceStepSearchClause> internalOr = createInternalInstanceStepSearchClause(searchClause.getOr());
+                internalInstanceStepSearchClause.setAnd(internalAnd);
+                internalInstanceStepSearchClause.setOr(internalOr);
+                internalInstanceStepSearchClauses.add(internalInstanceStepSearchClause);
+            }
+        }
+        return internalInstanceStepSearchClauses;
     }
 }

@@ -3,11 +3,15 @@ package org.catalytic.sdk.clients;
 import org.catalytic.sdk.entities.Instance;
 import org.catalytic.sdk.entities.InstanceStatus;
 import org.catalytic.sdk.entities.InstanceStep;
+import org.catalytic.sdk.entities.InstanceStepStatus;
+import org.catalytic.sdk.entities.InstanceStepsPage;
 import org.catalytic.sdk.exceptions.*;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.InstanceStepsApi;
 import org.catalytic.sdk.generated.api.InstancesApi;
 import org.catalytic.sdk.generated.model.*;
+import org.catalytic.sdk.search.InstanceStepSearchClause;
+import org.catalytic.sdk.search.InstanceStepsWhere;
 import org.catalytic.sdk.search.InstancesWhere;
 import org.junit.Before;
 import org.junit.Test;
@@ -727,6 +731,7 @@ public class InstancesTests {
         instance.setStatus(org.catalytic.sdk.generated.model.InstanceStatus.RUNNING);
         instance.setVisibility(InstanceVisibility.OPEN);
         instance.setFieldVisibility(FieldVisibility.PUBLIC);
+
         org.catalytic.sdk.generated.model.InstancesPage instancesPage = new org.catalytic.sdk.generated.model.InstancesPage();
         instancesPage.setInstances(Arrays.asList(instance));
         instancesPage.setCount(Arrays.asList(instance).size());
@@ -1032,13 +1037,13 @@ public class InstancesTests {
     }
 
     @Test(expected = AccessTokenNotFoundException.class)
-    public void getInstanceStep_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+    public void getStep_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
         Instances instancesClient = new Instances(null);
         instancesClient.getStep("1234");
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void getInstanceStep_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
+    public void getStep_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
         when(instanceStepsApi.getInstanceStep("2b4362d6-5e46-494c-846f-c53184c8d124", "-")).thenThrow(new ApiException(401, null));
 
         Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
@@ -1046,7 +1051,7 @@ public class InstancesTests {
     }
 
     @Test(expected = InstanceStepNotFoundException.class)
-    public void getInstanceStep_itShouldThrowInstanceStepNotFoundException() throws Exception {
+    public void getStep_itShouldThrowInstanceStepNotFoundException() throws Exception {
         when(instanceStepsApi.getInstanceStep("2b4362d6-5e46-494c-846f-c53184c8d124", "-")).thenThrow(new ApiException(404, null));
 
         Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
@@ -1054,7 +1059,7 @@ public class InstancesTests {
     }
 
     @Test(expected = InternalErrorException.class)
-    public void getInstanceStep_itShouldThrowInternalErrorException() throws Exception {
+    public void getStep_itShouldThrowInternalErrorException() throws Exception {
         when(instanceStepsApi.getInstanceStep("2b4362d6-5e46-494c-846f-c53184c8d124", "-")).thenThrow(new ApiException(500, null));
 
         Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
@@ -1062,59 +1067,77 @@ public class InstancesTests {
     }
 
     @Test
-    public void getInstanceStep_itShouldGetInstanceStep() throws Exception {
-        org.catalytic.sdk.generated.model.InstanceStep internalInstance = new org.catalytic.sdk.generated.model.InstanceStep();
-        internalInstance.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-        when(instanceStepsApi.getInstanceStep("2b4362d6-5e46-494c-846f-c53184c8d124", "-")).thenReturn(internalInstance);
+    public void getStep_itShouldGetInstanceStep() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep internalStep = new org.catalytic.sdk.generated.model.InstanceStep();
+        internalStep.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        internalStep.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        when(instanceStepsApi.getInstanceStep("2b4362d6-5e46-494c-846f-c53184c8d124", "-")).thenReturn(internalStep);
 
         Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         InstanceStep instanceStep = instancesClient.getStep("2b4362d6-5e46-494c-846f-c53184c8d124");
         assertThat(instanceStep.getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
     }
 
-//    @Test(expected = AccessTokenNotFoundException.class)
-//    public void getInstanceSteps_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
-//        Instances instancesClient = new Instances(null);
-//        instancesClient.getSteps("1234");
-//    }
-//
-//    @Test(expected = UnauthorizedException.class)
-//    public void getInstanceSteps_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
-//        when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null, null, null, null, null))
-//                .thenThrow(new ApiException(401, null));
-//
-//        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
-//        instancesClient.getSteps("2b4362d6-5e46-494c-846f-c53184c8d124");
-//    }
-//
-//    @Test(expected = InternalErrorException.class)
-//    public void getInstanceSteps_itShouldThrowInternalErrorException() throws Exception {
-//        when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null, null, null, null, null))
-//                .thenThrow(new ApiException(500, null));
-//
-//        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
-//        instancesClient.getSteps("2b4362d6-5e46-494c-846f-c53184c8d124");
-//    }
-//
-//    @Test
-//    public void getInstanceSteps_itShouldReturnAllInstanceSteps() throws Exception {
-//        org.catalytic.sdk.generated.model.InstanceStep internalStep = new org.catalytic.sdk.generated.model.InstanceStep();
-//        internalStep.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-//        internalStep.setInstanceId(UUID.fromString("2b4362d6-5e46-494c-846f-c53184c8d124"));
-//        org.catalytic.sdk.generated.model.InstanceStepsPage instanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
-//        instanceStepsPage.setSteps(Arrays.asList(internalStep));
-//        instanceStepsPage.setCount(Arrays.asList(internalStep).size());
-//        instanceStepsPage.setNextPageToken(null);
-//        when(instanceStepsApi.findInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, null, null, null, null, null, null, null, null, null, null, null))
-//                .thenReturn(instanceStepsPage);
-//
-//        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
-//        InstanceStepsPage results = instancesClient.getSteps("2b4362d6-5e46-494c-846f-c53184c8d124");
-//        assertThat(results.getCount()).isEqualTo(1);
-//        assertThat(results.getNextPageToken()).isNull();
-//        assertThat(results.getInstanceSteps().get(0).getId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-//        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("2b4362d6-5e46-494c-846f-c53184c8d124"));
-//    }
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void getSteps_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Instances instancesClient = new Instances(null);
+        instancesClient.getSteps("ac14952a-a331-457c-ac7d-9a284258b65a");
+    }
+
+    @Test(expected = UnauthorizedException.class)
+    public void getSteps_itShouldThrowUnauthorizedExceptionIfUnauthorized() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.GuidSearchExpression instanceId = new GuidSearchExpression();
+        instanceId.setIsEqualTo(UUID.fromString("2b4362d6-5e46-494c-846f-c53184c8d124"));
+        internalSearchClause.setInstanceId(instanceId);
+
+        when(instanceStepsApi.searchInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, internalSearchClause))
+            .thenThrow(new ApiException(401, null));
+
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        instancesClient.getSteps("2b4362d6-5e46-494c-846f-c53184c8d124");
+    }
+
+    @Test(expected = InternalErrorException.class)
+    public void getSteps_itShouldThrowInternalErrorException() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.GuidSearchExpression instanceId = new GuidSearchExpression();
+        instanceId.setIsEqualTo(UUID.fromString("2b4362d6-5e46-494c-846f-c53184c8d124"));
+        internalSearchClause.setInstanceId(instanceId);
+
+        when(instanceStepsApi.searchInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, internalSearchClause))
+            .thenThrow(new ApiException(500, null));
+
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        instancesClient.getSteps("2b4362d6-5e46-494c-846f-c53184c8d124");
+    }
+
+    @Test
+    public void getSteps_itShouldReturnAllInstanceSteps() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setId(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        step.setInstanceId(UUID.fromString("2b4362d6-5e46-494c-846f-c53184c8d124"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.GuidSearchExpression instanceId = new GuidSearchExpression();
+        instanceId.setIsEqualTo(UUID.fromString("2b4362d6-5e46-494c-846f-c53184c8d124"));
+        internalSearchClause.setInstanceId(instanceId);
+        when(instanceStepsApi.searchInstanceSteps("2b4362d6-5e46-494c-846f-c53184c8d124", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        InstanceStepsPage results = instancesClient.getSteps("2b4362d6-5e46-494c-846f-c53184c8d124");
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getId()).isEqualTo(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("2b4362d6-5e46-494c-846f-c53184c8d124"));
+    }
 
     @Test(expected = AccessTokenNotFoundException.class)
     public void completeStep_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
@@ -1124,15 +1147,16 @@ public class InstancesTests {
 
     @Test
     public void completeStep_itShouldCompleteAnInstanceStep() throws Exception {
-        org.catalytic.sdk.generated.model.InstanceStep internalstep = new org.catalytic.sdk.generated.model.InstanceStep();
+        org.catalytic.sdk.generated.model.InstanceStep internalStep = new org.catalytic.sdk.generated.model.InstanceStep();
+        internalStep.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
         CompleteStepRequest completeStepRequest = new CompleteStepRequest();
         completeStepRequest.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
         completeStepRequest.setStepOutputFields(new ArrayList<FieldUpdateRequest>());
-        internalstep.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
-        internalstep.setInstanceId(UUID.fromString("98950bf5-1cae-4359-b09a-1cdc13f6b1b6"));
-        when(instanceStepsApi.getInstanceStep("ac14952a-a331-457c-ac7d-9a284258b65a", "-")).thenReturn(internalstep);
+        internalStep.setId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        internalStep.setInstanceId(UUID.fromString("98950bf5-1cae-4359-b09a-1cdc13f6b1b6"));
+        when(instanceStepsApi.getInstanceStep("ac14952a-a331-457c-ac7d-9a284258b65a", "-")).thenReturn(internalStep);
         when(instanceStepsApi.completeStep("ac14952a-a331-457c-ac7d-9a284258b65a", "98950bf5-1cae-4359-b09a-1cdc13f6b1b6", completeStepRequest))
-                .thenReturn(internalstep);
+                .thenReturn(internalStep);
 
         Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         InstanceStep instanceStep = instancesClient.completeStep("ac14952a-a331-457c-ac7d-9a284258b65a", null);
@@ -1162,5 +1186,889 @@ public class InstancesTests {
 
         Instances instancesClient = new Instances("1234", instancesApi, instanceStepsApi);
         instancesClient.completeStep("ac14952a-a331-457c-ac7d-9a284258b65a", null);
+    }
+
+    @Test(expected = UnauthorizedException.class)
+    public void searchSteps_itShouldReturnUnauthorizedException() throws Exception {
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, new org.catalytic.sdk.generated.model.InstanceStepSearchClause()))
+                .thenThrow(new ApiException(401, null));
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        InstancesClient.searchSteps(new InstanceStepSearchClause());
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void searchSteps_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Instances InstancesClient = new Instances(null);
+        InstancesClient.searchSteps(new InstanceStepSearchClause());
+    }
+
+    @Test(expected = InternalErrorException.class)
+    public void searchSteps_itShouldReturnInternalErrorException() throws Exception {
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, new org.catalytic.sdk.generated.model.InstanceStepSearchClause()))
+                .thenThrow(new ApiException(500, null));
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        InstancesClient.searchSteps(new InstanceStepSearchClause());
+    }
+
+    @Test
+    public void searchSteps_itShouldFindNextPage() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+        when(instanceStepsApi.searchInstanceSteps("-", "abc123", null, new org.catalytic.sdk.generated.model.InstanceStepSearchClause()))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(new InstanceStepSearchClause(), "abc123", null);
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getName()).isEqualTo("My instance step");
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsById() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setId(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.GuidSearchExpression id = new GuidSearchExpression();
+        org.catalytic.sdk.generated.model.GuidSearchExpression instanceId = new GuidSearchExpression();
+        id.setIsEqualTo(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        instanceId.setIsEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        internalSearchClause.setId(id);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.id("00f0e0af-7029-47b5-b38b-bb636fc1bd63"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getName()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getId()).isEqualTo(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByInstanceId() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setWorkflowId(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.GuidSearchExpression instanceId = new GuidSearchExpression();
+        instanceId.setIsEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        internalSearchClause.setInstanceId(instanceId);
+        when(instanceStepsApi.searchInstanceSteps("ac14952a-a331-457c-ac7d-9a284258b65a", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.instanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a")),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getName()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getWorkflowId()).isEqualTo(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByInstanceIdAsString() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setWorkflowId(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.GuidSearchExpression instanceId = new GuidSearchExpression();
+        instanceId.setIsEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        internalSearchClause.setInstanceId(instanceId);
+        when(instanceStepsApi.searchInstanceSteps("ac14952a-a331-457c-ac7d-9a284258b65a", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.instanceId("ac14952a-a331-457c-ac7d-9a284258b65a"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getName()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getWorkflowId()).isEqualTo(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByWorkflowId() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setWorkflowId(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.GuidSearchExpression workflowId = new GuidSearchExpression();
+        org.catalytic.sdk.generated.model.GuidSearchExpression instanceId = new GuidSearchExpression();
+        workflowId.setIsEqualTo(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        instanceId.setIsEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        internalSearchClause.setWorkflowId(workflowId);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.workflowId(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63")),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getName()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getWorkflowId()).isEqualTo(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByWorkflowIdAsString() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setWorkflowId(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.GuidSearchExpression workflowId = new GuidSearchExpression();
+        org.catalytic.sdk.generated.model.GuidSearchExpression instanceId = new GuidSearchExpression();
+        workflowId.setIsEqualTo(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        instanceId.setIsEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        internalSearchClause.setWorkflowId(workflowId);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.workflowId("00f0e0af-7029-47b5-b38b-bb636fc1bd63"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getName()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getWorkflowId()).isEqualTo(UUID.fromString("00f0e0af-7029-47b5-b38b-bb636fc1bd63"));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByName() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.StringSearchExpression name = new StringSearchExpression();
+        name.setIsEqualTo("My instance step");
+        internalSearchClause.setName(name);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.name("My instance step"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getName()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByNameContains() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.StringSearchExpression name = new StringSearchExpression();
+        name.setContains("my");
+        internalSearchClause.setName(name);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.nameContains("my"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getName()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsBetweenNames() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.StringSearchExpression name = new StringSearchExpression();
+        org.catalytic.sdk.generated.model.StringRange nameRange = new org.catalytic.sdk.generated.model.StringRange();
+        nameRange.setLowerBoundInclusive("Ma");
+        nameRange.setUpperBoundInclusive("Mz");
+        name.setBetween(nameRange);
+        internalSearchClause.setName(name);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.nameBetween("Ma", "Mz"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getName()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByDescription() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setDescription("My instance step");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.StringSearchExpression description = new StringSearchExpression();
+        description.setIsEqualTo("My instance step");
+        internalSearchClause.setDescription(description);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.description("My instance step"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getDescription()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByDescriptionContains() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setDescription("My instance step");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.StringSearchExpression description = new StringSearchExpression();
+        description.setContains("my");
+        internalSearchClause.setDescription(description);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.descriptionContains("my"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getDescription()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsBetweenDescriptions() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setDescription("My instance step");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.StringSearchExpression description = new StringSearchExpression();
+        org.catalytic.sdk.generated.model.StringRange descriptionRange = new org.catalytic.sdk.generated.model.StringRange();
+        descriptionRange.setLowerBoundInclusive("Ma");
+        descriptionRange.setUpperBoundInclusive("Mz");
+        description.setBetween(descriptionRange);
+        internalSearchClause.setDescription(description);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.descriptionBetween("Ma", "Mz"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getDescription()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByStatus() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setDescription("My instance step");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.InstanceStepStatusSearchExpression status = new InstanceStepStatusSearchExpression();
+        status.setIsEqualTo(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        internalSearchClause.setStatus(status);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.status(InstanceStepStatus.ACTIVE),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getDescription()).isEqualTo("My instance step");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByAssignedToEmail() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setAssignedToEmail("bob@aol.com");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.ExactStringSearchExpression assignedToEmail = new ExactStringSearchExpression();
+        assignedToEmail.setIsEqualTo("bob@aol.com");
+        internalSearchClause.setAssignedToEmail(assignedToEmail);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.assignedToEmail("bob@aol.com"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getAssignedToEmail()).isEqualTo("bob@aol.com");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByCompletedByEmail() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setCompletedByEmail("bob@aol.com");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.ExactStringSearchExpression completedByEmail = new ExactStringSearchExpression();
+        completedByEmail.setIsEqualTo("bob@aol.com");
+        internalSearchClause.setCompletedByEmail(completedByEmail);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.completedByEmail("bob@aol.com"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getCompletedByEmail()).isEqualTo("bob@aol.com");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByStartDateAsString() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setStartDate(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression startDate = new DateTimeSearchExpression();
+        startDate.isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        internalSearchClause.setStartDate(startDate);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.startDate("2020-01-01T00:00:00.000-06:00"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getStartDate()).isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByStartDate() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setStartDate(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression startDate = new DateTimeSearchExpression();
+        startDate.isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        internalSearchClause.setStartDate(startDate);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.startDate(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00"))),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getStartDate()).isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByStartDateBetween() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setStartDate(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause instanceStepSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression startDate = new org.catalytic.sdk.generated.model.DateTimeSearchExpression();
+        org.catalytic.sdk.generated.model.DateTimeOffsetNullableRange startDateRange = new org.catalytic.sdk.generated.model.DateTimeOffsetNullableRange();
+        startDateRange.setLowerBoundInclusive(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        startDateRange.setUpperBoundInclusive(OffsetDateTime.of(2020, 12, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        startDate.setBetween(startDateRange);
+        instanceStepSearchClause.setStartDate(startDate);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, instanceStepSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.startDateBetween(
+                        OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")),
+                        OffsetDateTime.of(2020, 12, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00"))
+                ),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getStartDate()).isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByStarDateAsStringBetweenAsString() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setStartDate(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause instanceStepSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression startDate = new org.catalytic.sdk.generated.model.DateTimeSearchExpression();
+        org.catalytic.sdk.generated.model.DateTimeOffsetNullableRange startDateRange = new org.catalytic.sdk.generated.model.DateTimeOffsetNullableRange();
+        startDateRange.setLowerBoundInclusive(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        startDateRange.setUpperBoundInclusive(OffsetDateTime.of(2020, 12, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        startDate.setBetween(startDateRange);
+        instanceStepSearchClause.setStartDate(startDate);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, instanceStepSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.startDateBetween(
+                        "2020-01-01T00:00:00.000-06:00",
+                        "2020-12-01T00:00:00.000-06:00"
+                ),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getStartDate()).isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByEndDateAsString() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setEndDate(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression endDate = new DateTimeSearchExpression();
+        endDate.isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        internalSearchClause.setEndDate(endDate);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.endDate("2020-01-01T00:00:00.000-06:00"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getEndDate()).isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByEndDate() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setEndDate(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression endDate = new DateTimeSearchExpression();
+        endDate.isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        internalSearchClause.setEndDate(endDate);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.endDate(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00"))),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getEndDate()).isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstancesByEndDateBetween() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setEndDate(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause instanceStepSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression endDate = new org.catalytic.sdk.generated.model.DateTimeSearchExpression();
+        org.catalytic.sdk.generated.model.DateTimeOffsetNullableRange endDateRange = new org.catalytic.sdk.generated.model.DateTimeOffsetNullableRange();
+        endDateRange.setLowerBoundInclusive(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        endDateRange.setUpperBoundInclusive(OffsetDateTime.of(2020, 12, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        endDate.setBetween(endDateRange);
+        instanceStepSearchClause.setEndDate(endDate);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, instanceStepSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.endDateBetween(
+                        OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")),
+                        OffsetDateTime.of(2020, 12, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00"))
+                ),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getEndDate()).isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstancesByEndDateAsStringBetweenAsString() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setEndDate(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause instanceStepSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression endDate = new org.catalytic.sdk.generated.model.DateTimeSearchExpression();
+        org.catalytic.sdk.generated.model.DateTimeOffsetNullableRange endDateRange = new org.catalytic.sdk.generated.model.DateTimeOffsetNullableRange();
+        endDateRange.setLowerBoundInclusive(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        endDateRange.setUpperBoundInclusive(OffsetDateTime.of(2020, 12, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        endDate.setBetween(endDateRange);
+        instanceStepSearchClause.setEndDate(endDate);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, instanceStepSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.endDateBetween(
+                        "2020-01-01T00:00:00.000-06:00",
+                        "2020-12-01T00:00:00.000-06:00"
+                ),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getEndDate()).isEqualTo(OffsetDateTime.of(2020, 01, 01, 0, 0, 0, 0, ZoneOffset.of("-06:00")));
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByActionTypeId() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setName("My instance step");
+        step.setActionTypeId("my/app/id");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.StringSearchExpression actionTypeId = new StringSearchExpression();
+        actionTypeId.setIsEqualTo("my/app/id");
+        internalSearchClause.setActionTypeId(actionTypeId);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.actionTypeId("my/app/id"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getActionTypeId()).isEqualTo("my/app/id");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsByActionTypeIdContains() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setActionTypeId("my/app/id");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.StringSearchExpression actionTypeId = new StringSearchExpression();
+        actionTypeId.setContains("my/app/id");
+        internalSearchClause.setActionTypeId(actionTypeId);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.actionTypeIdContains("my/app/id"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getActionTypeId()).isEqualTo("my/app/id");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+    }
+
+    @Test
+    public void searchSteps_itShouldFindInstanceStepsBetweenActionTypeIds() throws Exception {
+        org.catalytic.sdk.generated.model.InstanceStep step = new org.catalytic.sdk.generated.model.InstanceStep();
+        step.setActionTypeId("my/app/id");
+        step.setInstanceId(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
+        step.setStatus(org.catalytic.sdk.generated.model.InstanceStepStatus.ACTIVE);
+        org.catalytic.sdk.generated.model.InstanceStepsPage InstanceStepsPage = new org.catalytic.sdk.generated.model.InstanceStepsPage();
+        InstanceStepsPage.setSteps(Arrays.asList(step));
+        InstanceStepsPage.setCount(Arrays.asList(step).size());
+        InstanceStepsPage.setNextPageToken("");
+
+        org.catalytic.sdk.generated.model.InstanceStepSearchClause internalSearchClause = new org.catalytic.sdk.generated.model.InstanceStepSearchClause();
+        org.catalytic.sdk.generated.model.StringSearchExpression actionTypeId = new StringSearchExpression();
+        org.catalytic.sdk.generated.model.StringRange actionTypeIdRange = new org.catalytic.sdk.generated.model.StringRange();
+        actionTypeIdRange.setLowerBoundInclusive("Ma");
+        actionTypeIdRange.setUpperBoundInclusive("Mz");
+        actionTypeId.setBetween(actionTypeIdRange);
+        internalSearchClause.setActionTypeId(actionTypeId);
+        when(instanceStepsApi.searchInstanceSteps("-", null, null, internalSearchClause))
+                .thenReturn(InstanceStepsPage);
+
+        Instances InstancesClient = new Instances("1234", instancesApi, instanceStepsApi);
+        org.catalytic.sdk.entities.InstanceStepsPage results = InstancesClient.searchSteps(
+                InstanceStepsWhere.actionTypeIdBetween("Ma", "Mz"),
+                null,
+                null
+        );
+
+        assertThat(results.getCount()).isEqualTo(1);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getInstanceSteps().get(0).getActionTypeId()).isEqualTo("my/app/id");
+        assertThat(results.getInstanceSteps().get(0).getInstanceId()).isEqualTo(UUID.fromString("ac14952a-a331-457c-ac7d-9a284258b65a"));
     }
 }

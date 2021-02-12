@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Find Instance Steps method (Breaking change)
 - Find Data Tables method (Breaking change)
 - Find Integrations method (Breaking change)
+- Search InstanceSteps method
+- completedByEmail property to InstanceStep entity
+
 
 ### Changed
 - DataTableColumn.type to DataTableColumn.fieldType (Breaking change)
@@ -47,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Instance.fieldVisibility from org.catalytic.sdk.generated.model.FieldVisibility to FieldVisibility (Breaking change)
 - Field.restrictions to Field.display (Breaking change)
 - DataTableColumn.restrictions to DataTableColumn.display (Breaking change)
+- InstanceStep.status from String to InstanceStepStatus (Breaking change)
 
 ## [1.0.0] - 10-7-2020
 ### Added
