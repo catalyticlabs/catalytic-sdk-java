@@ -5,6 +5,7 @@ import org.catalytic.sdk.CatalyticLogger;
 import org.catalytic.sdk.ConfigurationUtils;
 import org.catalytic.sdk.entities.DataTable;
 import org.catalytic.sdk.entities.DataTableColumn;
+import org.catalytic.sdk.entities.DataTablesPage;
 import org.catalytic.sdk.entities.FieldDisplayOptions;
 import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
 import org.catalytic.sdk.exceptions.DataTableNotFoundException;
@@ -14,6 +15,7 @@ import org.catalytic.sdk.generated.ApiClient;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.DataTablesApi;
 import org.catalytic.sdk.generated.model.DataTableExportFormat;
+import org.catalytic.sdk.search.DataTableSearchClause;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +29,7 @@ import java.util.List;
 /**
  * DataTables client
  */
-public class DataTables {
+public class DataTables extends BaseClient {
 
     private String token;
     private static final Logger log = CatalyticLogger.getLogger(DataTables.class);
@@ -86,6 +88,91 @@ public class DataTables {
 
         DataTable dataTable = createDataTable(internalDataTable);
         return dataTable;
+    }
+
+    /**
+     * Finds Data Tables by a variety of filters
+     *
+     * @param dataTableSearchClause         The search criteria to search Data Tables by
+     * @return                              A DataTablesPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding DataTables
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public DataTablesPage search(DataTableSearchClause dataTableSearchClause) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        return search(dataTableSearchClause, null, null);
+    }
+
+    /**
+     * Finds Data Tables by a variety of filters
+     *
+     * @param dataTableSearchClause         The search criteria to search Data Tables by
+     * @param pageToken                     The token of the page to fetch
+     * @return                              A DataTablesPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding DataTables
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public DataTablesPage search(DataTableSearchClause dataTableSearchClause, String pageToken) throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        return search(dataTableSearchClause, pageToken, null);
+    }
+
+    /**
+     * Finds Data Tables by a variety of filters
+     *
+     * @param dataTableSearchClause         The search criteria to search Data Tables by
+     * @param pageToken                     The token of the page to fetch
+     * @param pageSize                      The number of Data Tables to fetch per page
+     * @return                              A DataTablesPage object which contains the results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Data Tables
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public DataTablesPage search(DataTableSearchClause dataTableSearchClause, String pageToken, Integer pageSize) throws AccessTokenNotFoundException, InternalErrorException, UnauthorizedException {
+        ClientHelpers.verifyAccessTokenExists(this.token);
+
+        org.catalytic.sdk.generated.model.DataTablesPage results;
+        List<DataTable> dataTables = new ArrayList<>();
+
+        if (dataTableSearchClause == null) {
+            dataTableSearchClause = new DataTableSearchClause();
+        }
+
+        org.catalytic.sdk.generated.model.GuidSearchExpression internalId = createInternalGuidSearchExpression(dataTableSearchClause.getId());
+        org.catalytic.sdk.generated.model.StringSearchExpression internalName = createInternalStringSearchExpression(dataTableSearchClause.getName());
+        org.catalytic.sdk.generated.model.BoolSearchExpression internalIsArchived = createInternalBooleanSearchExpression(dataTableSearchClause.getIsArchived());
+        org.catalytic.sdk.generated.model.ExactStringSearchExpression internalCreatedByEmail = createInternalExactStringSearchExpression(dataTableSearchClause.getCreatedByEmail());
+        org.catalytic.sdk.generated.model.DateTimeSearchExpression internalCreatedDate = createInternalDateTimeSearchExpression(dataTableSearchClause.getCreatedDate());
+
+        List<org.catalytic.sdk.generated.model.DataTableSearchClause> internalAnd = createInternalDataTableSearchClause(dataTableSearchClause.getAnd());
+        List<org.catalytic.sdk.generated.model.DataTableSearchClause> internalOr = createInternalDataTableSearchClause(dataTableSearchClause.getOr());
+
+        org.catalytic.sdk.generated.model.DataTableSearchClause dataTableSearchRequest = new org.catalytic.sdk.generated.model.DataTableSearchClause();
+        dataTableSearchRequest.setAnd(internalAnd);
+        dataTableSearchRequest.setOr(internalOr);
+        dataTableSearchRequest.setId(internalId);
+        dataTableSearchRequest.setName(internalName);
+        dataTableSearchRequest.setIsArchived(internalIsArchived);
+        dataTableSearchRequest.setCreatedByEmail(internalCreatedByEmail);
+        dataTableSearchRequest.setCreatedDate(internalCreatedDate);
+
+        try {
+            log.debug("Finding Data Tables with criteria {}", () -> dataTableSearchRequest);
+            results = this.dataTablesApi.searchDataTables(pageToken, pageSize, dataTableSearchRequest);
+        } catch (ApiException e) {
+            if (e.getCode() == 401) {
+                throw new UnauthorizedException(e);
+            }
+            throw new InternalErrorException("Unable to find Data Tables", e);
+        }
+
+        for (org.catalytic.sdk.generated.model.DataTable internalDataTable : results.getDataTables()) {
+            DataTable dataTable = createDataTable(internalDataTable);
+            dataTables.add(dataTable);
+        }
+
+        DataTablesPage dataTablesPage = new DataTablesPage(dataTables, results.getCount(), results.getNextPageToken());
+        return dataTablesPage;
     }
 
     /**
@@ -332,5 +419,41 @@ public class DataTables {
         );
 
         return column;
+    }
+
+    /**
+     * Create an internal DataTableSearchClause from an external DataTableSearchClause
+     *
+     * @param dataTableSearchClause The external DataTableSearchClause to create an internal one from
+     * @return                      An internal DataTableSearchClause
+     */
+    private List<org.catalytic.sdk.generated.model.DataTableSearchClause> createInternalDataTableSearchClause(List<DataTableSearchClause> dataTableSearchClause) {
+        List<org.catalytic.sdk.generated.model.DataTableSearchClause> internalDataTableSearchClauses = null;
+
+        if (dataTableSearchClause != null) {
+
+            internalDataTableSearchClauses = new ArrayList<>();
+
+            for (DataTableSearchClause searchClause : dataTableSearchClause) {
+                org.catalytic.sdk.generated.model.GuidSearchExpression internalId = createInternalGuidSearchExpression(searchClause.getId());
+                org.catalytic.sdk.generated.model.StringSearchExpression internalName = createInternalStringSearchExpression(searchClause.getName());
+                org.catalytic.sdk.generated.model.BoolSearchExpression internalIsArchived = createInternalBooleanSearchExpression(searchClause.getIsArchived());
+                org.catalytic.sdk.generated.model.ExactStringSearchExpression internalCreatedByEmail = createInternalExactStringSearchExpression(searchClause.getCreatedByEmail());
+                org.catalytic.sdk.generated.model.DateTimeSearchExpression internalCreatedDate = createInternalDateTimeSearchExpression(searchClause.getCreatedDate());
+
+                org.catalytic.sdk.generated.model.DataTableSearchClause internalDataTableSearchClause = new org.catalytic.sdk.generated.model.DataTableSearchClause();
+                internalDataTableSearchClause.setId(internalId);
+                internalDataTableSearchClause.setName(internalName);
+                internalDataTableSearchClause.setIsArchived(internalIsArchived);
+                internalDataTableSearchClause.setCreatedByEmail(internalCreatedByEmail);
+                internalDataTableSearchClause.setCreatedDate(internalCreatedDate);
+                List<org.catalytic.sdk.generated.model.DataTableSearchClause> internalAnd = createInternalDataTableSearchClause(searchClause.getAnd());
+                List<org.catalytic.sdk.generated.model.DataTableSearchClause> internalOr = createInternalDataTableSearchClause(searchClause.getOr());
+                internalDataTableSearchClause.setAnd(internalAnd);
+                internalDataTableSearchClause.setOr(internalOr);
+                internalDataTableSearchClauses.add(internalDataTableSearchClause);
+            }
+        }
+        return internalDataTableSearchClauses;
     }
 }

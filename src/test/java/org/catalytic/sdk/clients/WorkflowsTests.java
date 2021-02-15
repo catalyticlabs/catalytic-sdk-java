@@ -88,21 +88,6 @@ public class WorkflowsTests {
         WorkflowsClient.search(null);
     }
 
-    @Test(expected = AccessTokenNotFoundException.class)
-    public void search_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
-        Workflows WorkflowsClient = new Workflows(null);
-        WorkflowsClient.search(null);
-    }
-
-    @Test(expected = InternalErrorException.class)
-    public void search_itShouldReturnInternalErrorException() throws Exception {
-        when(workflowsApi.searchWorkflows(null, null, new org.catalytic.sdk.generated.model.WorkflowSearchClause()))
-                .thenThrow(new ApiException(500, null));
-
-        Workflows WorkflowsClient = new Workflows("1234", workflowsApi, null);
-        WorkflowsClient.search(null);
-    }
-
     @Test
     public void list_itShouldReturnAllWorkflows() throws Exception {
         org.catalytic.sdk.generated.model.Workflow workflow1 = new org.catalytic.sdk.generated.model.Workflow();
@@ -130,6 +115,21 @@ public class WorkflowsTests {
         assertThat(results.getNextPageToken()).isEmpty();
         assertThat(results.getWorkflows().get(0).getName()).isEqualTo("Workflow one");
         assertThat(results.getWorkflows().get(1).getName()).isEqualTo("Workflow two");
+    }
+
+    @Test(expected = AccessTokenNotFoundException.class)
+    public void search_itShouldReturnAccessTokenNotFoundExceptionIfClientInstantiatedWithoutToken() throws Exception {
+        Workflows WorkflowsClient = new Workflows(null);
+        WorkflowsClient.search(null);
+    }
+
+    @Test(expected = InternalErrorException.class)
+    public void search_itShouldReturnInternalErrorException() throws Exception {
+        when(workflowsApi.searchWorkflows(null, null, new org.catalytic.sdk.generated.model.WorkflowSearchClause()))
+                .thenThrow(new ApiException(500, null));
+
+        Workflows WorkflowsClient = new Workflows("1234", workflowsApi, null);
+        WorkflowsClient.search(null);
     }
 
     @Test
