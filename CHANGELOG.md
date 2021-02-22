@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Search Instances method
 - List Instances method
 - List Access Tokens method
+- Get Action method
+- Search Actions method
+- Invoke Action method
+- Get Action Invocation method
 
 ### Removed
 - Find Users method (Breaking change)
