@@ -3,10 +3,11 @@ package org.catalytic.sdk.clients;
 import org.catalytic.sdk.entities.Action;
 import org.catalytic.sdk.entities.ActionInvocation;
 import org.catalytic.sdk.entities.ActionsPage;
+import org.catalytic.sdk.entities.UsersPage;
 import org.catalytic.sdk.exceptions.AccessTokenNotFoundException;
+import org.catalytic.sdk.exceptions.ActionNotFoundException;
 import org.catalytic.sdk.exceptions.InternalErrorException;
 import org.catalytic.sdk.exceptions.UnauthorizedException;
-import org.catalytic.sdk.exceptions.ActionNotFoundException;
 import org.catalytic.sdk.generated.ApiException;
 import org.catalytic.sdk.generated.api.ActionsApi;
 import org.catalytic.sdk.search.ActionSearchClause;
@@ -99,6 +100,35 @@ public class ActionsTests {
 
         Actions actionsClient = new Actions("1234", actionsApi);
         actionsClient.search(null);
+    }
+
+    @Test
+    public void list_itShouldReturnAllActions() throws Exception {
+        org.catalytic.sdk.generated.model.Action action1 = new org.catalytic.sdk.generated.model.Action();
+        org.catalytic.sdk.generated.model.Action action2 = new org.catalytic.sdk.generated.model.Action();
+        action1.setName("action one");
+        action2.setName("action two");
+        org.catalytic.sdk.generated.model.ActionsPage firstPage = new org.catalytic.sdk.generated.model.ActionsPage();
+        org.catalytic.sdk.generated.model.ActionsPage secondPage = new org.catalytic.sdk.generated.model.ActionsPage();
+        firstPage.setActions(Arrays.asList(action1));
+        firstPage.setCount(Arrays.asList(action1).size());
+        firstPage.setNextPageToken("123");
+        secondPage.setActions(Arrays.asList(action2));
+        secondPage.setCount(Arrays.asList(action2).size());
+        secondPage.setNextPageToken("123");
+        secondPage.setNextPageToken("");
+        when(actionsApi.searchActions(null, null, new org.catalytic.sdk.generated.model.ActionSearchClause()))
+                .thenReturn(firstPage);
+        when(actionsApi.searchActions("123", null, new org.catalytic.sdk.generated.model.ActionSearchClause()))
+                .thenReturn(secondPage);
+
+        Actions actionsClient = new Actions("1234", actionsApi);
+        ActionsPage results = actionsClient.list();
+
+        assertThat(results.getCount()).isEqualTo(2);
+        assertThat(results.getNextPageToken()).isEmpty();
+        assertThat(results.getActions().get(0).getName()).isEqualTo("action one");
+        assertThat(results.getActions().get(1).getName()).isEqualTo("action two");
     }
 
     @Test

@@ -71,6 +71,28 @@ public class Actions extends BaseClient {
     }
 
     /**
+     * Get all Actions
+     *
+     * @return                              An ActionsPage object which contains the all the Actions from all pages of results
+     * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
+     * @throws InternalErrorException       If any error finding Actions
+     * @throws UnauthorizedException        If unauthorized
+     */
+    public ActionsPage list() throws InternalErrorException, AccessTokenNotFoundException, UnauthorizedException {
+        // Get the first page of users
+        ActionsPage actionsPage = search(null, null);
+        ActionsPage results = actionsPage;
+
+        // Loop through the rest of the pages and add the users to results
+        while(!actionsPage.getNextPageToken().isEmpty()) {
+            actionsPage = search(null, actionsPage.getNextPageToken());
+            results.addActions(actionsPage.getActions(), actionsPage.getNextPageToken());
+        }
+
+        return results;
+    }
+
+    /**
      * Finds actions by a variety of filters
      *
      * @param actionSearchClause            The search criteria to search actions by
@@ -161,6 +183,7 @@ public class Actions extends BaseClient {
      * Invoke an Action by id
      *
      * @param id                            The id of the Action to invoke
+     * @param invokeActionRequest           The request to invoke the Action with
      * @return                              The invoked Action
      * @throws AccessTokenNotFoundException If Access Token is not found or if the client was instantiated without an Access Token
      * @throws ActionNotFoundException      If Action is not found
